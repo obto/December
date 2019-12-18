@@ -1,0 +1,269 @@
+.spoiler  a {color: #000000 !important;}
+.spoiler:hover  a {color: #ffffff !important;}
+.spoiler * {opacity: 0;}
+.spoiler:hover * {opacity: 1;}
+/*#messagebuffer.linewrap img, #messagebuffer.linewrap video{max-width: 300px; max-height: 300px;}*/
+.profile-image {width:125px; height:auto; max-height:300px;}
+.profile-box {max-width: 137px; max-height:500px;}
+.panel-primary > .panel-heading {background-color:black !important;border-color: white !important;}
+.panel-primary {border-color: white !important;}
+#messagebuffer {width: auto;padding-left: 0px;padding-right: 0px;}
+#qualitymenu.dropdown-menu{width:100% !important;min-width:50px !important;margin-top:0px;z-index: 1;}
+#qualitymenu .header-drop-link {padding-left: 8px;}
+#qualitymenu .header-drop-link:hover {text-decoration:none;color:#fff;background-color:#2a9fd6}
+#leftpane-inner {margin-left:-10px !important;}
+
+/* ----- Nico chat ----- */
+#vidchat {
+    position:absolute;
+    color:white;
+    font-size: 14pt;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    width: 2000px !important;
+    top: 0px;
+    right: 0px;
+}
+
+/* ----- Body and main container ----- */
+
+body {overflow-x:hidden}
+#mainpage {padding-top:52px}
+
+/* ----- Main rows ----- */
+
+#motdrow, #announcements, #main, #playlistrow {border:solid 2px transparent; margin-bottom:5px}
+#main > div, #playlistrow > div {padding-left:5px; padding-right:5px; margin-top:5px; margin-bottom:5px}
+
+/* ----- Buttons ----- */
+
+.btn {text-shadow:none}
+
+/* ----- Brand ----- */
+
+.navbar-brand {cursor:default}
+
+/* ----- MOTD row ----- */
+
+#motdwrap {margin:5px -10px}
+
+/* ----- MOTD ----- */
+
+#motdwrap {padding:10px; border-color:black; box-shadow:none}
+#togglemotd {margin-top:-5px}
+
+/* ----- Announcements ----- */
+
+#announcements .alert {margin:0px -10px 5px}
+
+/* ----- Drinkbar ----- */
+
+#drinkcount {margin:0px}
+
+/* ----- Userlist ----- */
+
+.userlist_item {cursor:pointer}
+
+/* ----- Playlist row inner panes ----- */
+
+#rightpane, #leftpane {margin-top:5px !important; margin-bottom:5px !important}
+
+/* ----- Default left pane wells ----- */
+
+#leftpane .well {margin-bottom:5px}
+
+/* ----- Queue titles ----- */
+
+.qe_title {margin-left:4px}
+
+/* ----- Footer ----- */
+
+#footer {height:auto}
+
+/* ----- CyTube Plus selectors ----- */
+
+#chanavatar {margin-right:3px; margin-top:-4px}
+
+#attbarrow-outer {padding:0px 5px}
+#attbar {height:22px; background-color:white}
+
+#titlerow {
+	background-position:0px center;
+	background-size:0% 100%; background-repeat:no-repeat;
+	margin:-5px -8px 5px;
+	border-radius:4px;
+}
+
+#titlerow-outer {padding:3px 5px; text-align:center; font-size:16pt; color:black; }
+
+#titlerow #currenttitle {
+	border:none;
+}
+
+#mediainfo {
+	background-color: #1C1E22; margin-bottom:0px; border-width: 1px 1px 0px; border-style:solid solid none;
+	border-color:black; border-radius:5px 5px 0px 0px;
+}
+
+#coverpl {
+	position:absolute; left:5px; top:0px; background-color:white;
+	background-position:center center;
+}
+#redirectPlayer {
+    position:absolute; left:0px; top:0px; background-color:white;
+    background-position:center center; cursor:pointer;
+}
+
+#leftpanecontrols {margin-right:-4px}
+#layout-btn {margin-right:10px}
+#fluid-btn {margin-right:10px}
+
+#configwrap, #modewrap, #themewrap {text-align:left}
+#configwrap {padding-left:10px !important;}
+#mode-sel, #theme-sel {width:80%; margin:0px auto}
+.theme-header {text-align:center; font-size:9pt; font-style:italic}
+footer {padding-bottom:5px}
+#leftfooter {font-size:10pt; margin-bottom:50px}
+#rightfooter {float:right; margin-top:-50px}
+
+#chatfunc-dropdown {
+    position:absolute; top:22px; display:block; z-index:10000; padding:5px;
+	overflow:auto; margin-right:5px;
+}
+
+/*Reddit flair*/
+.username::before{background:url('https://files.catbox.moe/6sr1me.png');}
+.teamtaiga::before{background:url('https://isthisliv.com/_n/taiga.png');}
+.teamami::before{background:url('https://isthisliv.com/_n/ami.png');}
+.teamminori::before{background:url('https://isthisliv.com/_n/minori.png');}
+.teaminko::before{background:url('https://isthisliv.com/_n/inko.png');}
+.teamkitamura::before{background:url('https://isthisliv.com/_n/kitamura.png');}
+.teamkihara::before{background:url('https://isthisliv.com/_n/kihara.png');}
+.teamharuta::before{background:url('https://isthisliv.com/_n/haruta.png');}
+.teamsensei::before{background:url('https://isthisliv.com/_n/sensei.png');}
+.teammom::before{background:url('https://isthisliv.com/_n/mom.png');}
+.teamryuuji::before{background:url('https://isthisliv.com/_n/ryuuji.png');}
+.chat-msg-_North .username::before {
+background:url('https://isthisliv.com/_n/kagami.ico');
+}
+.username::before{
+	content:"AA";
+	background-size:20px 20px !important;
+background-repeat:no-repeat !important;
+color:rgba(0,0,0,0);
+}
+#messagebuffer>div{font-size:18px;}
+
+/* ----- Additional jQuery classes ----- */
+
+.relative {position:relative}
+
+.covered {visibility:hidden; opacity:0}
+
+.dist {background-color:gold; color:red; font-size:12pt; padding:3px}
+
+span.glyphicon.glyphicon-time {
+	color: rgba(255,0,0,0);
+	background: url("http://i.imgur.com/gf7rfYv.png");}
+	
+/* Snow and ERABE effect below */
+
+.c-effect_erabe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 64px;
+  text-transform: uppercase;
+  color: darkred;
+  position: absolute;
+
+  padding: 8px 16px;
+  width: 420px;
+  max-width: 50vw;
+  text-align: center;
+  border: 8px solid hsl(214, 72%, 48%);
+  border-radius: 16px;
+  color: #000;
+  background-image: repeating-linear-gradient(
+      45deg, hsl(217, 39%, 74%), hsl(217, 39%, 74%) 15px,
+      hsl(216, 45%, 53%) 10px, hsl(216, 45%, 53%) 20px );
+
+  opacity: 0.8;
+  transform: scale(1);
+  animation: effect__pulse-blue 750ms ease-out infinite;
+}
+.c-effect_erabe:nth-child(even) {
+  background-image: repeating-linear-gradient(
+      45deg, hsl(313, 88%, 84%), hsl(313, 88%, 84%) 15px,
+      hsl(312, 83%, 68%) 10px, hsl(312, 83%, 68%) 20px);
+  border-color: hsl(306, 91%, 60%);
+  animation-name: effect__pulse-pink;
+}
+@media (max-width: 600px) {
+  .c-effect_erabe {
+    font-size: 48px;
+  }
+}
+
+@keyframes effect__pulse-blue {
+  0% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(214, 72%, 48%, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px hsla(214, 72%, 48%, 0);
+  }
+
+  100% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(214, 72%, 48%, 0);
+  }
+}
+@keyframes effect__pulse-pink {
+  0% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(306, 91%, 60%, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px hsla(306, 91%, 60%, 0);
+  }
+
+  100% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(306, 91%, 60%, 0);
+  }
+}
+
+.c-effect__snowflake {
+  color: #fff;
+  font-size: 1em;
+  font-family: Arial, sans-serif;
+  text-shadow: 0 0 2px rgba(50, 50, 50, 0.70);
+  z-index: 10000;
+  user-select: none;
+  cursor: default;
+
+  animation: effect__snowflake-shake 3s infinite ease-in-out;
+}
+.c-effect__snowflake.type2 { animation-duration: 4s; }
+.c-effect__snowflake.type3 { animation-duration: 5s; }
+.c-effect__snowflake.type4 { animation-duration: 6s; }
+
+.c-effect__snowflake-outer {
+  position: fixed;
+  top: -2em;
+  left: 0;
+  animation: effect__snowflake-fall 12s linear forwards;
+}
+
+@keyframes effect__snowflake-shake {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(80px); }
+  100% { transform: translateX(0); }
+}
+@keyframes effect__snowflake-fall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(110vw); }
+}
