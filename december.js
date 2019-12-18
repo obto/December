@@ -2668,7 +2668,7 @@ class CustomTextTriggers {
       });
 
       if (CLIENT.rank > 2 && did_kick) {
-        socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Stop it.'});
+        socket.emit("chatMsg", {msg:'/kick ' + username + ' Stop it.'});
       }
       return did_kick;
     } catch (e) { return false; }
