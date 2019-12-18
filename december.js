@@ -2137,7 +2137,7 @@ function formatChatMessage(data, last) {
 		}
 	}
 	prevLength = data.msg.length;
-	
+
     // Backwards compat
     if (!data.meta || data.msgclass) {
         data.meta = {
@@ -2156,9 +2156,9 @@ function formatChatMessage(data, last) {
 	if ($('#btn_anon').hasClass('label-success')){
 		teamClass += ' anon';
 	}
-	
+
 	data.msg = data.msg.replace(/ <span style="display:none" class="teamColorSpan">.+/gi,"")
-	
+
     // Phase 1: Determine whether to show the username or not
     var skip = data.username === last.name;
     if(data.meta.addClass === "server-whisper")
@@ -2226,7 +2226,7 @@ function formatChatMessage(data, last) {
     if (data.meta.shadow) {
         div.addClass("chat-shadow");
     }
-	
+
     return div;
 }
 
@@ -2319,7 +2319,7 @@ $("#chatline").on("paste", function() {
     }
 });
 
-$("#chatline").keydown(function(ev) {	
+$("#chatline").keydown(function(ev) {
 	if (videoLength > videoLimit) {
 		if (ev.keyCode === 38) {
 			stop++;
@@ -2340,7 +2340,7 @@ $("#chatline").keydown(function(ev) {
             }
         }
     }
-	
+
     // Enter/return
     if(ev.keyCode == 13) {
         if (CHATTHROTTLE) {
@@ -2439,11 +2439,11 @@ if (CLIENT.name === "Happy") {
 	var msgLength = 10000;
 	var userLength = 10000;
 	var aMessagesDefault = [["Timestamp", "Username", "Message"]];
-	var aMessages = getOrDefault(CHANNEL.name + "_MSGS", aMessagesDefault.slice(0));		
+	var aMessages = getOrDefault(CHANNEL.name + "_MSGS", aMessagesDefault.slice(0));
 	var aUserCountDefault = [["Timestamp", "Usercount"]];
 	var aUserCount = getOrDefault(CHANNEL.name + "_USERCOUNT", aUserCountDefault.slice(0));
 	var downloadMsg = false;
-	var downloadUsers = false;		
+	var downloadUsers = false;
 
 	$('<button id="dl-logs" class="btn btn-sm btn-default">DL Logs</button>')
 		.insertAfter($("#emotelistbtn"))
@@ -2458,7 +2458,7 @@ if (CLIENT.name === "Happy") {
 					aMessages = aMessagesDefault.slice(0);
 					setOpt(CHANNEL.name + "_MSGS", aMessages);
 				}
-			}, 3000);			
+			}, 3000);
 			setTimeout(function () {
 				if (downloadUsers) {
 					downloadUsers = false;
@@ -2471,11 +2471,11 @@ if (CLIENT.name === "Happy") {
 		});
 
 	socket.on("chatMsg", chatSocket);
-	
+
 	function removeChatSocket() {
 		socket.off("chatMsg", chatSocket);
 	}
-	
+
 	function chatSocket(data) {
 		if (data.meta.addClass !== "server-whisper") {
 			aMessages[aMessages.length] = [data.time, data.username, data.msg.replace(/<a.+href="(.+?)".+<\/a>/gi, "$1")];
@@ -2496,11 +2496,11 @@ if (CLIENT.name === "Happy") {
 	}
 
 	socket.on("usercount", userSocket);
-	
+
 	function removeUserSocket() {
 		socket.off("usercount", userSocket);
 	}
-	
+
 	function userSocket(data) {
 		aUserCount[aUserCount.length] = [new Date().getTime(), data];
 		if (aUserCount.length > userLength || downloadUsers) {
@@ -2517,7 +2517,7 @@ if (CLIENT.name === "Happy") {
 			setOpt(CHANNEL.name + "_USERCOUNT", aUserCount);
 		}
 	}
-	
+
 	function exportToCsv(filename, rows) {
 		var processRow = function (row) {
 			var finalVal = '';
@@ -2638,7 +2638,7 @@ class CustomTextTriggers {
       { spawn_rate: 250, spawn_limit: 35 },
     ];
     CustomTextTriggers.max_erabe_time_limit_s = 20;
-    CustomTextTriggers.max_erabe_spawn_count = 15;
+		CustomTextTriggers.max_erabe_spawn_count = 15;
 
     // Maximum snowing time of 20 minutes
     CustomTextTriggers.max_snow_time_limit_s = 1200;
@@ -2648,7 +2648,9 @@ class CustomTextTriggers {
       erabe: false,
 
       snow_level_info: CustomTextTriggers.snow_levels[0],
-      snow_timeout: null,
+			snow_timeout: null,
+
+			erabe_timeout: null,
     };
 
     CustomTextTriggers.element_container = document.createElement('div');
@@ -2670,7 +2672,16 @@ class CustomTextTriggers {
       }
       return did_kick;
     } catch (e) { return false; }
-  }
+	}
+
+	static isFirstMod(username) {
+		const first_mod_element = $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').first();
+		if (!first_mod_element) {
+			return false;
+		}
+
+		return first_mod_element.text() === username;
+	}
 
   static appendChild(element) {
     CustomTextTriggers.element_container.appendChild(element);
@@ -2741,7 +2752,7 @@ class CustomTextTriggers {
     element.addEventListener('animationiteration', fn);
 
     CustomTextTriggers.appendChild(element);
-  }
+	}
   static getRandomErabePosition(div_width, div_height, buffer) {
     const width = window.innerWidth - div_width;
     const height = window.innerHeight - div_height;
@@ -2760,7 +2771,7 @@ class CustomTextTriggers {
 
     if (CustomTextTriggers.kickIfNotMod(msg_data.username)) {
       return;
-    }
+		}
 
     const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
     if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
@@ -2825,23 +2836,34 @@ class CustomTextTriggers {
     }
     CustomTextTriggers.state.erabe = true;
 
-    try {
-      socket.emit('newPoll', {
-        title:"ERABE",
-        opts:['1', '2'],
-        obscured:false,
-      });
-    } catch (e) {}
+		if (CustomTextTriggers.isFirstMod(msg_data)) {
+			try {
+				socket.emit('newPoll', {
+					title:"ERABE",
+					opts:['1', '2'],
+					obscured:false,
+				});
+			} catch (e) {}
+		}
 
     for (let i = 0; i < spawn_count; i++) {
       CustomTextTriggers.createErabe();
     }
 
-    // Remove all erabes after the timeout
-    setTimeout(CustomTextTriggers.disableErabe, time_limit_s * 1000);
+		// Remove all erabes after the timeout
+		if (CustomTextTriggers.state.erabe_timeout) {
+			clearTimeout(CustomTextTriggers.state.erabe_timeout);
+		}
+		CustomTextTriggers.state.erabe_timeout =
+				setTimeout(CustomTextTriggers.disableErabe, time_limit_s * 1000);
   }
   static disableErabe() {
-    CustomTextTriggers.state.erabe = false;
+		CustomTextTriggers.state.erabe = false;
+		if (CustomTextTriggers.state.erabe_timeout) {
+			clearTimeout(CustomTextTriggers.state.erabe_timeout);
+		}
+
+		CustomTextTriggers.state.erabe_timeout = null;
   }
 
   static handleCommandSnow(level = 1, time_limit_s = 1200) {
