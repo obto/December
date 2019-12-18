@@ -2878,7 +2878,7 @@ class CustomTextTriggers {
         CustomTextTriggers.createSnowflake();
       }
 
-      setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
+      //setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
     };
     setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
   }
