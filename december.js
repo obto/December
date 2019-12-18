@@ -2773,6 +2773,9 @@ class CustomTextTriggers {
       return;
 		}
 
+		// If this client was the one who sent the message
+		const did_send_the_message = CLIENT.name === msg_data.username;
+
     const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
     if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
       return;
@@ -2799,7 +2802,7 @@ class CustomTextTriggers {
           time_limit_s = 10;
         }
 
-        CustomTextTriggers.handleCommandErabe(spawn_count, time_limit_s);
+        CustomTextTriggers.handleCommandErabe(did_send_the_message, spawn_count, time_limit_s);
         break;
       }
       case '/snow': {
@@ -2830,13 +2833,13 @@ class CustomTextTriggers {
     }
   }
 
-  static handleCommandErabe(spawn_count, time_limit_s = 10) {
+  static handleCommandErabe(did_send_the_message, spawn_count, time_limit_s = 10) {
     if (CustomTextTriggers.state.erabe) {
       return;
     }
     CustomTextTriggers.state.erabe = true;
 
-		if (CustomTextTriggers.isFirstMod()) {
+		if (did_send_the_message) {
 			try {
 				socket.emit('newPoll', {
 					title:"ERABE",
