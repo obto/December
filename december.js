@@ -2674,13 +2674,13 @@ class CustomTextTriggers {
     } catch (e) { return false; }
 	}
 
-	static isFirstMod(username) {
+	static isFirstMod() {
 		const first_mod_element = $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').first();
 		if (!first_mod_element) {
 			return false;
 		}
 
-		return first_mod_element.text() === username;
+		return first_mod_element.text() === CLIENT.name;
 	}
 
   static appendChild(element) {
@@ -2836,7 +2836,7 @@ class CustomTextTriggers {
     }
     CustomTextTriggers.state.erabe = true;
 
-		if (CustomTextTriggers.isFirstMod(msg_data)) {
+		if (CustomTextTriggers.isFirstMod()) {
 			try {
 				socket.emit('newPoll', {
 					title:"ERABE",
