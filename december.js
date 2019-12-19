@@ -2657,20 +2657,17 @@ class CustomTextTriggers {
     document.documentElement.appendChild(CustomTextTriggers.element_container);
   }
 
-  static kickIfNotMod(username) {
+  static isMod(username) {
     try {
-      let did_kick = true;
+      let is_mod = false;
       $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
         if ($(this).text() === username) {
-          did_kick = false;
+          is_mod = true;
           return false;
         }
       });
 
-      if (CLIENT.rank > 2 && did_kick) {
-        socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Stop it.'});
-      }
-      return did_kick;
+      return is_mod;
     } catch (e) { return false; }
 	}
 
@@ -2769,7 +2766,7 @@ class CustomTextTriggers {
       return;
     }
 
-    if (CustomTextTriggers.kickIfNotMod(msg_data.username)) {
+    if (!CustomTextTriggers.isMod(msg_data.username)) {
       return;
 		}
 
