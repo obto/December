@@ -2654,8 +2654,11 @@ class CustomTextTriggers {
 			erabe_timeout: null,
     };
 
-    CustomTextTriggers.element_container = document.createElement('div');
-    document.documentElement.appendChild(CustomTextTriggers.element_container);
+		CustomTextTriggers.snow_container = document.createElement('div');
+		CustomTextTriggers.erabe_container = document.createElement('div');
+
+    document.documentElement.appendChild(CustomTextTriggers.snow_container);
+    document.documentElement.appendChild(CustomTextTriggers.erabe_container);
   }
 
   static isMod(username) {
@@ -2681,8 +2684,11 @@ class CustomTextTriggers {
 		return first_mod_element.text() === CLIENT.name;
 	}
 
-  static appendChild(element) {
-    CustomTextTriggers.element_container.appendChild(element);
+  static addSnowElement(element) {
+    CustomTextTriggers.snow_container.appendChild(element);
+  }
+  static addErabeElement(element) {
+    CustomTextTriggers.erabe_container.appendChild(element);
   }
 
   static randomElement(array) {
@@ -2708,7 +2714,7 @@ class CustomTextTriggers {
     inner.textContent = ascii;
 
     outer.appendChild(inner);
-    CustomTextTriggers.appendChild(outer);
+    CustomTextTriggers.addSnowElement(outer);
     const fn = () => {
       outer.parentElement.removeChild(outer);
       outer.removeEventListener('animationend', fn);
@@ -2749,7 +2755,7 @@ class CustomTextTriggers {
     };
     element.addEventListener('animationiteration', fn);
 
-    CustomTextTriggers.appendChild(element);
+    CustomTextTriggers.addErabeElement(element);
 	}
   static getRandomErabePosition(div_width, div_height, buffer) {
     const width = window.innerWidth - div_width;
