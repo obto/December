@@ -164,16 +164,16 @@ color:rgba(0,0,0,0);
 span.glyphicon.glyphicon-time {
 	color: rgba(255,0,0,0);
 	background: url("http://i.imgur.com/gf7rfYv.png");}
-	
+
 /* Snow and ERABE effect below */
 
-.c-effect_erabe {
+.c-effect_erabe, .c-effect_erabe:nth-child(3n-2) {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   font-size: 64px;
   text-transform: uppercase;
   color: darkred;
-  position: absolute;
+  position: fixed;
 
   padding: 8px 16px;
   width: 420px;
@@ -190,11 +190,18 @@ span.glyphicon.glyphicon-time {
   transform: scale(1);
   animation: effect__pulse-blue 750ms ease-out infinite;
 }
-.c-effect_erabe:nth-child(even) {
+.c-effect_erabe:nth-child(3n-1) {
   background-image: repeating-linear-gradient(
       45deg, hsl(313, 88%, 84%), hsl(313, 88%, 84%) 15px,
       hsl(312, 83%, 68%) 10px, hsl(312, 83%, 68%) 20px);
   border-color: hsl(306, 91%, 60%);
+  animation-name: effect__pulse-pink;
+}
+.c-effect_erabe:nth-child(3n) {
+  background-image: repeating-linear-gradient(
+      45deg, hsl(85, 24%, 63%), hsl(85, 24%, 63%) 15px,
+      hsl(83, 31%, 54%) 10px, hsl(83, 31%, 54%) 20px);
+  border-color: hsl(82, 47%, 41%);
   animation-name: effect__pulse-pink;
 }
 @media (max-width: 600px) {
@@ -233,6 +240,22 @@ span.glyphicon.glyphicon-time {
   100% {
     transform: scale(0.80);
     box-shadow: 0 0 0 0 hsla(306, 91%, 60%, 0);
+  }
+}
+@keyframes effect__pulse-green {
+  0% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(82, 47%, 41%, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px hsla(82, 47%, 41%, 0);
+  }
+
+  100% {
+    transform: scale(0.80);
+    box-shadow: 0 0 0 0 hsla(82, 47%, 41%, 0);
   }
 }
 

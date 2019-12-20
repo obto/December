@@ -2119,7 +2119,7 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0)) {
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2634,11 +2634,12 @@ class CustomTextTriggers {
     CustomTextTriggers.snow_levels = [
       { spawn_rate: 250, spawn_limit: 10 },
       { spawn_rate: 250, spawn_limit: 20 },
-      { spawn_rate: 250, spawn_limit: 30 },
-      { spawn_rate: 250, spawn_limit: 35 },
+      { spawn_rate: 150, spawn_limit: 20 },
+      { spawn_rate: 75, spawn_limit: 20 },
     ];
     CustomTextTriggers.max_erabe_time_limit_s = 20;
 		CustomTextTriggers.max_erabe_spawn_count = 15;
+		CustomTextTriggers.max_erabe_poll_options = 10;
 
     // Maximum snowing time of 20 minutes
     CustomTextTriggers.max_snow_time_limit_s = 1200;
@@ -2793,13 +2794,24 @@ class CustomTextTriggers {
         }
 
         let time_limit_s = parseInt(message_parts[2] || '10', 10);
-        if (isNaN(time_limit_s) ||
-            time_limit_s < 1 ||
-            time_limit_s > CustomTextTriggers.max_erabe_time_limit_s) {
+        if (isNaN(time_limit_s) || time_limit_s < 1) {
           time_limit_s = 10;
+				} else if (time_limit_s > CustomTextTriggers.max_erabe_time_limit_s) {
+          time_limit_s = CustomTextTriggers.max_erabe_time_limit_s;
         }
 
-        CustomTextTriggers.handleCommandErabe(did_send_the_message, spawn_count, time_limit_s);
+				let total_erabe_poll_options = parseInt(message_parts[3] || '2', 10);
+				if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
+					total_erabe_poll_options = 2;
+				} else if (total_erabe_poll_options > CustomTextTriggers.max_erabe_poll_options) {
+					total_erabe_poll_options = CustomTextTriggers.max_erabe_poll_options;
+				}
+
+        CustomTextTriggers.handleCommandErabe(
+						did_send_the_message,
+						spawn_count,
+						time_limit_s,
+						total_erabe_poll_options);
         break;
       }
       case '/snow': {
@@ -2823,14 +2835,18 @@ class CustomTextTriggers {
         CustomTextTriggers.handleCommandSnow(level, time_limit_s);
         break;
       }
-      case '/disable_all':
+      case '/effects_off':
         CustomTextTriggers.disableErabe();
         CustomTextTriggers.disableSnow();
         break;
     }
   }
 
-  static handleCommandErabe(did_send_the_message, spawn_count, time_limit_s = 10) {
+  static handleCommandErabe(
+			did_send_the_message,
+			spawn_count,
+			time_limit_s = 10,
+			total_erabe_poll_options = 2) {
     if (CustomTextTriggers.state.erabe) {
       return;
     }
@@ -2838,9 +2854,14 @@ class CustomTextTriggers {
 
 		if (did_send_the_message) {
 			try {
+				const options = [];
+				for (let i = 1; i <= total_erabe_poll_options; i++) {
+					options.push(i.toString());
+				}
+
 				socket.emit('newPoll', {
 					title:"ERABE",
-					opts:['1', '2'],
+					opts: options,
 					obscured:false,
 				});
 			} catch (e) {}
