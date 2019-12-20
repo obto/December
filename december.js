@@ -2119,7 +2119,7 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0)) {
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2835,7 +2835,7 @@ class CustomTextTriggers {
         CustomTextTriggers.handleCommandSnow(level, time_limit_s);
         break;
       }
-      case '/disable_all':
+      case '/effects_off':
         CustomTextTriggers.disableErabe();
         CustomTextTriggers.disableSnow();
         break;
