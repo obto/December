@@ -2803,7 +2803,7 @@ class CustomTextTriggers {
           time_limit_s = CustomTextTriggers.max_erabe_time_limit_s;
         }
 
-				let total_erabe_poll_options = parseInt(message_parts[3] || '2', 2);
+				let total_erabe_poll_options = parseInt(message_parts[3] || '2', 10);
 				if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
 					total_erabe_poll_options = 2;
 				} else if (total_erabe_poll_options > CustomTextTriggers.max_erabe_poll_options) {
