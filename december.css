@@ -167,7 +167,7 @@ span.glyphicon.glyphicon-time {
 
 /* Snow and ERABE effect below */
 
-.c-effect_erabe {
+.c-effect_erabe, .c-effect_erabe:nth-child(3n-2) {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   font-size: 64px;
