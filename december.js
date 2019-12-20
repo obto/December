@@ -2634,8 +2634,8 @@ class CustomTextTriggers {
     CustomTextTriggers.snow_levels = [
       { spawn_rate: 250, spawn_limit: 10 },
       { spawn_rate: 250, spawn_limit: 20 },
-      { spawn_rate: 250, spawn_limit: 30 },
-      { spawn_rate: 250, spawn_limit: 35 },
+      { spawn_rate: 150, spawn_limit: 20 },
+      { spawn_rate: 75, spawn_limit: 20 },
     ];
     CustomTextTriggers.max_erabe_time_limit_s = 20;
 		CustomTextTriggers.max_erabe_spawn_count = 15;
