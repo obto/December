@@ -2119,7 +2119,7 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/effects_off') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2641,24 +2641,45 @@ class CustomTextTriggers {
 		CustomTextTriggers.max_erabe_spawn_count = 15;
 		CustomTextTriggers.max_erabe_poll_options = 10;
 
+		CustomTextTriggers.padoru_images = [
+			// Yue
+			'https://cdn.discordapp.com/emojis/655099097237422130.png',
+			// Saber
+			'https://cdn.discordapp.com/emojis/519149153746550785.png',
+		];
+		CustomTextTriggers.padoru_levels = [
+      { spawn_rate: 1000, spawn_limit: 6 },
+      // { spawn_rate: 250, spawn_limit: 20 },
+      // { spawn_rate: 150, spawn_limit: 20 },
+      // { spawn_rate: 75, spawn_limit: 20 },
+		];
+		CustomTextTriggers.padoru_animations = ['type1', 'type2', 'type3', 'type4'];
+
     // Maximum snowing time of 20 minutes
     CustomTextTriggers.max_snow_time_limit_s = 1200;
+    CustomTextTriggers.max_padoru_time_limit_s = 1200;
 
     CustomTextTriggers.state = {
       snow: false,
       erabe: false,
+      padoru: false,
 
       snow_level_info: CustomTextTriggers.snow_levels[0],
 			snow_timeout: null,
+
+			padoru_level_info: CustomTextTriggers.padoru_levels[0],
+			padoru_timeout: null,
 
 			erabe_timeout: null,
     };
 
 		CustomTextTriggers.snow_container = document.createElement('div');
 		CustomTextTriggers.erabe_container = document.createElement('div');
+		CustomTextTriggers.padoru_container = document.createElement('div');
 
     document.documentElement.appendChild(CustomTextTriggers.snow_container);
     document.documentElement.appendChild(CustomTextTriggers.erabe_container);
+    document.documentElement.appendChild(CustomTextTriggers.padoru_container);
   }
 
   static isMod(username) {
@@ -2690,6 +2711,9 @@ class CustomTextTriggers {
   static addErabeElement(element) {
     CustomTextTriggers.erabe_container.appendChild(element);
   }
+  static addPadoruElement(element) {
+    CustomTextTriggers.padoru_container.appendChild(element);
+  }
 
   static randomElement(array) {
     return array[Math.floor(Math.random() * array.length)];
@@ -2715,6 +2739,33 @@ class CustomTextTriggers {
 
     outer.appendChild(inner);
     CustomTextTriggers.addSnowElement(outer);
+    const fn = () => {
+      outer.parentElement.removeChild(outer);
+      outer.removeEventListener('animationend', fn);
+    };
+    outer.addEventListener('animationend', fn);
+  }
+
+	static createPadoru() {
+    if (!CustomTextTriggers.state.padoru) {
+      return;
+    }
+
+    const padoru_image = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_images);
+    const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_animations);
+    const random_percent = (Math.random() * 100).toFixed(4);
+
+    const outer = document.createElement('div');
+    outer.classList.add('c-effect__padoru-outer');
+    outer.style.left = `${random_percent}%`;
+
+    const inner = document.createElement('img');
+    inner.classList.add('c-effect__padoru');
+    inner.classList.add(animation_type);
+    inner.src = padoru_image;
+
+    outer.appendChild(inner);
+    CustomTextTriggers.addPadoruElement(outer);
     const fn = () => {
       outer.parentElement.removeChild(outer);
       outer.removeEventListener('animationend', fn);
@@ -2840,10 +2891,32 @@ class CustomTextTriggers {
 
         CustomTextTriggers.handleCommandSnow(level, time_limit_s);
         break;
+			}
+			case '/padoru': {
+        if (message_parts[1] === 'off') {
+          CustomTextTriggers.disablePadoru();
+          return;
+        }
+
+        let level = parseInt(message_parts[1] || '1', 10);
+        if (isNaN(level) || level < 1) {
+          level = 1;
+        }
+
+        let time_limit_s = parseInt(message_parts[2] || '1200', 10);
+        if (isNaN(time_limit_s) || time_limit_s < 1) {
+          time_limit_s = 10;
+        } else if (time_limit_s > CustomTextTriggers.max_padoru_time_limit_s) {
+          time_limit_s = CustomTextTriggers.max_padoru_time_limit_s;
+        }
+
+        CustomTextTriggers.handleCommandPadoru(level, time_limit_s);
+        break;
       }
       case '/effects_off':
         CustomTextTriggers.disableErabe();
-        CustomTextTriggers.disableSnow();
+				CustomTextTriggers.disableSnow();
+				CustomTextTriggers.disablePadoru();
         break;
     }
   }
@@ -2933,6 +3006,51 @@ class CustomTextTriggers {
   }
   static disableSnow() {
     CustomTextTriggers.state.snow = false;
+	}
+
+	/* -------------------------------------------------------------------------- */
+	/*                            Padoru effect handler                           */
+	/* -------------------------------------------------------------------------- */
+	static handleCommandPadoru(level = 1, time_limit_s = 1200) {
+    // Update the currently used snowing level
+    let level_index = level - 1;
+    if (level_index < 0 || level_index > CustomTextTriggers.padoru_levels.length) {
+      level_index = 0;
+    }
+    CustomTextTriggers.state.padoru_level_info = CustomTextTriggers.padoru_levels[level_index];
+
+    // Disable padoru after the timeout. If there is already one, reset the timer
+    if (CustomTextTriggers.state.padoru_timeout) {
+      clearTimeout(CustomTextTriggers.state.padoru_timeout);
+    }
+    CustomTextTriggers.state.padoru_timeout =
+        setTimeout(CustomTextTriggers.disablePadoru, time_limit_s * 1000);
+
+    // Only start the padoru animation if it is not already started
+    if (CustomTextTriggers.state.padoru) {
+      return;
+    }
+    CustomTextTriggers.state.padoru = true;
+    CustomTextTriggers._runPadoruAnimation();
+  }
+  static _runPadoruAnimation() {
+    const create_fn = () => {
+      if (!CustomTextTriggers.state.padoru) {
+        return;
+      }
+
+      const max_padoru = CustomTextTriggers.state.padoru_level_info.spawn_limit;
+      const total = Math.floor(1 + Math.random() * (max_padoru - 1));
+      for (let i = 0; i < total; i++) {
+        CustomTextTriggers.createPadoru();
+      }
+
+      setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
+    };
+    setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
+  }
+  static disablePadoru() {
+    CustomTextTriggers.state.padoru = false;
   }
 }
 CustomTextTriggers.init();
