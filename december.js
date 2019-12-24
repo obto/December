@@ -2646,6 +2646,10 @@ class CustomTextTriggers {
 			'https://cdn.discordapp.com/emojis/655099097237422130.png',
 			// Saber
 			'https://cdn.discordapp.com/emojis/519149153746550785.png',
+			// Chino
+			'https://cdn.discordapp.com/attachments/375406879553093633/659064801217085498/chino-padoru.png',
+			// Taiga
+			'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
 		];
 		CustomTextTriggers.padoru_levels = [
       { spawn_rate: 1000, spawn_limit: 6 },
