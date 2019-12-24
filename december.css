@@ -291,8 +291,8 @@ span.glyphicon.glyphicon-time {
   100% { transform: translateY(110vw); }
 }
 
-.c-effect__padoru_snow {
-  animation: effect__padoru-spin-shake 4000ms ease-in-out infinite;
+.c-effect__padoru {
+  animation: effect__padoru-spin-shake 4s ease-in-out infinite;
   width: 56px;
   height: 56px;
   z-index: 10000;
@@ -302,7 +302,7 @@ span.glyphicon.glyphicon-time {
 }
 .c-effect__padoru-outer {
   position: fixed;
-  top: -2em;
+  top: -105%;
   left: 0;
   animation: effect__padoru-fall 12s linear forwards;
 }
