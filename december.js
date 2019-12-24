@@ -2756,7 +2756,8 @@ class CustomTextTriggers {
     const random_percent = (Math.random() * 100).toFixed(4);
 
     const outer = document.createElement('div');
-    outer.classList.add('c-effect__padoru-outer');
+		outer.classList.add('c-effect__padoru-outer');
+		outer.classList.add(animation_type);
     outer.style.left = `${random_percent}%`;
 
 		const shake_container = document.createElement('div');
@@ -2764,7 +2765,6 @@ class CustomTextTriggers {
 
     const inner = document.createElement('img');
     inner.classList.add('c-effect__padoru');
-    inner.classList.add(animation_type);
     inner.src = padoru_image;
 
 		shake_container.appendChild(inner);
