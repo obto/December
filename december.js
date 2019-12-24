@@ -2649,7 +2649,7 @@ class CustomTextTriggers {
 		];
 		CustomTextTriggers.padoru_levels = [
       { spawn_rate: 1000, spawn_limit: 6 },
-      // { spawn_rate: 250, spawn_limit: 20 },
+      { spawn_rate: 1000, spawn_limit: 10 },
       // { spawn_rate: 150, spawn_limit: 20 },
       // { spawn_rate: 75, spawn_limit: 20 },
 		];
