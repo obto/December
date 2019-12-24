@@ -2759,12 +2759,16 @@ class CustomTextTriggers {
     outer.classList.add('c-effect__padoru-outer');
     outer.style.left = `${random_percent}%`;
 
+		const shake_container = document.createElement('div');
+    shake_container.classList.add('c-effect__padoru-shake');
+
     const inner = document.createElement('img');
     inner.classList.add('c-effect__padoru');
     inner.classList.add(animation_type);
     inner.src = padoru_image;
 
-    outer.appendChild(inner);
+		shake_container.appendChild(inner);
+    outer.appendChild(shake_container);
     CustomTextTriggers.addPadoruElement(outer);
     const fn = () => {
       outer.parentElement.removeChild(outer);
