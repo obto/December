@@ -2652,6 +2652,8 @@ class CustomTextTriggers {
 			'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
 			// Miku
 			'https://cdn.discordapp.com/attachments/518340427506647042/659073537809711104/miku-padoru.png',
+			// Shizuru
+			'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
 		];
 		CustomTextTriggers.padoru_levels = [
       { spawn_rate: 1000, spawn_limit: 6 },
