@@ -290,3 +290,39 @@ span.glyphicon.glyphicon-time {
   0% { transform: translateY(0); }
   100% { transform: translateY(110vw); }
 }
+
+.c-effect__padoru {
+  animation: effect__padoru-spin 2s linear infinite;
+  transform-origin: center;
+  width: 56px;
+  height: 56px;
+  z-index: 10000;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.80;
+}
+.c-effect__padoru-shake {
+  animation: effect__padoru-shake 4s ease-in-out infinite;
+}
+.c-effect__padoru-outer {
+  position: fixed;
+  top: -56px;
+  left: 0;
+  animation: effect__padoru-fall 12s linear forwards;
+}
+.type2 .c-effect__padoru-shake { animation-duration: 6s; }
+.type3 .c-effect__padoru-shake { animation-duration: 7s; }
+.type4 .c-effect__padoru-shake { animation-duration: 8s; }
+
+@keyframes effect__padoru-spin {
+  100% { transform: rotateY(360deg); }
+}
+@keyframes effect__padoru-fall {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(calc(100vh + 56px)); }
+}
+@keyframes effect__padoru-shake {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(40px); }
+  100% { transform: translateX(0); }
+}
