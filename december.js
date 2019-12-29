@@ -129,6 +129,7 @@ var SHOWING = false;
 var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override Cytube's default limit
 // The interval of time (in ms) to flush messages to the screen
 var NICO_NICO_MESSAGE_QUEUE_TIME = getOrDefault(CHANNEL.name + "_NICO_NICO_MESSAGE_QUEUE_TIME", 100);
+var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1615,12 +1616,12 @@ var playerparent = document.getElementsByClassName("embed-responsive-16by9")[0];
 var playerwrap = document.getElementById("videowrap");
 
 function getNicoPlayerDimensions() {
-  var NICOW = playerparent.offsetWidth;
-  return {
-    NICOH: playerwrap.offsetHeight * 3 / 4,
-    NICOW: NICOW,
-    NICOS: NICOW * .2
-  };
+	var NICOW = playerparent.offsetWidth;
+	return {
+		NICOH: playerwrap.offsetHeight * 3 / 4,
+		NICOW: NICOW,
+		NICOS: NICOW * .2
+	};
 }
 
 nicobtn = $('<button id="nicobtn" class="btn btn-sm ' + (!NICORIPOFF ? 'btn-danger' : 'btn-success') + '" title="Lel penis xd">Nico Nico Nii~</button>')
@@ -1647,16 +1648,16 @@ if (NICORIPOFF) {
 // Flush messages to the screen every 100ms
 var nicoNicoMessageDataQueue = [];
 function addNicoNicoMessageDataToQueue(data) {
-  nicoNicoMessageDataQueue.push(data);
+	nicoNicoMessageDataQueue.push(data);
 }
 
 function handleNicoNicoMessageDataQueue() {
-  if (nicoNicoMessageDataQueue.length > 0) {
-    nicoChineseRipOff(nicoNicoMessageDataQueue);
-    nicoNicoMessageDataQueue = [];
-  }
+	if (nicoNicoMessageDataQueue.length > 0) {
+		nicoChineseRipOff(nicoNicoMessageDataQueue);
+		nicoNicoMessageDataQueue = [];
+	}
 
-  setTimeout(handleNicoNicoMessageDataQueue, NICO_NICO_MESSAGE_QUEUE_TIME);
+	setTimeout(handleNicoNicoMessageDataQueue, NICO_NICO_MESSAGE_QUEUE_TIME);
 }
 handleNicoNicoMessageDataQueue();
 
@@ -1667,320 +1668,320 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // BEGIN OBTO EDIT
 
 var NicoNicoComment = function () {
-  function NicoNicoComment(commentContainerElement) {
-    _classCallCheck(this, NicoNicoComment);
+	function NicoNicoComment(commentContainerElement) {
+		_classCallCheck(this, NicoNicoComment);
 
-    this._commentContainerElement = commentContainerElement;
-    this._boundAnimationEndHandler = this._handleAnimationEnd.bind(this);
-    this._isActive = false;
-    this._activateTimeout = undefined;
-    this._animationTimeout = undefined;
-    this._lastActive = Date.now();
+		this._commentContainerElement = commentContainerElement;
+		this._boundAnimationEndHandler = this._handleAnimationEnd.bind(this);
+		this._isActive = false;
+		this._activateTimeout = undefined;
+		this._animationTimeout = undefined;
+		this._lastActive = Date.now();
 
-    this._initDomElement();
-  }
+		this._initDomElement();
+	}
 
-  _createClass(NicoNicoComment, [{
-    key: 'activate',
-    value: function activate(message, className, cssText) {
-      var _this = this;
-      var contains_image = message.indexOf("<img ") > -1;
+	_createClass(NicoNicoComment, [{
+		key: 'activate',
+		value: function activate(message, className, cssText) {
+			var _this = this;
+			var contains_image = message.indexOf("<img ") > -1;
 
-      if (!this.domElement) {
-        this._initDomElement();
-      }
+			if (!this.domElement) {
+				this._initDomElement();
+			}
 
-      if (this._activateTimeout) {
-        clearTimeout(this._activateTimeout);
-        this._activateTimeout = undefined;
-      }
+			if (this._activateTimeout) {
+				clearTimeout(this._activateTimeout);
+				this._activateTimeout = undefined;
+			}
 
-      // Trigger next frame to ensure the animation plays again
-      this.reset();
-      this._activateTimeout = setTimeout(function () {
-        _this.domElement.innerHTML = '<span>' + message + '</span>';
-        _this.domElement.className = className;
-        _this.domElement.style.cssText = cssText;
-        _this._isActive = true;
+			// Trigger next frame to ensure the animation plays again
+			this.reset();
+			this._activateTimeout = setTimeout(function () {
+				_this.domElement.innerHTML = '<span>' + message + '</span>';
+				_this.domElement.className = className;
+				_this.domElement.style.cssText = cssText;
+				_this._isActive = true;
 
-        var nicoDimensions = getNicoPlayerDimensions();
-        var imgpx = 0;
-        if (contains_image) {
-          imgpx = nicoDimensions.NICOW * .55;
-        }
+				var nicoDimensions = getNicoPlayerDimensions();
+				var imgpx = 0;
+				if (contains_image) {
+					imgpx = nicoDimensions.NICOW * .55;
+				}
 
-        // Manually calculate animation time
-        var timeout = (nicoDimensions.NICOW + _this.domElement.firstChild.offsetWidth + imgpx) / nicoDimensions.NICOS * 1000;
-        _this._animationTimeout = setTimeout(function() {
-          _this.reset();
-        }, timeout);
-      }, 0);
-    }
-  }, {
-    key: 'reset',
-    value: function reset() {
-      if (!this._isActive || !this.domElement) {
-        return;
-      }
+				// Manually calculate animation time
+				var timeout = (nicoDimensions.NICOW + _this.domElement.firstChild.offsetWidth + imgpx) / nicoDimensions.NICOS * 1000;
+				_this._animationTimeout = setTimeout(function() {
+					_this.reset();
+				}, timeout);
+			}, 0);
+		}
+	}, {
+		key: 'reset',
+		value: function reset() {
+			if (!this._isActive || !this.domElement) {
+				return;
+			}
 
-      this.domElement.innerHTML = '';
-      this.domElement.className = '';
-      this.domElement.style.cssText = '';
-      this._isActive = false;
-      this._lastActive = Date.now();
-    }
-  }, {
-    key: 'cleanup',
-    value: function cleanup() {
-      this._removeListeners();
-      this._commentContainerElement.removeChild(this.domElement);
-    }
-  }, {
-    key: 'isActive',
-    value: function isActive() {
-      return this._isActive;
-    }
-  }, {
-    key: 'getLastActiveTime',
-    value: function getLastActiveTime() {
-      if (this._isActive) {
-        return Date.now();
-      }
+			this.domElement.innerHTML = '';
+			this.domElement.className = '';
+			this.domElement.style.cssText = '';
+			this._isActive = false;
+			this._lastActive = Date.now();
+		}
+	}, {
+		key: 'cleanup',
+		value: function cleanup() {
+			this._removeListeners();
+			this._commentContainerElement.removeChild(this.domElement);
+		}
+	}, {
+		key: 'isActive',
+		value: function isActive() {
+			return this._isActive;
+		}
+	}, {
+		key: 'getLastActiveTime',
+		value: function getLastActiveTime() {
+			if (this._isActive) {
+				return Date.now();
+			}
 
-      return this._lastActive;
-    }
-  }, {
-    key: '_handleAnimationEnd',
-    value: function _handleAnimationEnd() {
-      this.reset();
-    }
-  }, {
-    key: '_initDomElement',
-    value: function _initDomElement() {
-      if (this.domElement) {
-        return;
-      }
+			return this._lastActive;
+		}
+	}, {
+		key: '_handleAnimationEnd',
+		value: function _handleAnimationEnd() {
+			this.reset();
+		}
+	}, {
+		key: '_initDomElement',
+		value: function _initDomElement() {
+			if (this.domElement) {
+				return;
+			}
 
-      this._removeListeners();
-      this.domElement = document.createElement('div');
-      this._commentContainerElement.appendChild(this.domElement);
-      this._addListeners();
-    }
-  }, {
-    key: '_addListeners',
-    value: function _addListeners() {
-      if (!this.domElement) {
-        return;
-      }
+			this._removeListeners();
+			this.domElement = document.createElement('div');
+			this._commentContainerElement.appendChild(this.domElement);
+			this._addListeners();
+		}
+	}, {
+		key: '_addListeners',
+		value: function _addListeners() {
+			if (!this.domElement) {
+				return;
+			}
 
-      this.domElement.addEventListener(NicoNicoComment.ANIMATION_END_EVENT, this._boundAnimationEndHandler);
-    }
-  }, {
-    key: '_removeListeners',
-    value: function _removeListeners() {
-      if (this._animationTimeout) {
-        clearTimeout(this._animationTimeout);
-        this._animationTimeout = undefined;
-      }
+			this.domElement.addEventListener(NicoNicoComment.ANIMATION_END_EVENT, this._boundAnimationEndHandler);
+		}
+	}, {
+		key: '_removeListeners',
+		value: function _removeListeners() {
+			if (this._animationTimeout) {
+				clearTimeout(this._animationTimeout);
+				this._animationTimeout = undefined;
+			}
 
-      if (!this.domElement) {
-        return;
-      }
+			if (!this.domElement) {
+				return;
+			}
 
-      this.domElement.removeEventListener(NicoNicoComment.ANIMATION_END_EVENT, this._boundAnimationEndHandler);
-    }
-  }]);
+			this.domElement.removeEventListener(NicoNicoComment.ANIMATION_END_EVENT, this._boundAnimationEndHandler);
+		}
+	}]);
 
   return NicoNicoComment;
 }();
 
 NicoNicoComment.ANIMATION_END_EVENT = function () {
-  var element = document.createElement('fakeelement');
-  var transitions = {
-    "animation": "animationend",
-    "OAnimation": "oAnimationEnd",
-    "MozAnimation": "animationend",
-    "WebkitAnimation": "webkitAnimationEnd"
-  };
+	var element = document.createElement('fakeelement');
+	var transitions = {
+		"animation": "animationend",
+		"OAnimation": "oAnimationEnd",
+		"MozAnimation": "animationend",
+		"WebkitAnimation": "webkitAnimationEnd"
+	};
 
-  for (var t in transitions) {
-    if (element.style[t] !== undefined) {
-      return transitions[t];
-    }
-  }
+	for (var t in transitions) {
+		if (element.style[t] !== undefined) {
+			return transitions[t];
+		}
+	}
 }();
 
 var NicoNicoCommentManager = function () {
-  function NicoNicoCommentManager(commentContainerElement) {
-    _classCallCheck(this, NicoNicoCommentManager);
+	function NicoNicoCommentManager(commentContainerElement) {
+		_classCallCheck(this, NicoNicoCommentManager);
 
-    this._commentContainerElement = commentContainerElement;
-    this._comments = [];
-    for (var i = 0; i < NicoNicoCommentManager.MINIMUM_COMMENTS_ALLOCATED; i++) {
-      this._comments.push(new NicoNicoComment(this._commentContainerElement));
-    }
+		this._commentContainerElement = commentContainerElement;
+		this._comments = [];
+		for (var i = 0; i < NicoNicoCommentManager.MINIMUM_COMMENTS_ALLOCATED; i++) {
+			this._comments.push(new NicoNicoComment(this._commentContainerElement));
+		}
 
-    this._cleanupUnusedCommentsTimeout();
-  }
+		this._cleanupUnusedCommentsTimeout();
+	}
 
-  _createClass(NicoNicoCommentManager, [{
-    key: 'cleanup',
-    value: function cleanup() {
-      for (var i = 0; i < this._comments; i++) {
-        var comment = this._comments[i];
-        comment.cleanup();
-      }
-      this._comments = [];
+	_createClass(NicoNicoCommentManager, [{
+		key: 'cleanup',
+		value: function cleanup() {
+			for (var i = 0; i < this._comments; i++) {
+				var comment = this._comments[i];
+				comment.cleanup();
+			}
+			this._comments = [];
 
-      if (this._cleanupTimeout) {
-        clearTimeout(this._cleanupTimeout);
-        this._cleanupTimeout = undefined;
-      }
-    }
-  }, {
-    key: 'addComments',
-    value: function addComments(messageConfigArr) {
-      var messageIndex = 0;
-      for (var i = 0; i < this._comments.length && messageIndex < messageConfigArr.length; i++) {
-        var comment = this._comments[i];
-        if (comment.isActive()) {
-          continue;
-        }
+			if (this._cleanupTimeout) {
+				clearTimeout(this._cleanupTimeout);
+				this._cleanupTimeout = undefined;
+			}
+		}
+	}, {
+		key: 'addComments',
+		value: function addComments(messageConfigArr) {
+			var messageIndex = 0;
+			for (var i = 0; i < this._comments.length && messageIndex < messageConfigArr.length; i++) {
+				var comment = this._comments[i];
+				if (comment.isActive()) {
+					continue;
+				}
 
-        var config = messageConfigArr[messageIndex];
-        comment.activate(config.message, config.className, config.cssText);
-        messageIndex++;
-      }
+				var config = messageConfigArr[messageIndex];
+				comment.activate(config.message, config.className, config.cssText);
+				messageIndex++;
+			}
 
-      // Add any remaining messages by creating more comments
-      for (; messageIndex < messageConfigArr.length; messageIndex++) {
-        var config = messageConfigArr[messageIndex];
-        var comment = new NicoNicoComment(this._commentContainerElement);
-        comment.activate(config.message, config.className, config.cssText);
-        this._comments.push(comment);
-      }
-    }
-  }, {
-    key: '_cleanupUnusedCommentsTimeout',
-    value: function _cleanupUnusedCommentsTimeout() {
-      var _this2 = this;
+			// Add any remaining messages by creating more comments
+			for (; messageIndex < messageConfigArr.length; messageIndex++) {
+				var config = messageConfigArr[messageIndex];
+				var comment = new NicoNicoComment(this._commentContainerElement);
+				comment.activate(config.message, config.className, config.cssText);
+				this._comments.push(comment);
+			}
+		}
+	}, {
+		key: '_cleanupUnusedCommentsTimeout',
+		value: function _cleanupUnusedCommentsTimeout() {
+			var _this2 = this;
 
-      this._cleanupUnusedComments();
-      this._cleanupTimeout = setTimeout(function () {
-        _this2._cleanupUnusedCommentsTimeout();
-      }, NicoNicoCommentManager.TARGET_EVICTION_TIME_MS);
-    }
-  }, {
-    key: '_cleanupUnusedComments',
-    value: function _cleanupUnusedComments() {
-      var currentTime = Date.now();
-      for (var i = NicoNicoCommentManager.MINIMUM_COMMENTS_ALLOCATED; i < this._comments.length; i++) {
-        var comment = this._comments[i];
-        if (currentTime - comment.getLastActiveTime() >= NicoNicoCommentManager.TARGET_EVICTION_TIME_MS) {
-          // Mark for deletion
-          comment.cleanup();
-          this._comments[i] = null;
-        }
-      }
+			this._cleanupUnusedComments();
+			this._cleanupTimeout = setTimeout(function () {
+				_this2._cleanupUnusedCommentsTimeout();
+			}, NicoNicoCommentManager.TARGET_EVICTION_TIME_MS);
+		}
+	}, {
+		key: '_cleanupUnusedComments',
+		value: function _cleanupUnusedComments() {
+			var currentTime = Date.now();
+			for (var i = NicoNicoCommentManager.MINIMUM_COMMENTS_ALLOCATED; i < this._comments.length; i++) {
+				var comment = this._comments[i];
+				if (currentTime - comment.getLastActiveTime() >= NicoNicoCommentManager.TARGET_EVICTION_TIME_MS) {
+					// Mark for deletion
+					comment.cleanup();
+					this._comments[i] = null;
+				}
+			}
 
-      this._comments = this._comments.filter(function (a) {
-        return !!a;
-      });
-    }
-  }]);
+			this._comments = this._comments.filter(function (a) {
+			return !!a;
+			});
+		}
+	}]);
 
-  return NicoNicoCommentManager;
+	return NicoNicoCommentManager;
 }();
 NicoNicoCommentManager.MINIMUM_COMMENTS_ALLOCATED = 50;
 NicoNicoCommentManager.TARGET_EVICTION_TIME_MS = 2 * 1000;
 
 var nicoNicoCommentManager;
 function nicoChineseRipOff(dataArray) {
-  if (!NICORIPOFF) {
-    return;
-  }
+	if (!NICORIPOFF) {
+		return;
+	}
 
-  // Filter out bad messages
-  dataArray = dataArray.filter(function(data) {
-    SHADOWED = data.username === CLIENT.name && data.meta.shadow ? true : false;
-    if (data.username === "[server]" || data.meta.shadow && !SHADOWED) {
-      return false;
-    }
+	// Filter out bad messages
+	dataArray = dataArray.filter(function(data) {
+		SHADOWED = data.username === CLIENT.name && data.meta.shadow ? true : false;
+		if (data.username === "[server]" || data.meta.shadow && !SHADOWED) {
+			return false;
+		}
 
-    return true;
-  });
+		return true;
+	});
 
-  if (dataArray.length <= 0) {
-    return;
-  }
+	if (dataArray.length <= 0) {
+		return;
+	}
 
-  if (!nicoNicoCommentManager) {
-    nicoNicoCommentManager = new NicoNicoCommentManager(playerparent);
-  }
+	if (!nicoNicoCommentManager) {
+		nicoNicoCommentManager = new NicoNicoCommentManager(playerparent);
+	}
 
-  var nicoDimensions = getNicoPlayerDimensions();
-  var builtComments = [];
-  var bundledCommentHtmlArray = [];
-  var bundledCommentMarginTop = 0;
-  function flushBundledComment() {
-    builtComments.push({
-      message: bundledCommentHtmlArray.join(''),
-      className: 'text-marquee',
-      cssText: 'top: ' + bundledCommentMarginTop + 'px;'
-    });
-    bundledCommentHtmlArray = [];
-  }
+	var nicoDimensions = getNicoPlayerDimensions();
+	var builtComments = [];
+	var bundledCommentHtmlArray = [];
+	var bundledCommentMarginTop = 0;
+	function flushBundledComment() {
+		builtComments.push({
+			message: bundledCommentHtmlArray.join(''),
+			className: 'text-marquee',
+			cssText: 'top: ' + bundledCommentMarginTop + 'px;'
+		});
+		bundledCommentHtmlArray = [];
+	}
 
-  for (var i = 0; i < dataArray.length; i++) {
-    var data = dataArray[i];
+	for (var i = 0; i < dataArray.length; i++) {
+		var data = dataArray[i];
 
-    var className = "";
-    if (data.meta.addClass === "shout") {
-      className += " shout";
-    }
+		var className = "";
+		if (data.meta.addClass === "shout") {
+			className += " shout";
+		}
 
-    var is_image = data.msg.indexOf("<img ") > -1;
-    if (!is_image && bundledCommentHtmlArray.length === 0) {
-      // Margin is only needed for the first div
-      bundledCommentMarginTop = marqueeOffset;
-    }
+		var is_image = data.msg.indexOf("<img ") > -1;
+		if (!is_image && bundledCommentHtmlArray.length === 0) {
+		// Margin is only needed for the first div
+			bundledCommentMarginTop = marqueeOffset;
+		}
 
-    if (is_image) {
-      // Don't add images to the bundled comment html
-      builtComments.push({
-        message: data.msg,
-        className: 'text-marquee ' + className,
-        cssText: 'top: ' + (nicoDimensions.NICOH / 5) + 'px;'
-      });
-    } else {
-      bundledCommentHtmlArray.push(
-          '<span class="' + className + '">' +
-            data.msg +
-            '<br>' +
-          '</span>');
-    }
+		if (is_image) {
+			// Don't add images to the bundled comment html
+			builtComments.push({
+				message: data.msg,
+				className: 'text-marquee ' + className,
+				cssText: 'top: ' + (nicoDimensions.NICOH / 5) + 'px;'
+			});
+		} else {
+		bundledCommentHtmlArray.push(
+			'<span class="' + className + '">' +
+			data.msg +
+			'<br>' +
+			'</span>');
+		}
 
-    marqueeOffset += marqueeheight;
-    if (marqueeOffset > nicoDimensions.NICOH) {
-      // Push the built element
-      flushBundledComment();
-      bundledCommentHtmlArray = [];
-      marqueeOffset = 0;
-    }
-  }
+		marqueeOffset += marqueeheight;
+		if (marqueeOffset > nicoDimensions.NICOH) {
+			// Push the built element
+			flushBundledComment();
+			bundledCommentHtmlArray = [];
+			marqueeOffset = 0;
+		}
+	}
 
-  // Add the remaining bundled comment
-  if (bundledCommentHtmlArray.length > 0) {
-    flushBundledComment();
-  }
-  nicoNicoCommentManager.addComments(builtComments);
+	// Add the remaining bundled comment
+	if (bundledCommentHtmlArray.length > 0) {
+		flushBundledComment();
+	}
+	nicoNicoCommentManager.addComments(builtComments);
 }
 
 function removeNicoText() {
-  if (nicoNicoCommentManager) {
-    nicoNicoCommentManager.cleanup();
-    nicoNicoCommentManager = undefined;
-  }
+	if (nicoNicoCommentManager) {
+		nicoNicoCommentManager.cleanup();
+		nicoNicoCommentManager = undefined;
+	}
 }
 
 // END OBTO EDIT
@@ -2105,9 +2106,24 @@ function countdown (element) {
 }
 updateMOTDCountdown();
 
-socket.on('setMotd', updateMOTDCountdown);
-
 var prevLength = 0;
+var MOTD = "";
+var effectClasses = "";
+var classElementTester = new RegExp('<ul.+id="effects".+<\/ul>',"g");
+var defaultEffectsHTMLFront = '<ul id="effects" class="';
+var defaultEffectsHTMLBack = '" style="display:hidden"></ul>';
+
+socket.on('setMotd', function (data) {
+	updateMOTDCountdown();
+	if (CLIENT.rank > 2) {
+		MOTD = data;
+		try {
+			effectClasses = document.getElementById("effects").className;
+		} catch {
+			effectClasses = "off";
+		}
+	}
+});
 
 function formatChatMessage(data, last) {
 	if (data.msg.indexOf('/reload') === 0 && data.msg.indexOf('<') < 10) {
@@ -2119,15 +2135,53 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/effects_off') === 0)) {
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
 				FOUNDMOD = true;
 			}
 		});
+
 		if (!FOUNDMOD) {
 			socket.emit("chatMsg", {msg:'/kick ' + data.username + ' :)'});
+		} else {
+			if (effectClasses === "off") {
+				effectClasses = "";
+			}
+			var msg_parts = data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
+			var msg_command = msg_parts[0].substring(1,msg_parts[0].length);
+			var msg_time = 0;
+			
+			if (msg_command === "effects_off" || msg_parts[1] === "off") {
+				effectClasses = "off";
+			} else {
+				if (msg_command === "erabe") {
+					msg_time = parseInt(msg_parts[2] || '10', 10)
+				} else {
+					msg_time = parseInt(msg_parts[2] || '1200', 10)
+				}
+				console.log("Before: " + effectClasses);
+				effectClasses = effectClasses.replace(new RegExp(msg_command + "\\d+","g"),"");
+				console.log("After: " + effectClasses);
+				var currentStyle = msg_command + (new Date().getTime() + msg_time*1000);
+				effectClasses += " " + currentStyle;
+				setTimeout(function () {
+					socket.emit("setMotd", {
+						motd: MOTD.replace(currentStyle,"").replace(/class="\s+"|class=""/g,'class="off"')
+					});
+				}, msg_time*1000);
+			}
+			
+			effectClasses = effectClasses.trim();
+			if (!classElementTester.test(MOTD)) {
+				MOTD = defaultEffectsHTMLFront + effectClasses + defaultEffectsHTMLBack + MOTD;
+			} else {
+				MOTD = MOTD.replace(classElementTester, defaultEffectsHTMLFront + effectClasses + defaultEffectsHTMLBack);
+			}
+			socket.emit("setMotd", {
+				motd: MOTD
+			});
 		}
 	}
 	if (data.msg.length <= prevLength+1 && data.msg.length >= prevLength-1 && data.username !== CLIENT.name) {
@@ -2621,87 +2675,128 @@ $("#mediaurl").on("paste", function() {
 	}, 250);
 });
 
-$("#addfromurl, #searchcontrol, #customembed, #playlistmanager").css({"background-color":"#272B30 !important"})
+effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+	.appendTo("#chatwrap")
+	.on("click", function() {
+		EFFECTSOFF = !EFFECTSOFF;
+		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
+		if (EFFECTSOFF) {
+			this.className = "btn btn-sm btn-danger";
+			this.text = "Effects OFF";        
+			CustomTextTriggers.disableErabe();
+			CustomTextTriggers.disableSnow();
+			CustomTextTriggers.disablePadoru();
+		} else {
+			this.className = "btn btn-sm btn-default";
+			this.text = "Effects ON";
+		}
+	});
+
+function checkEffects() {
+	if (!EFFECTSOFF) {
+		var effectClassList = document.getElementById("effects").className.trim().split(" ");
+		var effectTime = 0;
+		for (var i = 0; i < effectClassList.length; i++) {
+			effectTime = parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10)- new Date().getTime();
+			if (effectTime > 0) {
+				if (effectClassList[i].indexOf("snow") === 0) {
+					CustomTextTriggers.handleCommandSnow(1, effectTime);
+					setTimeout(CustomTextTriggers.disableSnow, effectTime);
+				} else if (effectClassList[i].indexOf("padoru") === 0) {
+					CustomTextTriggers.handleCommandPadoru(1, effectTime);
+					setTimeout(CustomTextTriggers.disablePadoru, effectTime);
+				} else if (effectClassList[i].indexOf("erabe") === 0) {
+					CustomTextTriggers.handleCommandErabe(
+						false,
+						2,
+						effectTime/1000,
+						2);
+					setTimeout(CustomTextTriggers.disableErabe, effectTime);
+				}
+			}
+		}
+	}
+}
 
 class CustomTextTriggers {
-  static init() {
-    if (CustomTextTriggers.has_init) {
-      return;
-    }
-    CustomTextTriggers.has_init = false;
-    CustomTextTriggers.snowflake_templates = ['❅', '❆'];
-    CustomTextTriggers.snowflake_animations = ['type1', 'type2', 'type3', 'type4'];
-    CustomTextTriggers.snow_levels = [
-      { spawn_rate: 250, spawn_limit: 10 },
-      { spawn_rate: 250, spawn_limit: 20 },
-      { spawn_rate: 150, spawn_limit: 20 },
-      { spawn_rate: 75, spawn_limit: 20 },
-    ];
-    CustomTextTriggers.max_erabe_time_limit_s = 20;
+	static init() {
+		if (CustomTextTriggers.has_init) {
+			return;
+		}
+		CustomTextTriggers.has_init = false;
+		CustomTextTriggers.snowflake_templates = ['❅', '❆'];
+		CustomTextTriggers.snowflake_animations = ['type1', 'type2', 'type3', 'type4'];
+		CustomTextTriggers.snow_levels = [
+			{ spawn_rate: 250, spawn_limit: 10 },
+			{ spawn_rate: 250, spawn_limit: 20 },
+			{ spawn_rate: 150, spawn_limit: 20 },
+			{ spawn_rate: 75, spawn_limit: 20 },
+		];
+		CustomTextTriggers.max_erabe_time_limit_s = 20;
 		CustomTextTriggers.max_erabe_spawn_count = 15;
 		CustomTextTriggers.max_erabe_poll_options = 10;
 
 		CustomTextTriggers.padoru_images = [
 			// Yue
-			'https://cdn.discordapp.com/emojis/655099097237422130.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/yue-padoru.png',
 			// Saber
-			'https://cdn.discordapp.com/emojis/519149153746550785.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/saber-padoru.png',
 			// Chino
-			'https://cdn.discordapp.com/attachments/375406879553093633/659064801217085498/chino-padoru.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/chino-padoru.png',
 			// Taiga
-			'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/taiga-padoru.png',
 			// Miku
-			'https://cdn.discordapp.com/attachments/518340427506647042/659073537809711104/miku-padoru.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/miku-padoru.png',
 			// Shizuru
-			'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
+			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/shizu_padoru.png',
 		];
 		CustomTextTriggers.padoru_levels = [
-      { spawn_rate: 1000, spawn_limit: 6 },
-      { spawn_rate: 1000, spawn_limit: 10 },
-      // { spawn_rate: 150, spawn_limit: 20 },
-      // { spawn_rate: 75, spawn_limit: 20 },
+			{ spawn_rate: 1000, spawn_limit: 6 },
+			{ spawn_rate: 1000, spawn_limit: 10 },
+			// { spawn_rate: 150, spawn_limit: 20 },
+			// { spawn_rate: 75, spawn_limit: 20 },
 		];
 		CustomTextTriggers.padoru_animations = ['type1', 'type2', 'type3', 'type4'];
 
-    // Maximum snowing time of 20 minutes
-    CustomTextTriggers.max_snow_time_limit_s = 1200;
-    CustomTextTriggers.max_padoru_time_limit_s = 1200;
+		// Maximum snowing time of 20 minutes
+		CustomTextTriggers.max_snow_time_limit_s = 1200;
+		CustomTextTriggers.max_padoru_time_limit_s = 1200;
 
-    CustomTextTriggers.state = {
-      snow: false,
-      erabe: false,
-      padoru: false,
+		CustomTextTriggers.state = {
+			snow: false,
+			erabe: false,
+			padoru: false,
 
-      snow_level_info: CustomTextTriggers.snow_levels[0],
+			snow_level_info: CustomTextTriggers.snow_levels[0],
 			snow_timeout: null,
 
 			padoru_level_info: CustomTextTriggers.padoru_levels[0],
 			padoru_timeout: null,
 
 			erabe_timeout: null,
-    };
+		};
 
 		CustomTextTriggers.snow_container = document.createElement('div');
 		CustomTextTriggers.erabe_container = document.createElement('div');
 		CustomTextTriggers.padoru_container = document.createElement('div');
 
-    document.documentElement.appendChild(CustomTextTriggers.snow_container);
-    document.documentElement.appendChild(CustomTextTriggers.erabe_container);
-    document.documentElement.appendChild(CustomTextTriggers.padoru_container);
-  }
+		document.documentElement.appendChild(CustomTextTriggers.snow_container);
+		document.documentElement.appendChild(CustomTextTriggers.erabe_container);
+		document.documentElement.appendChild(CustomTextTriggers.padoru_container);
+	}
 
-  static isMod(username) {
-    try {
-      let is_mod = false;
-      $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
-        if ($(this).text() === username) {
-          is_mod = true;
-          return false;
-        }
-      });
+	static isMod(username) {
+		try {
+			let is_mod = false;
+			$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
+				if ($(this).text() === username) {
+					is_mod = true;
+					return false;
+				}
+			});
 
-      return is_mod;
-    } catch (e) { return false; }
+			return is_mod;
+		} catch (e) { return false; }
 	}
 
 	static isFirstMod() {
@@ -2713,161 +2808,162 @@ class CustomTextTriggers {
 		return first_mod_element.text() === CLIENT.name;
 	}
 
-  static addSnowElement(element) {
-    CustomTextTriggers.snow_container.appendChild(element);
-  }
-  static addErabeElement(element) {
-    CustomTextTriggers.erabe_container.appendChild(element);
-  }
-  static addPadoruElement(element) {
-    CustomTextTriggers.padoru_container.appendChild(element);
-  }
+	static addSnowElement(element) {
+		CustomTextTriggers.snow_container.appendChild(element);
+	}
+	static addErabeElement(element) {
+		CustomTextTriggers.erabe_container.appendChild(element);
+	}
+	static addPadoruElement(element) {
+		CustomTextTriggers.padoru_container.appendChild(element);
+	}
 
-  static randomElement(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
+	static randomElement(array) {
+		return array[Math.floor(Math.random() * array.length)];
+	}
 
-  static createSnowflake() {
-    if (!CustomTextTriggers.state.snow) {
-      return;
-    }
+	static createSnowflake() {
+		if (!CustomTextTriggers.state.snow) {
+			return;
+		}
 
-    const ascii = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_templates);
-    const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_animations);
-    const random_percent = (Math.random() * 100).toFixed(4);
+		const ascii = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_templates);
+		const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_animations);
+		const random_percent = (Math.random() * 100).toFixed(4);
 
-    const outer = document.createElement('div');
-    outer.classList.add('c-effect__snowflake-outer');
-    outer.style.left = `${random_percent}%`;
+		const outer = document.createElement('div');
+		outer.classList.add('c-effect__snowflake-outer');
+		outer.style.left = `${random_percent}%`;
 
-    const inner = document.createElement('div');
-    inner.classList.add('c-effect__snowflake');
-    inner.classList.add(animation_type);
-    inner.textContent = ascii;
+		const inner = document.createElement('div');
+		inner.classList.add('c-effect__snowflake');
+		inner.classList.add(animation_type);
+		inner.textContent = ascii;
 
-    outer.appendChild(inner);
-    CustomTextTriggers.addSnowElement(outer);
-    const fn = () => {
-      outer.parentElement.removeChild(outer);
-      outer.removeEventListener('animationend', fn);
-    };
-    outer.addEventListener('animationend', fn);
-  }
+		outer.appendChild(inner);
+		CustomTextTriggers.addSnowElement(outer);
+		const fn = () => {
+			outer.parentElement.removeChild(outer);
+			outer.removeEventListener('animationend', fn);
+		};
+		outer.addEventListener('animationend', fn);
+	}
 
 	static createPadoru() {
-    if (!CustomTextTriggers.state.padoru) {
-      return;
-    }
+		if (!CustomTextTriggers.state.padoru) {
+			return;
+		}
 
-    const padoru_image = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_images);
-    const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_animations);
-    const random_percent = (Math.random() * 100).toFixed(4);
+		const padoru_image = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_images);
+		const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_animations);
+		const random_percent = (Math.random() * 100).toFixed(4);
 
-    const outer = document.createElement('div');
+		const outer = document.createElement('div');
 		outer.classList.add('c-effect__padoru-outer');
 		outer.classList.add(animation_type);
-    outer.style.left = `${random_percent}%`;
+		outer.style.left = `${random_percent}%`;
 
 		const shake_container = document.createElement('div');
-    shake_container.classList.add('c-effect__padoru-shake');
+		shake_container.classList.add('c-effect__padoru-shake');
 
-    const inner = document.createElement('img');
-    inner.classList.add('c-effect__padoru');
-    inner.src = padoru_image;
+		const inner = document.createElement('img');
+		inner.classList.add('c-effect__padoru');
+		inner.src = padoru_image;
 
 		shake_container.appendChild(inner);
-    outer.appendChild(shake_container);
-    CustomTextTriggers.addPadoruElement(outer);
-    const fn = () => {
-      outer.parentElement.removeChild(outer);
-      outer.removeEventListener('animationend', fn);
-    };
-    outer.addEventListener('animationend', fn);
-  }
-
-  static createErabe() {
-    if (!CustomTextTriggers.state.erabe) {
-      return;
-    }
-
-    // Build the erabe element
-    const element = document.createElement('div');
-    element.classList.add('c-effect_erabe', 'js-effect-erabe');
-    element.textContent = 'erabe';
-
-    // Randomizes the location of the erabe div
-    const randomizePosition = () => {
-      const [x, y] = CustomTextTriggers.getRandomErabePosition(
-          element.offsetWidth,
-          element.offsetHeight,
-          50);
-
-      element.style.left = `${x}px`;
-      element.style.top = `${y}px`;
-    };
-    randomizePosition();
-
-    const fn = () => {
-      if (!CustomTextTriggers.state.erabe) {
-        element.parentElement.removeChild(element);
-        element.removeEventListener('animationiteration', fn);
-        return;
-      }
-
-      randomizePosition();
-    };
-    element.addEventListener('animationiteration', fn);
-
-    CustomTextTriggers.addErabeElement(element);
+		outer.appendChild(shake_container);
+		CustomTextTriggers.addPadoruElement(outer);
+		const fn = () => {
+			outer.parentElement.removeChild(outer);
+			outer.removeEventListener('animationend', fn);
+		};
+		outer.addEventListener('animationend', fn);
 	}
-  static getRandomErabePosition(div_width, div_height, buffer) {
-    const width = window.innerWidth - div_width;
-    const height = window.innerHeight - div_height;
 
-    const random_x = Math.floor(Math.random() * width);
-    const random_y = Math.floor(Math.random() * height);
-    return [random_x, random_y];
-  }
+	static createErabe() {
+		if (!CustomTextTriggers.state.erabe) {
+		  return;
+		}
 
-  /* Command handlers */
-  static handleChatMessage(msg_data) {
-    const is_shadowed = msg_data.username === CLIENT.name && msg_data.meta.shadow;
-    if (msg_data.username === "[server]" || is_shadowed) {
-      return;
-    }
+		// Build the erabe element
+		const element = document.createElement('div');
+		element.classList.add('c-effect_erabe', 'js-effect-erabe');
+		element.textContent = 'erabe';
 
-    if (!CustomTextTriggers.isMod(msg_data.username)) {
-      return;
+		// Randomizes the location of the erabe div
+		const randomizePosition = () => {
+			const [x, y] = CustomTextTriggers.getRandomErabePosition(
+				element.offsetWidth,
+				element.offsetHeight,
+				50);
+
+			element.style.left = `${x}px`;
+			element.style.top = `${y}px`;
+		};
+		randomizePosition();
+
+		const fn = () => {
+			if (!CustomTextTriggers.state.erabe) {
+				element.parentElement.removeChild(element);
+				element.removeEventListener('animationiteration', fn);
+				return;
+			}
+
+			randomizePosition();
+		};
+		element.addEventListener('animationiteration', fn);
+
+		CustomTextTriggers.addErabeElement(element);
+	}
+	
+	static getRandomErabePosition(div_width, div_height, buffer) {
+		const width = window.innerWidth - div_width;
+		const height = window.innerHeight - div_height;
+
+		const random_x = Math.floor(Math.random() * width);
+		const random_y = Math.floor(Math.random() * height);
+		return [random_x, random_y];
+	}
+
+	/* Command handlers */
+	static handleChatMessage(msg_data) {
+		const is_shadowed = msg_data.username === CLIENT.name && msg_data.meta.shadow;
+		if (msg_data.username === "[server]" || is_shadowed || EFFECTSOFF) {
+			return;
+		}
+
+		if (!CustomTextTriggers.isMod(msg_data.username)) {
+			return;
 		}
 
 		// If this client was the one who sent the message
 		const did_send_the_message = CLIENT.name === msg_data.username;
 
-    const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
-    if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
-      return;
-    }
+		const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
+		if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
+			return;
+		}
 
-    switch (message_parts[0]) {
-      case '/erabe': {
-        if (message_parts[1] === 'off') {
-          CustomTextTriggers.disableErabe();
-          return;
-        }
+		switch (message_parts[0]) {
+			case '/erabe': {
+				if (message_parts[1] === 'off') {
+					CustomTextTriggers.disableErabe();
+					return;
+				}
 
-        let spawn_count = parseInt(message_parts[1] || '2', 10);
-        if (isNaN(spawn_count) || spawn_count < 1) {
-          spawn_count = 2;
-        } else if (spawn_count > CustomTextTriggers.max_erabe_spawn_count) {
-          spawn_count = CustomTextTriggers.max_erabe_spawn_count;
-        }
+				let spawn_count = parseInt(message_parts[1] || '2', 10);
+				if (isNaN(spawn_count) || spawn_count < 1) {
+					spawn_count = 2;
+				} else if (spawn_count > CustomTextTriggers.max_erabe_spawn_count) {
+					spawn_count = CustomTextTriggers.max_erabe_spawn_count;
+				}
 
-        let time_limit_s = parseInt(message_parts[2] || '10', 10);
-        if (isNaN(time_limit_s) || time_limit_s < 1) {
-          time_limit_s = 10;
+				let time_limit_s = parseInt(message_parts[2] || '10', 10);
+				if (isNaN(time_limit_s) || time_limit_s < 1) {
+					time_limit_s = 10;
 				} else if (time_limit_s > CustomTextTriggers.max_erabe_time_limit_s) {
-          time_limit_s = CustomTextTriggers.max_erabe_time_limit_s;
-        }
+					time_limit_s = CustomTextTriggers.max_erabe_time_limit_s;
+				}
 
 				let total_erabe_poll_options = parseInt(message_parts[3] || '2', 10);
 				if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
@@ -2876,72 +2972,74 @@ class CustomTextTriggers {
 					total_erabe_poll_options = CustomTextTriggers.max_erabe_poll_options;
 				}
 
-        CustomTextTriggers.handleCommandErabe(
-						did_send_the_message,
-						spawn_count,
-						time_limit_s,
-						total_erabe_poll_options);
-        break;
-      }
-      case '/snow': {
-        if (message_parts[1] === 'off') {
-          CustomTextTriggers.disableSnow();
-          return;
-        }
+				CustomTextTriggers.handleCommandErabe(
+					did_send_the_message,
+					spawn_count,
+					time_limit_s,
+					total_erabe_poll_options);
+				break;
+			}
+			case '/snow': {
+				if (message_parts[1] === 'off') {
+					CustomTextTriggers.disableSnow();
+					return;
+				}
 
-        let level = parseInt(message_parts[1] || '1', 10);
-        if (isNaN(level) || level < 1) {
-          level = 1;
-        }
+				let level = parseInt(message_parts[1] || '1', 10);
+				if (isNaN(level) || level < 1) {
+					level = 1;
+				}
 
-        let time_limit_s = parseInt(message_parts[2] || '1200', 10);
-        if (isNaN(time_limit_s) || time_limit_s < 1) {
-          time_limit_s = 10;
-        } else if (time_limit_s > CustomTextTriggers.max_snow_time_limit_s) {
-          time_limit_s = CustomTextTriggers.max_snow_time_limit_s;
-        }
+				let time_limit_s = parseInt(message_parts[2] || '1200', 10);
+				if (isNaN(time_limit_s) || time_limit_s < 1) {
+					time_limit_s = 10;
+				} else if (time_limit_s > CustomTextTriggers.max_snow_time_limit_s) {
+					time_limit_s = CustomTextTriggers.max_snow_time_limit_s;
+				}
 
-        CustomTextTriggers.handleCommandSnow(level, time_limit_s);
-        break;
+				CustomTextTriggers.handleCommandSnow(level, time_limit_s);
+				break;
 			}
 			case '/padoru': {
-        if (message_parts[1] === 'off') {
-          CustomTextTriggers.disablePadoru();
-          return;
-        }
+				if (message_parts[1] === 'off') {
+					CustomTextTriggers.disablePadoru();
+					return;
+				}
 
-        let level = parseInt(message_parts[1] || '1', 10);
-        if (isNaN(level) || level < 1) {
-          level = 1;
-        }
+				let level = parseInt(message_parts[1] || '1', 10);
+				if (isNaN(level) || level < 1) {
+					level = 1;
+				}
 
-        let time_limit_s = parseInt(message_parts[2] || '1200', 10);
-        if (isNaN(time_limit_s) || time_limit_s < 1) {
-          time_limit_s = 10;
-        } else if (time_limit_s > CustomTextTriggers.max_padoru_time_limit_s) {
-          time_limit_s = CustomTextTriggers.max_padoru_time_limit_s;
-        }
+				let time_limit_s = parseInt(message_parts[2] || '1200', 10);
+				if (isNaN(time_limit_s) || time_limit_s < 1) {
+					time_limit_s = 10;
+				} else if (time_limit_s > CustomTextTriggers.max_padoru_time_limit_s) {
+					time_limit_s = CustomTextTriggers.max_padoru_time_limit_s;
+				}
 
-        CustomTextTriggers.handleCommandPadoru(level, time_limit_s);
-        break;
-      }
-      case '/effects_off':
-        CustomTextTriggers.disableErabe();
+				CustomTextTriggers.handleCommandPadoru(level, time_limit_s);
+				break;
+			}
+			case '/effects_off': {
+				CustomTextTriggers.disableErabe();
 				CustomTextTriggers.disableSnow();
 				CustomTextTriggers.disablePadoru();
-        break;
-    }
-  }
+				break;
+			}
+		}
+	}
 
-  static handleCommandErabe(
-			did_send_the_message,
-			spawn_count,
-			time_limit_s = 10,
-			total_erabe_poll_options = 2) {
-    if (CustomTextTriggers.state.erabe) {
-      return;
-    }
-    CustomTextTriggers.state.erabe = true;
+	static handleCommandErabe(
+		did_send_the_message,
+		spawn_count,
+		time_limit_s = 10,
+		total_erabe_poll_options = 2) {
+			
+		if (CustomTextTriggers.state.erabe) {
+			return;
+		}
+		CustomTextTriggers.state.erabe = true;
 
 		if (did_send_the_message) {
 			try {
@@ -2958,114 +3056,119 @@ class CustomTextTriggers {
 			} catch (e) {}
 		}
 
-    for (let i = 0; i < spawn_count; i++) {
-      CustomTextTriggers.createErabe();
-    }
+		for (let i = 0; i < spawn_count; i++) {
+			CustomTextTriggers.createErabe();
+		}
 
 		// Remove all erabes after the timeout
 		if (CustomTextTriggers.state.erabe_timeout) {
 			clearTimeout(CustomTextTriggers.state.erabe_timeout);
 		}
 		CustomTextTriggers.state.erabe_timeout =
-				setTimeout(CustomTextTriggers.disableErabe, time_limit_s * 1000);
-  }
-  static disableErabe() {
+			setTimeout(CustomTextTriggers.disableErabe, time_limit_s * 1000);
+	}
+	static disableErabe() {
 		CustomTextTriggers.state.erabe = false;
 		if (CustomTextTriggers.state.erabe_timeout) {
 			clearTimeout(CustomTextTriggers.state.erabe_timeout);
 		}
 
 		CustomTextTriggers.state.erabe_timeout = null;
-  }
+	}
 
-  static handleCommandSnow(level = 1, time_limit_s = 1200) {
-    // Update the currently used snowing level
-    let level_index = level - 1;
-    if (level_index < 0 || level_index > CustomTextTriggers.snow_levels.length) {
-      level_index = 0;
-    }
-    CustomTextTriggers.state.snow_level_info = CustomTextTriggers.snow_levels[level_index];
+	static handleCommandSnow(level = 1, time_limit_s = 1200) {
+		// Update the currently used snowing level
+		let level_index = level - 1;
+		if (level_index < 0 || level_index > CustomTextTriggers.snow_levels.length) {
+			level_index = 0;
+		}
+		CustomTextTriggers.state.snow_level_info = CustomTextTriggers.snow_levels[level_index];
 
-    // Disable snow after the timeout. If there is already one, reset the timer
-    if (CustomTextTriggers.state.snow_timeout) {
-      clearTimeout(CustomTextTriggers.state.snow_timeout);
-    }
-    CustomTextTriggers.state.snow_timeout =
-        setTimeout(CustomTextTriggers.disableSnow, time_limit_s * 1000);
+		// Disable snow after the timeout. If there is already one, reset the timer
+		if (CustomTextTriggers.state.snow_timeout) {
+			clearTimeout(CustomTextTriggers.state.snow_timeout);
+		}
+		CustomTextTriggers.state.snow_timeout =
+			setTimeout(CustomTextTriggers.disableSnow, time_limit_s * 1000);
 
-    // Only start the snow animation if it is not already started
-    if (CustomTextTriggers.state.snow) {
-      return;
-    }
-    CustomTextTriggers.state.snow = true;
-    CustomTextTriggers._runSnowAnimation();
-  }
-  static _runSnowAnimation() {
-    const create_fn = () => {
-      if (!CustomTextTriggers.state.snow) {
-        return;
-      }
+		// Only start the snow animation if it is not already started
+		if (CustomTextTriggers.state.snow) {
+			return;
+		}
+		CustomTextTriggers.state.snow = true;
+		CustomTextTriggers._runSnowAnimation();
+	}
+	
+	static _runSnowAnimation() {
+		const create_fn = () => {
+			if (!CustomTextTriggers.state.snow) {
+				return;
+			}
 
-      const max_snowflakes = CustomTextTriggers.state.snow_level_info.spawn_limit;
-      const total = Math.floor(1 + Math.random() * (max_snowflakes - 1));
-      for (let i = 0; i < total; i++) {
-        CustomTextTriggers.createSnowflake();
-      }
+			const max_snowflakes = CustomTextTriggers.state.snow_level_info.spawn_limit;
+			const total = Math.floor(1 + Math.random() * (max_snowflakes - 1));
+			for (let i = 0; i < total; i++) {
+				CustomTextTriggers.createSnowflake();
+			}
 
-      setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
-    };
-    setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
-  }
-  static disableSnow() {
-    CustomTextTriggers.state.snow = false;
+			setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
+		};
+		setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
+	}
+	
+	static disableSnow() {
+		CustomTextTriggers.state.snow = false;
 	}
 
 	/* -------------------------------------------------------------------------- */
 	/*                            Padoru effect handler                           */
 	/* -------------------------------------------------------------------------- */
 	static handleCommandPadoru(level = 1, time_limit_s = 1200) {
-    // Update the currently used snowing level
-    let level_index = level - 1;
-    if (level_index < 0 || level_index > CustomTextTriggers.padoru_levels.length) {
-      level_index = 0;
-    }
-    CustomTextTriggers.state.padoru_level_info = CustomTextTriggers.padoru_levels[level_index];
+		// Update the currently used snowing level
+		let level_index = level - 1;
+		if (level_index < 0 || level_index > CustomTextTriggers.padoru_levels.length) {
+			level_index = 0;
+		}
+		CustomTextTriggers.state.padoru_level_info = CustomTextTriggers.padoru_levels[level_index];
 
-    // Disable padoru after the timeout. If there is already one, reset the timer
-    if (CustomTextTriggers.state.padoru_timeout) {
-      clearTimeout(CustomTextTriggers.state.padoru_timeout);
-    }
-    CustomTextTriggers.state.padoru_timeout =
-        setTimeout(CustomTextTriggers.disablePadoru, time_limit_s * 1000);
+		// Disable padoru after the timeout. If there is already one, reset the timer
+		if (CustomTextTriggers.state.padoru_timeout) {
+			clearTimeout(CustomTextTriggers.state.padoru_timeout);
+		}
+		CustomTextTriggers.state.padoru_timeout =
+			setTimeout(CustomTextTriggers.disablePadoru, time_limit_s * 1000);
 
-    // Only start the padoru animation if it is not already started
-    if (CustomTextTriggers.state.padoru) {
-      return;
-    }
-    CustomTextTriggers.state.padoru = true;
-    CustomTextTriggers._runPadoruAnimation();
-  }
-  static _runPadoruAnimation() {
-    const create_fn = () => {
-      if (!CustomTextTriggers.state.padoru) {
-        return;
-      }
+		// Only start the padoru animation if it is not already started
+		if (CustomTextTriggers.state.padoru) {
+			return;
+		}
+		CustomTextTriggers.state.padoru = true;
+		CustomTextTriggers._runPadoruAnimation();
+	}
+	
+	static _runPadoruAnimation() {
+		const create_fn = () => {
+			if (!CustomTextTriggers.state.padoru) {
+				return;
+			}
 
-      const max_padoru = CustomTextTriggers.state.padoru_level_info.spawn_limit;
-      const total = Math.floor(1 + Math.random() * (max_padoru - 1));
-      for (let i = 0; i < total; i++) {
-        CustomTextTriggers.createPadoru();
-      }
+			const max_padoru = CustomTextTriggers.state.padoru_level_info.spawn_limit;
+			const total = Math.floor(1 + Math.random() * (max_padoru - 1));
+			for (let i = 0; i < total; i++) {
+				CustomTextTriggers.createPadoru();
+			}
 
-      setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
-    };
-    setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
-  }
-  static disablePadoru() {
-    CustomTextTriggers.state.padoru = false;
-  }
+			setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
+		};
+		setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
+	}
+	
+	static disablePadoru() {
+		CustomTextTriggers.state.padoru = false;
+	}
 }
 CustomTextTriggers.init();
+checkEffects();
 
 // This is what turns the whole thing on to be run by chat messages like /erabe
 // TODO: Should we hide this behind a button being enabled? Like niconico is?
