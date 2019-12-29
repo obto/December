@@ -2082,7 +2082,7 @@ function countdown (element) {
 
 		//check if time is reasonable. if not gtfo
 		if (Hour > 23 || Minute > 59) {
-			console.log('countdown error: time is incorrect ' + Hour + ' : ' + Minute + ' : ' + Seconds);
+			console.error('Countdown error: time is incorrect ' + Hour + ' : ' + Minute + ' : ' + Seconds);
 		} else if (isToradora) {
 			$('#countdown').html("It's Time!!!");
 		} else if (Month == 0) {
@@ -2161,9 +2161,7 @@ function formatChatMessage(data, last) {
 				} else {
 					msg_time = parseInt(msg_parts[2] || '1200', 10)
 				}
-				console.log("Before: " + effectClasses);
 				effectClasses = effectClasses.replace(new RegExp(msg_command + "\\d+","g"),"");
-				console.log("After: " + effectClasses);
 				var currentStyle = msg_command + (new Date().getTime() + msg_time*1000);
 				effectClasses += " " + currentStyle;
 				setTimeout(function () {
@@ -2695,7 +2693,6 @@ function checkEffects() {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
 		for (var i = 0; i < effectClassList.length; i++) {
 			var effectTime = (parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10)- new Date().getTime());
-			console.log(parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10));
 			if (effectTime > 0) {
 				if (effectClassList[i].indexOf("snow") === 0) {
 					CustomTextTriggers.handleCommandSnow(1, effectTime/1000);
