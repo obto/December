@@ -13,6 +13,11 @@
 #qualitymenu .header-drop-link:hover {text-decoration:none;color:#fff;background-color:#2a9fd6}
 #leftpane-inner {margin-left:-10px !important;}
 
+.main[class^="col-lg-"], .main[class^="col-md-"] {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
 /*  ----- Admin Font ----- */
 .userlist_item > .userlist_owner,.userlist_item > .userlist_op {font-weight: normal !important; }
 
@@ -47,7 +52,6 @@ Fuck Firefox */
 }
 
 /* ----- Spin ----- */
-
 .spin, .spintext, .spin2 {
     display: inline-block;
     -webkit-transform: translateX(0%);
