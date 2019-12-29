@@ -13,11 +13,6 @@
 #qualitymenu .header-drop-link:hover {text-decoration:none;color:#fff;background-color:#2a9fd6}
 #leftpane-inner {margin-left:-10px !important;}
 
-.main[class^="col-lg-"], .main[class^="col-md-"] {
-  padding-right: 0px;
-  padding-left: 0px;
-}
-
 /*  ----- Admin Font ----- */
 .userlist_item > .userlist_owner,.userlist_item > .userlist_op {font-weight: normal !important; }
 
@@ -52,6 +47,7 @@ Fuck Firefox */
 }
 
 /* ----- Spin ----- */
+
 .spin, .spintext, .spin2 {
     display: inline-block;
     -webkit-transform: translateX(0%);
@@ -240,19 +236,19 @@ footer {padding-bottom:5px}
 }
 
 /*Reddit flair*/
-.username::before{background:url('https://files.catbox.moe/6sr1me.png');}
-.teamtaiga::before{background:url('https://isthisliv.com/_n/taiga.png');}
-.teamami::before{background:url('https://isthisliv.com/_n/ami.png');}
-.teamminori::before{background:url('https://isthisliv.com/_n/minori.png');}
-.teaminko::before{background:url('https://isthisliv.com/_n/inko.png');}
-.teamkitamura::before{background:url('https://isthisliv.com/_n/kitamura.png');}
-.teamkihara::before{background:url('https://isthisliv.com/_n/kihara.png');}
-.teamharuta::before{background:url('https://isthisliv.com/_n/haruta.png');}
-.teamsensei::before{background:url('https://isthisliv.com/_n/sensei.png');}
-.teammom::before{background:url('https://isthisliv.com/_n/mom.png');}
-.teamryuuji::before{background:url('https://isthisliv.com/_n/ryuuji.png');}
+.username::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/tiger.png');}
+.teamtaiga::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/taiga.png');}
+.teamami::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/ami.png');}
+.teamminori::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/minori.png');}
+.teaminko::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/inko.png');}
+.teamkitamura::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/kitamura.png');}
+.teamkihara::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/kihara.png');}
+.teamharuta::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/haruta.png');}
+.teamsensei::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/sensei.png');}
+.teammom::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/mom.png');}
+.teamryuuji::before{background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/ryuuji.png');}
 .chat-msg-_North .username::before {
-background:url('https://isthisliv.com/_n/kagami.ico');
+background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/kagami.ico');
 }
 .username::before{
 	content:"AA";
