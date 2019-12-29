@@ -1954,11 +1954,11 @@ function nicoChineseRipOff(dataArray) {
 				cssText: 'top: ' + (nicoDimensions.NICOH / 5) + 'px;'
 			});
 		} else {
-		bundledCommentHtmlArray.push(
-			'<span class="' + className + '">' +
-			data.msg +
-			'<br>' +
-			'</span>');
+			bundledCommentHtmlArray.push(
+				'<span class="' + className + '">' +
+				data.msg +
+				'<br>' +
+				'</span>');
 		}
 
 		marqueeOffset += marqueeheight;
