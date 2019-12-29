@@ -800,7 +800,7 @@ if (USEROPTS.hidevid) {
 }
 
 //Team Colour
-$('head').append('<script type="text/javascript" src="https://isthisliv.com/_n/colors.js">');
+$('head').append('<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/HappyHub1/December/teamcolor.js">');
 
 // changing initial layout to compact
 $("body").addClass('fluid');
