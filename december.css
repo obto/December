@@ -13,6 +13,10 @@
 #qualitymenu .header-drop-link:hover {text-decoration:none;color:#fff;background-color:#2a9fd6}
 #leftpane-inner {margin-left:-10px !important;}
 
+#addfromurl, #searchcontrol, #customembed, #playlistmanager {
+    background-color: #272B30 !important;
+}
+
 /*  ----- Admin Font ----- */
 .userlist_item > .userlist_owner,.userlist_item > .userlist_op {font-weight: normal !important; }
 
