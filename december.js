@@ -2680,12 +2680,10 @@ effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-da
 	.on("click", function() {
 		EFFECTSOFF = !EFFECTSOFF;
 		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
+		checkEffects();
 		if (EFFECTSOFF) {
 			this.className = "btn btn-sm btn-danger";
 			this.text = "Effects OFF";        
-			CustomTextTriggers.disableErabe();
-			CustomTextTriggers.disableSnow();
-			CustomTextTriggers.disablePadoru();
 		} else {
 			this.className = "btn btn-sm btn-default";
 			this.text = "Effects ON";
@@ -2695,15 +2693,15 @@ effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-da
 function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
-		var effectTime = 0;
 		for (var i = 0; i < effectClassList.length; i++) {
-			effectTime = parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10)- new Date().getTime();
+			var effectTime = (parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10)- new Date().getTime());
+			console.log(parseInt(effectClassList[i].replace("snow","").replace("padoru","").replace("erabe",""),10));
 			if (effectTime > 0) {
 				if (effectClassList[i].indexOf("snow") === 0) {
-					CustomTextTriggers.handleCommandSnow(1, effectTime);
+					CustomTextTriggers.handleCommandSnow(1, effectTime/1000);
 					setTimeout(CustomTextTriggers.disableSnow, effectTime);
 				} else if (effectClassList[i].indexOf("padoru") === 0) {
-					CustomTextTriggers.handleCommandPadoru(1, effectTime);
+					CustomTextTriggers.handleCommandPadoru(1, effectTime/1000);
 					setTimeout(CustomTextTriggers.disablePadoru, effectTime);
 				} else if (effectClassList[i].indexOf("erabe") === 0) {
 					CustomTextTriggers.handleCommandErabe(
@@ -2715,6 +2713,10 @@ function checkEffects() {
 				}
 			}
 		}
+	} else {
+		CustomTextTriggers.disableSnow();
+		CustomTextTriggers.disablePadoru();
+		CustomTextTriggers.disableErabe();
 	}
 }
 
