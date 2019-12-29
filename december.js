@@ -34,7 +34,7 @@ var advertisements = [
 
 var adPercent = 0.1;
 
-var Favicon_URL = 'https://files.catbox.moe/6sr1me.png';
+var Favicon_URL = 'https://cdn.jsdelivr.net/gh/HappyHub1/December/tiger.png';
 
 var ChannelName_Caption = '25 Days of Autism';
 
