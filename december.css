@@ -435,3 +435,88 @@ span.glyphicon.glyphicon-time {
   50% { transform: translateX(40px); }
   100% { transform: translateX(0); }
 }
+
+.c-effect__presents-face {
+    position: fixed;
+    height: 30%;
+    left: 50%;
+    bottom: -30%;
+    z-index: 10000;
+    animation-name: effect__presents-face-move;
+    animation-duration: 10s;
+}
+
+@keyframes effect__presents-face-move {
+    0% { transform: translateY(0);}
+    20% {transform: translateY(-100%);}
+    80% {transform: translateY(-100%);}
+    100% {transform: translateY(0);}
+}
+
+.c-effect__presents-present-fall-type1 {
+    position: fixed;
+    height: 15%;
+    z-index: 10000;
+    animation-name: effect__presents-fall1;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    transform-origin: center;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.80;
+}
+@keyframes effect__presents-fall1 {
+  0% { bottom: 100%; transform: rotate(5deg);}
+  100% { bottom: -30%; transform: rotate(45deg);}
+}
+
+.c-effect__presents-present-fall-type2 {
+    position: fixed;
+    height: 15%;
+    z-index: 10000;
+    animation-name: effect__presents-fall2;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    transform-origin: center;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.80;
+}
+@keyframes effect__presents-fall2 {
+  0% { bottom: 100%; transform: rotate(0deg);}
+  100% { bottom: -30%; transform: rotate(-45deg);}
+}
+
+.c-effect__presents-present-fall-type3 {
+    position: fixed;
+    height: 15%;
+    z-index: 10000;
+    animation-name: effect__presents-fall3;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    transform-origin: center;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.80;
+}
+@keyframes effect__presents-fall3 {
+  0% { bottom: 100%; transform: rotate(45deg);}
+  100% { bottom: -30%; transform: rotate(0deg);}
+}
+.c-effect__presents-present-fall-type4 {
+    position: fixed;
+    height: 15%;
+    z-index: 10000;
+    animation-name: effect__presents-fall4;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    transform-origin: center;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.80;
+}
+@keyframes effect__presents-fall4 {
+  0% { bottom: 100%; transform: rotate(15deg);}
+  100% { bottom: -30%; transform: rotate(-15deg);}
+}
+
