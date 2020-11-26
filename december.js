@@ -3329,14 +3329,19 @@ class CustomTextTriggers {
         // If this client was the one who sent the message
         const did_send_the_message = CLIENT.name === msg_data.username;
 
-        const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
-        if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
+        const message_parts = msg_data.msg.trim().toLowerCase().replace(/\s\s+/igm, ' ').split(' ');
+        if (message_parts.length <= 0 || !message_parts[0]) {
+            return;
+        }
+
+        const [effect_name, ...effect_args] = message_parts;
+        if (command_name[0] !== '/') {
             return;
         }
 
         // Do the command if it exists
         try {
-            CustomTextTriggers.effect_lookup[message_parts[0]].handle(message_parts, [did_send_the_message]);
+            CustomTextTriggers.effect_lookup[effect_name].handle(...effect_args, did_send_the_message);
         } catch (e) {}
     }
 
