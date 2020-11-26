@@ -3283,7 +3283,7 @@ class CustomTextTriggers {
         CustomTextTriggers.effect_lookup['/effects_off'] = {effect: null, handle: CustomTextTriggers.disableEffects};
 
         // testing
-        CustomTextTriggers.effect_lookup['/presents'].handle('', []);
+        //CustomTextTriggers.effect_lookup['/presents'].handle('', []);
         //CustomTextTriggers.effect_lookup['/padoru'].handle('', []);
 
     }
