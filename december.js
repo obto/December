@@ -3274,9 +3274,9 @@ class CustomTextTriggers {
 
         // Setup the effect lookup
         CustomTextTriggers.effect_lookup = {};
-        for (let effectCls of CustomTextTriggers.effects) {
-            effectCls.init();
-            CustomTextTriggers.effect_lookup[effectCls.command] = {effect: effectCls, handle: effectCls.handleCommand};
+        for (let effect_cls of CustomTextTriggers.effects) {
+            effect_cls.init();
+            CustomTextTriggers.effect_lookup[effect_cls.command] = {effect: effect_cls, handle: effect_cls.handleCommand};
         }
 
         // Add non-effect commands here
