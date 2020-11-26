@@ -2788,42 +2788,42 @@ class PresentsEffect {
         if (!PresentsEffect.state.is_on) {
             return;
         }
-        const faceImg = PresentsEffect.state.version.padoru;
+        const face_img = PresentsEffect.state.version.padoru;
 
-        const faceEffect = document.createElement('img')
-        faceEffect.classList.add('c-effect__presents-face');
-        faceEffect.src = faceImg;
-        PresentsEffect.addElement(faceEffect);
+        const face_effect = document.createElement('img')
+        face_effect.classList.add('c-effect__presents-face');
+        face_effect.src = face_img;
+        PresentsEffect.addElement(face_effect);
 
         const fn = () =>{
-            faceEffect.parentElement.removeChild(faceEffect);
-            faceEffect.removeEventListener('animationend', fn);
+            face_effect.parentElement.removeChild(face_effect);
+            face_effect.removeEventListener('animationend', fn);
         }
-        faceEffect.addEventListener('animationend', fn);
+        face_effect.addEventListener('animationend', fn);
     }
 
     static _run_presents_animation() {
-        const create_fn = (isLeft) => {
+        const create_fn = (is_left) => {
             if (!PresentsEffect.state.is_on) {
                 return;
             }
             
-            PresentsEffect._create_present(isLeft);
-            setTimeout(create_fn.bind(null,!isLeft), PresentsEffect.state.level.spawn_rate);
+            PresentsEffect._create_present(is_left);
+            setTimeout(create_fn.bind(null,!is_left), PresentsEffect.state.level.spawn_rate);
         };
         setTimeout(create_fn.bind(null, true), PresentsEffect.state.level.spawn_rate);
     }
-    static _create_present(isLeft){
+    static _create_present(is_left){
         if (!PresentsEffect.state.is_on) {
             return;
         }
         
-        //const presentImg = PresentsEffect.shiz_img; // replace with random
-        const presentImg = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
+        //const present_img = PresentsEffect.shiz_img; // replace with random
+        const present_img = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
         const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
        
         let offset = -500;
-        if (isLeft)     { offset = 10; }
+        if (is_left)     { offset = 10; }
         else            { offset = 55; }
         let random_location = (Math.random() * 35+ offset).toFixed(4);
         
@@ -2831,7 +2831,7 @@ class PresentsEffect {
         inner.classList.add('c-effect__presents-present-fall-'.concat(animation));
         //inner.classList.add(animation);
         inner.style.left = `${random_location}%`; 
-        inner.src = presentImg;
+        inner.src = present_img;
         PresentsEffect.addElement(inner);
         
         const fn = () => {
