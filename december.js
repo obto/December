@@ -2932,7 +2932,7 @@ class PadoruEffect {
             clearTimeout(PadoruEffect.state.timeout);
         }
         PadoruEffect.state.timeout =
-            setTimeout(PadoruEffect.disable, time_limit_s * 1000);
+            setTimeout(PadoruEffect.stop, time_limit_s * 1000);
 
         // Only start the padoru animation if it is not already started
         if (PadoruEffect.state.is_on) {
@@ -2944,7 +2944,7 @@ class PadoruEffect {
 
     static parseMessage (message_parts){
         if (message_parts[1] === 'off') {
-            PadoruEffect.disable();
+            PadoruEffect.stop();
             return;
         }
 
@@ -3071,7 +3071,7 @@ class SnowEffect {
             clearTimeout(SnowEffect.state.timeout);
         }
         SnowEffect.state.timeout =
-            setTimeout(SnowEffect.disable, time_limit_s * 1000);
+            setTimeout(SnowEffect.stop, time_limit_s * 1000);
 
         // Only start the snow animation if it is not already started
         if (SnowEffect.state.is_on) {
@@ -3086,7 +3086,7 @@ class SnowEffect {
 
     static parseMessage(message_parts) {
         if (message_parts[1] === 'off') {
-            SnowEffect.disable();
+            SnowEffect.stop();
             return;
         }
 
@@ -3216,7 +3216,7 @@ class ErabeEffect {
             clearTimeout(ErabeEffect.state.timeout);
         }
         ErabeEffect.state.timeout =
-            setTimeout(ErabeEffect.disable, time_limit_s * 1000);
+            setTimeout(ErabeEffect.stop, time_limit_s * 1000);
     }
     static stop() {
         ErabeEffect.is_on = false;
@@ -3238,7 +3238,7 @@ class ErabeEffect {
     ///////////////////////////////////////////
     static parseMessage(message_parts) {
         if (message_parts[1] === 'off') {
-            CustomTextTriggers.disableErabe();
+            ErabeEffect.stop();
             return;
         }
 
@@ -3335,7 +3335,7 @@ class CustomTextTriggers {
         CustomTextTriggers.effect_lookup.set('/effects_enable', 
                 {effect: null, handle: CustomTextTriggers.enableEffects});
         CustomTextTriggers.effect_lookup.set('/effects_stop', 
-                {effect: null, handle: CustomTextTriggers.disableEffects});
+                {effect: null, handle: CustomTextTriggers.stopEffects});
 
         // testing
         //CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
