@@ -2921,17 +2921,17 @@ class PadoruEffect {
     }
 
     static parseMessage (message_parts){
-        if (message_parts[1] === 'off') {
+        if (message_parts[0] === 'off') {
             PadoruEffect.stop();
             return;
         }
 
-        let level = parseInt(message_parts[1] || '1', 10);
+        let level = parseInt(message_parts[0] || '1', 10);
         if (isNaN(level) || level < 1) {
             level = 1;
         }
 
-        let time_limit_s = parseInt(message_parts[2] || '1200', 10);
+        let time_limit_s = parseInt(message_parts[1] || '1200', 10);
         if (isNaN(time_limit_s) || time_limit_s < 1) {
             time_limit_s = 10;
         } else if (time_limit_s > PadoruEffect.max_time_limit_s) {
@@ -3059,17 +3059,17 @@ class SnowEffect {
     }
 
     static parseMessage(message_parts) {
-        if (message_parts[1] === 'off') {
+        if (message_parts[0] === 'off') {
             SnowEffect.stop();
             return;
         }
 
-        let level = parseInt(message_parts[1] || '1', 10);
+        let level = parseInt(message_parts[0] || '1', 10);
         if (isNaN(level) || level < 1) {
             level = 1;
         }
 
-        let time_limit_s = parseInt(message_parts[2] || '1200', 10);
+        let time_limit_s = parseInt(message_parts[1] || '1200', 10);
         if (isNaN(time_limit_s) || time_limit_s < 1) {
             time_limit_s = 10;
         } else if (time_limit_s > SnowEffect.max_time_limit_s) {
@@ -3207,26 +3207,26 @@ class ErabeEffect {
     // "Private" Static methods
     ///////////////////////////////////////////
     static parseMessage(message_parts) {
-        if (message_parts[1] === 'off') {
+        if (message_parts[0] === 'off') {
             ErabeEffect.stop();
             return;
         }
 
-        let spawn_count = parseInt(message_parts[1] || '2', 10);
+        let spawn_count = parseInt(message_parts[0] || '2', 10);
         if (isNaN(spawn_count) || spawn_count < 1) {
             spawn_count = 2;
         } else if (spawn_count > ErabeEffect.max_spawn_count) {
             spawn_count = ErabeEffect.max_spawn_count;
         }
 
-        let time_limit_s = parseInt(message_parts[2] || '10', 10);
+        let time_limit_s = parseInt(message_parts[1] || '10', 10);
         if (isNaN(time_limit_s) || time_limit_s < 1) {
             time_limit_s = 10;
         } else if (time_limit_s > ErabeEffect.max_time_limit_s) {
             time_limit_s = ErabeEffect.max_time_limit_s;
         }
 
-        let total_erabe_poll_options = parseInt(message_parts[3] || '2', 10);
+        let total_erabe_poll_options = parseInt(message_parts[2] || '2', 10);
         if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
             total_erabe_poll_options = 2;
         } else if (total_erabe_poll_options > ErabeEffect.max_poll_options) {
