@@ -3273,18 +3273,19 @@ class CustomTextTriggers {
         CustomTextTriggers.has_init = false;
 
         // Setup the effect lookup
-        CustomTextTriggers.effect_lookup = {};
+        CustomTextTriggers.effect_lookup = new Map();
         for (let effect_cls of CustomTextTriggers.effects) {
             effect_cls.init();
-            CustomTextTriggers.effect_lookup[effect_cls.command] = {effect: effect_cls, handle: effect_cls.handleCommand};
+            CustomTextTriggers.effect_lookup.set(effect_cls.command, 
+                    {effect: effect_cls, handle: effect_cls.handleCommand});
         }
 
         // Add non-effect commands here
-        CustomTextTriggers.effect_lookup['/effects_off'] = {effect: null, handle: CustomTextTriggers.disableEffects};
+        CustomTextTriggers.effect_lookup.set('/effects_off', 
+                {effect: null, handle: CustomTextTriggers.disableEffects});
 
         // testing
-        //CustomTextTriggers.effect_lookup['/presents'].handle('', []);
-        //CustomTextTriggers.effect_lookup['/padoru'].handle('', []);
+        CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
 
     }
 
@@ -3341,15 +3342,13 @@ class CustomTextTriggers {
 
         // Do the command if it exists
         try {
-            CustomTextTriggers.effect_lookup[effect_name].handle(...effect_args, did_send_the_message);
+            CustomTextTriggers.effect_lookup.get(effect_name).handle(...effect_args, did_send_the_message);
         } catch (e) {}
     }
 
     static disableEffects() {
-        for (let effect in CustomTextTriggers.effect_lookup) {
-            try {
-                CustomTextTriggers.effect_lookup[effect].disable();
-            } catch (e) {}
+        for (let effect of CustomTextTriggers.effects) {
+            effect.disable()
         }
     }
 
