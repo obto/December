@@ -2689,7 +2689,7 @@ effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-da
 		}
 	});
 
-function checkEffects() {
+/*function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
 		for (var i = 0; i < effectClassList.length; i++) {
@@ -2716,7 +2716,7 @@ function checkEffects() {
 		CustomTextTriggers.disablePadoru();
 		CustomTextTriggers.disableErabe();
 	}
-}
+}*/
 
 class PresentsEffect {
     static command = '/presents';
