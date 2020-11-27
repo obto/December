@@ -2675,7 +2675,8 @@ $("#mediaurl").on("paste", function() {
 });
 
 
-/*function checkEffects() {
+/* I commented this out as I dont think its needed anymore. But wasn't sure so I didn't completely delete it
+ function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
 		for (var i = 0; i < effectClassList.length; i++) {
@@ -2758,10 +2759,6 @@ class PresentsEffect {
     }
 
     static handleCommand(message_parts, otherArgs) {
-        
-        if (!PresentsEffect.state.enabled) {
-            return
-        }
 
         // No parse, right now just one version
         // TODO: add different H levels and loli options
@@ -2772,7 +2769,7 @@ class PresentsEffect {
         }
         PresentsEffect.state.timeout =
             setTimeout(PresentsEffect.stop, PresentsEffect.presents_duration_s * 1000);
-        
+
         // Only start the padoru animation if it is not already started
         if (PresentsEffect.state.is_on) {
             return;
@@ -2807,33 +2804,33 @@ class PresentsEffect {
             if (!PresentsEffect.state.is_on) {
                 return;
             }
-            
+
             PresentsEffect._create_present(is_left);
             setTimeout(create_fn.bind(null,!is_left), PresentsEffect.state.level.spawn_rate);
         };
         setTimeout(create_fn.bind(null, true), PresentsEffect.state.level.spawn_rate);
     }
     static _create_present(is_left){
-        if (!PresentsEffect.state.is_on) {
+        if (!PresentsEffect.state.is_on || !PresentsEffect.state.enabled) {
             return;
         }
-        
+
         //const present_img = PresentsEffect.shiz_img; // replace with random
         const present_img = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
         const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
-       
+
         let offset = -500;
         if (is_left)     { offset = 10; }
         else            { offset = 55; }
         let random_location = (Math.random() * 35+ offset).toFixed(4);
-        
+
         const inner = document.createElement('img')
         inner.classList.add('c-effect__presents-present-fall-'.concat(animation));
         //inner.classList.add(animation);
         inner.style.left = `${random_location}%`; 
         inner.src = present_img;
         PresentsEffect.addElement(inner);
-        
+
         const fn = () => {
             inner.parentElement.removeChild(inner);
             inner.removeEventListener('animationend', fn);
@@ -2900,9 +2897,6 @@ class PadoruEffect {
     }
 
     static handleCommand(message_parts, otherArgs) { // for compatibility
-        if (!PadoruEffect.state.enabled) {
-            return;
-        }
 
         let [level, time_limit_s] = PadoruEffect.parseMessage(message_parts)
 
@@ -2952,7 +2946,7 @@ class PadoruEffect {
     // "Timer" Static methods
     ///////////////////////////////////////////
     static createPadoru() {
-        if (!PadoruEffect.state.is_on) {
+        if (!PadoruEffect.state.enabled || !PadoruEffect.state.is_on) {
             return;
         }
 
@@ -3040,9 +3034,6 @@ class SnowEffect {
         SnowEffect.state.enabled = true;
     }
     static handleCommand(message_parts, otherArgs) { // other args is for compatability
-        if (!SnowEffect.state.enabled) {
-            return;
-        }
         let [level, time_limit_s] = SnowEffect.parseMessage(message_parts);
 
         // Update the currently used snowing level
@@ -3096,7 +3087,7 @@ class SnowEffect {
     // "Timer" Static methods
     ///////////////////////////////////////////
     static createSnowflake() {
-        if (!SnowEffect.state.is_on) {
+        if (!SnowEffect.state.is_on || !SnowEffect.state.enabled) {
             return;
         }
 
@@ -3166,17 +3157,14 @@ class ErabeEffect {
         ErabeEffect.container.appendChild(element);
     }
     static handleCommand(message_parts, did_send_the_message){
-        if (!ErabeEffect.state.enabled) {
-            return;
-        }
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
             ErabeEffect.parseMessage(message_parts);
 
-        if (ErabeEffect.is_on) {
+        if (ErabeEffect.state.is_on) {
             return;
         }
-        ErabeEffect.is_on = true;
+        ErabeEffect.state.is_on = true;
 
         if (did_send_the_message) {
             try {
@@ -3205,7 +3193,7 @@ class ErabeEffect {
             setTimeout(ErabeEffect.stop, time_limit_s * 1000);
     }
     static stop() {
-        ErabeEffect.is_on = false;
+        ErabeEffect.state.is_on = false;
         if (ErabeEffect.state.timeout) {
             clearTimeout(ErabeEffect.state.timeout);
         }
@@ -3251,7 +3239,7 @@ class ErabeEffect {
         return [spawn_count, time_limit_s, total_erabe_poll_options];
     }
     static createErabe() {
-        if (!ErabeEffect.is_on) {
+        if (!ErabeEffect.state.enabled || !ErabeEffect.state.is_on) {
             return;
         }
 
@@ -3273,7 +3261,7 @@ class ErabeEffect {
         randomizePosition();
 
         const fn = () => {
-            if (!ErabeEffect.is_on) {
+            if (!ErabeEffect.state.is_on) {
                 element.parentElement.removeChild(element);
                 element.removeEventListener('animationiteration', fn);
                 return;
@@ -3311,17 +3299,17 @@ class CustomTextTriggers {
         for (let effect_cls of CustomTextTriggers.effects) {
             effect_cls.init();
             CustomTextTriggers.effect_lookup.set(effect_cls.command, 
-                    {effect: effect_cls, handle: effect_cls.handleCommand});
+                {effect: effect_cls, handle: effect_cls.handleCommand});
         }
 
         // TODO make this "/effects arg" with some kind of handler?
         // Add non-effect commands here
         CustomTextTriggers.effect_lookup.set('/effects_disable', 
-                {effect: null, handle: CustomTextTriggers.disableEffects});
+            {effect: null, handle: CustomTextTriggers.disableEffects});
         CustomTextTriggers.effect_lookup.set('/effects_enable', 
-                {effect: null, handle: CustomTextTriggers.enableEffects});
+            {effect: null, handle: CustomTextTriggers.enableEffects});
         CustomTextTriggers.effect_lookup.set('/effects_stop', 
-                {effect: null, handle: CustomTextTriggers.stopEffects});
+            {effect: null, handle: CustomTextTriggers.stopEffects});
 
         // testing
         //CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
@@ -3396,7 +3384,7 @@ class CustomTextTriggers {
             effect.enable()
         }
     }
-    
+
     static stopEffects() {
         for (let effect of CustomTextTriggers.effects) {
             effect.stop()
@@ -3410,21 +3398,21 @@ class CustomTextTriggers {
 CustomTextTriggers.init();
 
 effectsbtn = $('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
-	.appendTo("#chatwrap")
-	.on("click", function() {
-		EFFECTSOFF = !EFFECTSOFF;
-		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
-		//checkEffects();
-		if (EFFECTSOFF) {
-			this.className = "btn btn-sm btn-danger";
-			this.text = "Effects OFF";
-                        CustomTextTriggers.disableEffects();
-		} else {
-			this.className = "btn btn-sm btn-default";
-			this.text = "Effects ON";
-                        CustomTextTriggers.enableEffects();
-		}
-	});
+    .appendTo("#chatwrap")
+    .on("click", function() {
+        EFFECTSOFF = !EFFECTSOFF;
+        setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
+        if (EFFECTSOFF) {
+            this.className = "btn btn-sm btn-danger";
+            this.text = "Effects OFF";
+            CustomTextTriggers.disableEffects();
+        } else {
+            this.className = "btn btn-sm btn-default";
+            this.text = "Effects ON";
+
+            CustomTextTriggers.enableEffects();
+        }
+    });
 
 //checkEffects();
 
