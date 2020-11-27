@@ -3422,7 +3422,7 @@ class CustomTextTriggers {
 
 
 CustomTextTriggers.init();
-checkEffects();
+//checkEffects();
 
 // This is what turns the whole thing on to be run by chat messages like /erabe
 // TODO: Should we hide this behind a button being enabled? Like niconico is?
