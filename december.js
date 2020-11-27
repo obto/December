@@ -2745,6 +2745,7 @@ class PresentsEffect {
     static init() {
         PresentsEffect.state = {
             is_on: false,
+            enabled: true,
             timeout: null,
             level: PresentsEffect.levels[0],
             version: PresentsEffect.versions['normal'],
@@ -2754,6 +2755,15 @@ class PresentsEffect {
     }
 
     static disable() {
+        PresentsEffect.stop();
+        PresentsEffect.state.enabled = false;
+    }
+
+    static enable() {
+        PresentsEffect.state.enabled = true;
+    }
+
+    static stop() {
         PresentsEffect.state.is_on = false;
     }
 
@@ -2763,6 +2773,10 @@ class PresentsEffect {
 
     static handleCommand(message_parts, otherArgs) {
         
+        if (!PresentsEffect.state.enabled) {
+            return
+        }
+
         // No parse, right now just one version
         // TODO: add different H levels and loli options
 
@@ -2771,7 +2785,7 @@ class PresentsEffect {
             clearTimeout(PresentsEffect.state.timeout);
         }
         PresentsEffect.state.timeout =
-            setTimeout(PresentsEffect.disable, PresentsEffect.presents_duration_s * 1000);
+            setTimeout(PresentsEffect.stop, PresentsEffect.presents_duration_s * 1000);
         
         // Only start the padoru animation if it is not already started
         if (PresentsEffect.state.is_on) {
@@ -2873,6 +2887,7 @@ class PadoruEffect {
     static init() {
         PadoruEffect.state = {
             is_on: false,
+            enabled: true,
             level_info: PadoruEffect.levels[0],
             timeout: null,
         };
@@ -2880,15 +2895,28 @@ class PadoruEffect {
         document.documentElement.appendChild(PadoruEffect.container);
     }
 
-    static disable() {
+    static stop() {
         PadoruEffect.state.is_on = false;
     }
+
+    static disable() {
+        PadoruEffect.stop()
+        PadoruEffect.state.enabled = false;
+    }
+
+    static enable() {
+        PadoruEffect.state.enabled = true;
+    }
+
 
     static addElement(element) {
         PadoruEffect.container.appendChild(element);
     }
 
     static handleCommand(message_parts, otherArgs) { // for compatibility
+        if (!PadoruEffect.state.enabled) {
+            return;
+        }
 
         let [level, time_limit_s] = PadoruEffect.parseMessage(message_parts)
 
@@ -2998,7 +3026,7 @@ class SnowEffect {
         { spawn_rate: 250, spawn_limit: 10 },
         { spawn_rate: 250, spawn_limit: 20 },
         { spawn_rate: 150, spawn_limit: 20 },
-        { spawn_rate: 75, spawn_limit: 20 },
+        { spawn_rate: 75, spawn_limdddddddddit: 20 },
     ];
     static max_time_limit_s = 1200;
 
@@ -3008,17 +3036,27 @@ class SnowEffect {
     static init() {
         SnowEffect.state = {
             is_on: false,
+            enabled: true,
             level_info: SnowEffect.levels[0],
             timeout: null,
         }
         SnowEffect.container = document.createElement('div');
         document.documentElement.appendChild(SnowEffect.container);
     }
-    static disable() {
+    static stop() {
         SnowEffect.state.is_on = false;
     }
+    static disable() {
+        SnowEffect.stop();
+        SnowEffect.state.enabled = false;
+    }
+    static enable() {
+        SnowEffect.state.enabled = true;
+    }
     static handleCommand(message_parts, otherArgs) { // other args is for compatability
-
+        if (!SnowEffect.state.enabled) {
+            return;
+        }
         let [level, time_limit_s] = SnowEffect.parseMessage(message_parts);
 
         // Update the currently used snowing level
@@ -3132,6 +3170,7 @@ class ErabeEffect {
     static init() {
         ErabeEffect.state = {
             is_on: false,
+            enabled: true,
             timeout: null,
         }
         ErabeEffect.container = document.createElement('div');
@@ -3141,6 +3180,9 @@ class ErabeEffect {
         ErabeEffect.container.appendChild(element);
     }
     static handleCommand(message_parts, did_send_the_message){
+        if (!ErabeEffect.state.enabled) {
+            return;
+        }
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
             ErabeEffect.parseMessage(message_parts);
@@ -3176,7 +3218,7 @@ class ErabeEffect {
         ErabeEffect.state.timeout =
             setTimeout(ErabeEffect.disable, time_limit_s * 1000);
     }
-    static disable() {
+    static stop() {
         ErabeEffect.is_on = false;
         if (ErabeEffect.state.timeout) {
             clearTimeout(ErabeEffect.state.timeout);
@@ -3184,7 +3226,13 @@ class ErabeEffect {
 
         ErabeEffect.state.timeout = null;
     }
-
+    static disable() {
+        ErabeEffect.stop();
+        ErabeEffect.state.enabled = false;
+    }
+    static enable() {
+        ErabeEffect.state.enabled = true;
+    }
     ///////////////////////////////////////////
     // "Private" Static methods
     ///////////////////////////////////////////
@@ -3280,12 +3328,17 @@ class CustomTextTriggers {
                     {effect: effect_cls, handle: effect_cls.handleCommand});
         }
 
+        // TODO make this "/effects arg" with some kind of handler?
         // Add non-effect commands here
-        CustomTextTriggers.effect_lookup.set('/effects_off', 
+        CustomTextTriggers.effect_lookup.set('/effects_disable', 
+                {effect: null, handle: CustomTextTriggers.disableEffects});
+        CustomTextTriggers.effect_lookup.set('/effects_enable', 
+                {effect: null, handle: CustomTextTriggers.enableEffects});
+        CustomTextTriggers.effect_lookup.set('/effects_stop', 
                 {effect: null, handle: CustomTextTriggers.disableEffects});
 
         // testing
-        CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
+        //CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
 
     }
 
@@ -3351,6 +3404,19 @@ class CustomTextTriggers {
             effect.disable()
         }
     }
+
+    static enableEffects() {
+        for (let effect of CustomTextTriggers.effects) {
+            effect.enable()
+        }
+    }
+    
+    static stopEffects() {
+        for (let effect of CustomTextTriggers.effects) {
+            effect.stop()
+        }
+    }
+
 
 }
 
