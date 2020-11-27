@@ -2674,20 +2674,6 @@ $("#mediaurl").on("paste", function() {
 	}, 250);
 });
 
-effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
-	.appendTo("#chatwrap")
-	.on("click", function() {
-		EFFECTSOFF = !EFFECTSOFF;
-		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
-		checkEffects();
-		if (EFFECTSOFF) {
-			this.className = "btn btn-sm btn-danger";
-			this.text = "Effects OFF";        
-		} else {
-			this.className = "btn btn-sm btn-default";
-			this.text = "Effects ON";
-		}
-	});
 
 /*function checkEffects() {
 	if (!EFFECTSOFF) {
@@ -3422,6 +3408,24 @@ class CustomTextTriggers {
 
 
 CustomTextTriggers.init();
+
+effectsbtn = $('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+	.appendTo("#chatwrap")
+	.on("click", function() {
+		EFFECTSOFF = !EFFECTSOFF;
+		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
+		//checkEffects();
+		if (EFFECTSOFF) {
+			this.className = "btn btn-sm btn-danger";
+			this.text = "Effects OFF";
+                        CustomTextTriggers.disableEffects();
+		} else {
+			this.className = "btn btn-sm btn-default";
+			this.text = "Effects ON";
+                        CustomTextTriggers.enableEffects();
+		}
+	});
+
 //checkEffects();
 
 // This is what turns the whole thing on to be run by chat messages like /erabe
