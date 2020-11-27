@@ -2742,7 +2742,6 @@ class PresentsEffect {
     }
 
     static disable() {
-        PresentsEffect.stop();
         PresentsEffect.state.enabled = false;
     }
 
@@ -2883,7 +2882,6 @@ class PadoruEffect {
     }
 
     static disable() {
-        PadoruEffect.stop()
         PadoruEffect.state.enabled = false;
     }
 
@@ -3027,7 +3025,6 @@ class SnowEffect {
         SnowEffect.state.is_on = false;
     }
     static disable() {
-        SnowEffect.stop();
         SnowEffect.state.enabled = false;
     }
     static enable() {
@@ -3201,7 +3198,6 @@ class ErabeEffect {
         ErabeEffect.state.timeout = null;
     }
     static disable() {
-        ErabeEffect.stop();
         ErabeEffect.state.enabled = false;
     }
     static enable() {
