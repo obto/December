@@ -3389,7 +3389,7 @@ class CustomTextTriggers {
         }
 
         const [effect_name, ...effect_args] = message_parts;
-        if (command_name[0] !== '/') {
+        if (effect_name !== '/') {
             return;
         }
 
