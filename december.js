@@ -3153,7 +3153,9 @@ class ErabeEffect {
     static addElement(element) {
         ErabeEffect.container.appendChild(element);
     }
-    static handleCommand(message_parts, did_send_the_message){
+    static handleCommand(message_parts, otherArgs){
+        
+        did_send_the_message = otherArgs.did_send_the_message;
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
             ErabeEffect.parseMessage(message_parts);
@@ -3363,9 +3365,16 @@ class CustomTextTriggers {
             return;
         }
 
+        // Build dict for any other arguments we should send
+        // This should be a dict to provide these somewhat explicitly, but support addition
+        // of future arguements without us having to modify old effect code
+        otherArgs = {
+            'did_send_the_message': did_send_the_message,
+        };
+
         // Do the command if it exists
         try {
-            CustomTextTriggers.effect_lookup.get(effect_name).handle(...effect_args, did_send_the_message);
+            CustomTextTriggers.effect_lookup.get(effect_name).handle(effect_args, otherArgs);
         } catch (e) {}
     }
 
