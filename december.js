@@ -895,7 +895,7 @@ function selectRandomLink() {
 				rdmLinkInterval = false;
 				iLinkRefreshes = 0;
 			}
-		}, 1500);
+		}, 1300 + Math.floor(700 * Math.random()));
 	}
 }
 
