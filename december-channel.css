@@ -1,6 +1,6 @@
 /*Wallpaper*/
 /*normal" http://i.imgur.com/GPqzHLR.jpg*/
-body {background-image:url(http://i.imgur.com/mTYBrCU.jpg);
+body {background-image:url(https://files.catbox.moe/bt3zbg.jpg);
             background-position: bottom right;
             background-attachment: fixed;
             /*background-size: 100% auto;*/
@@ -11,7 +11,7 @@ body {background-image:url(http://i.imgur.com/mTYBrCU.jpg);
 }
 
 /*Changes the color of the text*/
-body, header, p, #mainpage, .userlist_owner,.userlist_op,.userlist_guest, a, .navbar-brand{color:#A1C5FF !important;}
+body, header, p, #mainpage, .userlist_owner,.userlist_op,.userlist_guest, a, .navbar-brand, .navbar-text, .navbar-link {color:#A1C5FF !important;}
 body, header, p {color:#ffa500;}
 
 /*Alternate message backgrounds*/
