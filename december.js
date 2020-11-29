@@ -2757,7 +2757,7 @@ class PresentsEffect {
         PresentsEffect.container.appendChild(element);
     }
 
-    static handleCommand(message_parts, otherArgs) {
+    static handleCommand(message_parts = [], other_args = {}) {
 
         // No parse, right now just one version
         // TODO: add different H levels and loli options
@@ -2774,13 +2774,13 @@ class PresentsEffect {
             return;
         }
         PresentsEffect.state.is_on = true;
-        PresentsEffect._face_animation();
-        PresentsEffect._run_presents_animation();
+        PresentsEffect._faceAnimation();
+        PresentsEffect._runPresentsAnimation();
     }
     ///////////////////////////////////////////
     // Timed Static methods
     ///////////////////////////////////////////
-    static _face_animation(){
+    static _faceAnimation(){
         if (!PresentsEffect.state.is_on) {
             return;
         }
@@ -2798,16 +2798,16 @@ class PresentsEffect {
         face_effect.addEventListener('animationend', fn);
     }
 
-    static _run_presents_animation() {
+    static _runPresentsAnimation() {
         const create_fn = (is_left) => {
             if (!PresentsEffect.state.is_on) {
                 return;
             }
 
             PresentsEffect._create_present(is_left);
-            setTimeout(create_fn.bind(null,!is_left), PresentsEffect.state.level.spawn_rate);
+            setTimeout(() => create_fn(!is_left), PresentsEffect.state.level.spawn_rate);
         };
-        setTimeout(create_fn.bind(null, true), PresentsEffect.state.level.spawn_rate);
+        setTimeout(() => create_fn(true), PresentsEffect.state.level.spawn_rate);
     }
     static _create_present(is_left){
         if (!PresentsEffect.state.is_on || !PresentsEffect.state.enabled) {
@@ -2819,12 +2819,16 @@ class PresentsEffect {
         const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
 
         let offset = -500;
-        if (is_left)     { offset = 10; }
-        else            { offset = 55; }
-        let random_location = (Math.random() * 35+ offset).toFixed(4);
+        if (is_left) {
+            offset = 10;
+        }
+        else {
+            offset = 55;
+        }
+        let random_location = (Math.random() * 35 + offset).toFixed(4);
 
         const inner = document.createElement('img')
-        inner.classList.add('c-effect__presents-present-fall-'.concat(animation));
+        inner.classList.add(`c-effect__presents-present-fall-${animation}`);
         //inner.classList.add(animation);
         inner.style.left = `${random_location}%`; 
         inner.src = present_img;
@@ -2894,7 +2898,7 @@ class PadoruEffect {
         PadoruEffect.container.appendChild(element);
     }
 
-    static handleCommand(message_parts, otherArgs) { // for compatibility
+    static handleCommand(message_parts = [], other_args = {}) { // for compatibility
 
         let [level, time_limit_s] = PadoruEffect.parseMessage(message_parts)
 
@@ -3030,7 +3034,7 @@ class SnowEffect {
     static enable() {
         SnowEffect.state.enabled = true;
     }
-    static handleCommand(message_parts, otherArgs) { // other args is for compatability
+    static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
         let [level, time_limit_s] = SnowEffect.parseMessage(message_parts);
 
         // Update the currently used snowing level
@@ -3153,9 +3157,9 @@ class ErabeEffect {
     static addElement(element) {
         ErabeEffect.container.appendChild(element);
     }
-    static handleCommand(message_parts, otherArgs){
+    static handleCommand(message_parts = [], other_args = {}){
         
-        let did_send_the_message = otherArgs.did_send_the_message;
+        let did_send_the_message = other_args.did_send_the_message;
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
             ErabeEffect.parseMessage(message_parts);
@@ -3281,6 +3285,23 @@ class ErabeEffect {
     }
 
 }
+/**
+ * To add a new effect create a class like so:
+
+class YourNewEffect {
+    static command = '/your-command';
+    constructor() {}
+  
+    init() {}
+  
+    handleCommand(message_parts = [], other_args = {}) {}
+  
+    enable() {}
+    disable() {}
+    stop() {}
+}
+Then add it to the `effects` static variable below
+*/
 class CustomTextTriggers {
 
     // Only place you need to add a new effect to make it work
@@ -3368,14 +3389,14 @@ class CustomTextTriggers {
         // Build dict for any other arguments we should send
         // This should be a dict to provide these somewhat explicitly, but support addition
         // of future arguements without us having to modify old effect code
-        let otherArgs = {
+        let other_args = {
             'did_send_the_message': did_send_the_message,
         };
 
         // Get the command and handle command if valid
         let command_class = CustomTextTriggers.effect_lookup.get(effect_name);
         if (command_class !== undefined) {
-            command_class.handle(effect_args, otherArgs);
+            command_class.handle(effect_args, other_args);
         }
     }
 
@@ -3403,7 +3424,7 @@ class CustomTextTriggers {
 
 CustomTextTriggers.init();
 
-effectsbtn = $('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
     .appendTo("#chatwrap")
     .on("click", function() {
         EFFECTSOFF = !EFFECTSOFF;
