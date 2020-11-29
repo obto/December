@@ -864,10 +864,14 @@ function selectRandomLink() {
 		rdmLinkInterval = setInterval(function() {
 			var rdmFound = false;
 			var videoElement = document.getElementById("ytapiplayer_html5_api");
+			
 			if (videoElement.readyState !== 4) {
 				for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
 					if (document.querySelector(".queue_active .qe_title").href.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
 						rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
+						if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
+							rdmLink += "placeholder.mp4";
+						}
 						console.log(i + "\t" + rdmLink);
 						videoElement.src = rdmLink;
 						rdmFound = true;
@@ -875,7 +879,7 @@ function selectRandomLink() {
 					}
 				}
 				if (!rdmFound) {
-					if (iLinkRefreshes > 20) {
+					if (iLinkRefreshes > 10) {
 						clearInterval(rdmLinkInterval);
 						rdmLinkInterval = false;
 						iLinkRefreshes = 0;
@@ -889,7 +893,7 @@ function selectRandomLink() {
 				rdmLinkInterval = false;
 				iLinkRefreshes = 0;
 			}
-		}, 500);
+		}, 1500);
 	}
 }
 
