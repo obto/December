@@ -985,6 +985,8 @@ function makeChatPanel() {
 		$("#messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
 	}
 }
+$("#messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
+
 makeChatPanel();
 chatfunc = $("#chatfunc-dropdown").detach();
 
