@@ -3155,7 +3155,7 @@ class ErabeEffect {
     }
     static handleCommand(message_parts, otherArgs){
         
-        did_send_the_message = otherArgs.did_send_the_message;
+        let did_send_the_message = otherArgs.did_send_the_message;
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
             ErabeEffect.parseMessage(message_parts);
