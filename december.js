@@ -3368,7 +3368,7 @@ class CustomTextTriggers {
         // Build dict for any other arguments we should send
         // This should be a dict to provide these somewhat explicitly, but support addition
         // of future arguements without us having to modify old effect code
-        otherArgs = {
+        let otherArgs = {
             'did_send_the_message': did_send_the_message,
         };
 
