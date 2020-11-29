@@ -852,9 +852,11 @@ function updateLinks() {
 	});
 }
 
-updateLinks();
+if (LINKS.length === 0) {
+	updateLinks();
+}
 clearInterval(updateInterval);
-updateInterval = setInterval(updateLinks, 60000);
+updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.random()));
 
 var rdmLinkInterval = false;
 var iLinkRefreshes = 0;
