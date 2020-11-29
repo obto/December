@@ -3372,10 +3372,11 @@ class CustomTextTriggers {
             'did_send_the_message': did_send_the_message,
         };
 
-        // Do the command if it exists
-        try {
-            CustomTextTriggers.effect_lookup.get(effect_name).handle(effect_args, otherArgs);
-        } catch (e) {}
+        // Get the command and handle command if valid
+        command_class = CustomTextTriggers.effect_lookup.get(effect_name);
+        if (command_class !== undefined) {
+            command_class.handle(effect_args, otherArgs);
+        }
     }
 
     static disableEffects() {
