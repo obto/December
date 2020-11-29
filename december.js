@@ -2530,18 +2530,23 @@ $("#chatline").keydown(function(ev) {
 if (CLIENT.name === "Happy") {
 	var msgLength = 10000;
 	var userLength = 10000;
+	var playlistLength = 5000;
 	var aMessagesDefault = [["Timestamp", "Username", "Message"]];
 	var aMessages = getOrDefault(CHANNEL.name + "_MSGS", aMessagesDefault.slice(0));
 	var aUserCountDefault = [["Timestamp", "Usercount"]];
 	var aUserCount = getOrDefault(CHANNEL.name + "_USERCOUNT", aUserCountDefault.slice(0));
+	var aPlaylistDefault = [["Timestamp", "Title", "Duration", "Seconds", "Type", "Link"]];
+	var aPlaylist = getOrDefault(CHANNEL.name + "_PLAYLIST", aPlaylistDefault.slice(0));
 	var downloadMsg = false;
 	var downloadUsers = false;
+	var downloadPlaylist = false;
 
 	$('<button id="dl-logs" class="btn btn-sm btn-default">DL Logs</button>')
 		.insertAfter($("#emotelistbtn"))
 		.on("click", function () {
 			downloadMsg = true;
 			downloadUsers = true;
+			downloadPlaylist = true;
 			setTimeout(function () {
 				if (downloadMsg) {
 					downloadMsg = false;
@@ -2560,8 +2565,18 @@ if (CLIENT.name === "Happy") {
 					setOpt(CHANNEL.name + "_USERCOUNT", aUserCount);
 				}
 			}, 3000);
+			setTimeout(function () {
+				if (downloadPlaylist) {
+					downloadPlaylist = false;
+					var filename = CHANNEL.name + "-PLAYLIST-" + new Date() + ".csv";
+					exportToCsv(filename, aPlaylist);
+					aPlaylist = aPlaylistDefault.slice(0);
+					setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
+				}
+			}, 3000);
 		});
 
+	removeChatSocket();
 	socket.on("chatMsg", chatSocket);
 
 	function removeChatSocket() {
@@ -2587,6 +2602,7 @@ if (CLIENT.name === "Happy") {
 		}
 	}
 
+	removeUserSocket();
 	socket.on("usercount", userSocket);
 
 	function removeUserSocket() {
@@ -2607,6 +2623,30 @@ if (CLIENT.name === "Happy") {
 			exportToCsv(filename, aUserCount);
 			aUserCount = aUserCountDefault.slice(0);
 			setOpt(CHANNEL.name + "_USERCOUNT", aUserCount);
+		}
+	}
+
+	removeMediaSocket();
+	socket.on("changeMedia", mediaSocket);
+
+	function removeMediaSocket() {
+		socket.on("changeMedia", mediaSocket);
+	}
+
+	function mediaSocket(data) {
+		aPlaylist[aPlaylist.length] = [new Date().getTime(), data.title, "`" + data.duration, data.seconds, data.type, data.id];
+		if (aPlaylist.length > playlistLength || downloadPlaylist) {
+			downloadPlaylist = false;
+			var filename = CHANNEL.name + "-PLAYLIST-" + new Date() + ".csv";
+			exportToCsv(filename, aPlaylist);
+			aPlaylist = aPlaylistDefault.slice(0);
+		}
+		try {
+			setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
+		} catch {
+			exportToCsv(filename, aMessages);
+			aMessages = aMessagesDefault.slice(0);
+			setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
 		}
 	}
 
