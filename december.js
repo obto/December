@@ -856,30 +856,41 @@ updateLinks();
 clearInterval(updateInterval);
 updateInterval = setInterval(updateLinks, 60000);
 
-var rdmLinkInterval;
+var rdmLinkInterval = false;
+var iLinkRefreshes = 0;
 
 function selectRandomLink() {
-    rdmLinkInterval = setInterval(function() {
-        rdmFound = false;
-        if (document.getElementsByClassName("vjs-modal-dialog-content")[0].textContent !== "") {
-            console.log("Error still there.")
-            for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
-                if (LINKS["DropboxURLs"][i][0] === document.querySelector(".queue_active .qe_title").href) {
-                    rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
-                    console.log(i + "\t" + rdmLink);
-                    document.getElementById("ytapiplayer_html5_api").src = rdmLink;
-                    document.getElementsByClassName("vjs-modal-dialog-content")[0].textContent = "";
-                    rdmFound = true;
-                    break;
-                }
-            }
-            if (!rdmFound) {
-                clearInterval(rdmLinkInterval);
-            }
-        } else {
-            clearInterval(rdmLinkInterval);
-        }
-    }, 500);
+	if (!rdmLinkInterval) {
+		rdmLinkInterval = setInterval(function() {
+			var rdmFound = false;
+			var videoElement = document.getElementById("ytapiplayer_html5_api");
+			if (videoElement.readyState !== 4) {
+				for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
+					if (document.querySelector(".queue_active .qe_title").href.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
+						rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
+						console.log(i + "\t" + rdmLink);
+						videoElement.src = rdmLink;
+						rdmFound = true;
+						break;
+					}
+				}
+				if (!rdmFound) {
+					if (iLinkRefreshes > 20) {
+						clearInterval(rdmLinkInterval);
+						rdmLinkInterval = false;
+						iLinkRefreshes = 0;
+					} else {
+						$("#mediarefresh").click();				
+						iLinkRefreshes++;
+					}
+				}
+			} else {
+				clearInterval(rdmLinkInterval);
+				rdmLinkInterval = false;
+				iLinkRefreshes = 0;
+			}
+		}, 500);
+	}
 }
 
 selectRandomLink();
