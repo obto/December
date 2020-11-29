@@ -3373,7 +3373,7 @@ class CustomTextTriggers {
         };
 
         // Get the command and handle command if valid
-        command_class = CustomTextTriggers.effect_lookup.get(effect_name);
+        let command_class = CustomTextTriggers.effect_lookup.get(effect_name);
         if (command_class !== undefined) {
             command_class.handle(effect_args, otherArgs);
         }
