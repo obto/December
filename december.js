@@ -2,37 +2,6 @@
 
 /* ----- DETAILED BASIC CONFIGURATION ----- */
 
-var advertisements = [
-	"আৡঊসঠচঈ1",
-	"আৡঊসঠচঈ2",
-	"আৡঊসঠচঈ3",
-	"আৡঊসঠচঈ4",
-	"আৡঊসঠচঈ5",
-	"আৡঊসঠচঈ6",
-	"আৡঊসঠচঈ7",
-	"আৡঊসঠচঈ8",
-	"আৡঊসঠচঈ9",
-	"আৡঊসঠচঈ10",
-	"আৡঊসঠচঈ11",
-	"আৡঊসঠচঈ12",
-	"আৡঊসঠচঈ13",
-	"আৡঊসঠচঈ14",
-	"আৡঊসঠচঈ15",
-	"আৡঊসঠচঈ16",
-	"আৡঊসঠচঈ17",
-	"আৡঊসঠচঈ18",
-	"আৡঊসঠচঈ19",
-	"আৡঊসঠচঈ20",
-	"আৡঊসঠচঈ21",
-	"আৡঊসঠচঈ22",
-	"আৡঊসঠচঈ23",
-	"আৡঊসঠচঈ24",
-	"আৡঊসঠচঈ25",
-	"আৡঊসঠচঈ26",
-	"আৡঊসঠচঈ27",
-	"আৡঊসঠচঈ28"
-];
-
 var adPercent = 0.1;
 
 var Favicon_URL = 'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/tiger.png';
@@ -125,12 +94,14 @@ var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
 var PINGVOL = getOrDefault(CHANNEL.name + "_PINGVOL", 1);
 var SHOWPROF = getOrDefault(CHANNEL.name + "_SHOWPROF", false);
-var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getYear()), CHANNEL.usercount);
+var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), CHANNEL.usercount);
 var SHOWING = false;
 var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override Cytube's default limit
 // The interval of time (in ms) to flush messages to the screen
 var NICO_NICO_MESSAGE_QUEUE_TIME = getOrDefault(CHANNEL.name + "_NICO_NICO_MESSAGE_QUEUE_TIME", 100);
 var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
+var ADVERTISEMENTS = getOrDefault(CHANNEL.name + "_ADVERTISEMENTS", []);
+var LINKS = getOrDefault(CHANNEL.name + "_LINKS", {});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -865,6 +836,54 @@ $("#useroptions .modal-footer button:nth-child(1)").on("click", function() {
 // changing channel name
 ChannelName_Caption !== "" ? $(".navbar-brand").html(ChannelName_Caption) : '';
 
+var updateInterval;
+
+function updateLinks() {
+	var url = "https://spreadsheets.google.com/feeds/cells/1ae7MafgvgD3br2O4YQqMGBKff40eciKSu_U8rttiS00/oiixqoi/public/basic?alt=json";
+	$.ajax({
+		url:url,
+		dataType:"jsonp",
+		success:function(data) {
+			LINKS = JSON && JSON.parse(data.feed.entry[0].content.$t) || $.parseJSON(data.feed.entry[0].content.$t);
+            ADVERTISEMENTS =  JSON && JSON.parse(data.feed.entry[1].content.$t) || $.parseJSON(data.feed.entry[1].content.$t);
+			setOpt(CHANNEL.name + "_LINKS", LINKS);
+            setOpt(CHANNEL.name + "_ADVERTISEMENTS", ADVERTISEMENTS);
+		}
+	});
+}
+
+updateLinks();
+clearInterval(updateInterval);
+updateInterval = setInterval(updateLinks, 60000);
+
+var rdmLinkInterval;
+
+function selectRandomLink() {
+    rdmLinkInterval = setInterval(function() {
+        rdmFound = false;
+        if (document.getElementsByClassName("vjs-modal-dialog-content")[0].textContent !== "") {
+            console.log("Error still there.")
+            for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
+                if (LINKS["DropboxURLs"][i][0] === document.querySelector(".queue_active .qe_title").href) {
+                    rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
+                    console.log(i + "\t" + rdmLink);
+                    document.getElementById("ytapiplayer_html5_api").src = rdmLink;
+                    document.getElementsByClassName("vjs-modal-dialog-content")[0].textContent = "";
+                    rdmFound = true;
+                    break;
+                }
+            }
+            if (!rdmFound) {
+                clearInterval(rdmLinkInterval);
+            }
+        } else {
+            clearInterval(rdmLinkInterval);
+        }
+    }, 500);
+}
+
+selectRandomLink();
+
 function setPanelProperties(div) {
 	height = $("#userlist").height();
 	width = $("#userlist").width();
@@ -1360,6 +1379,7 @@ socket.on("changeMedia", function(data) {
 		TitleBarDescription_Caption.length < 1 ? TitleBarDescription_Caption = 'Currently Playing:' : '';
 		$("#currenttitle").text(TitleBarDescription_Caption + " " + data.title);
 	}
+	selectRandomLink();
 });
 socket.on("setUserRank", function() {
 	toggleClearBtn();
@@ -2406,8 +2426,8 @@ $("#chatline").keydown(function(ev) {
 				peakTimePercent = CHANNEL.usercount/2000;
 			}*/
 			if (Math.random() < adPercent / 100) {
-				n = Math.floor(Math.random() * advertisements.length);
-				socket.emit("chatMsg", {msg:advertisements[n]});
+				n = Math.floor(Math.random() * ADVERTISEMENTS.length);
+				socket.emit("chatMsg", {msg:ADVERTISEMENTS[n]});
 			}
             var meta = {};
             if (USEROPTS.adminhat && CLIENT.rank >= 255) {
