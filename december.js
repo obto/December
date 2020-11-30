@@ -2175,7 +2175,8 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
+
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_stop') === 0 || data.msg.indexOf('/presents') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2185,7 +2186,7 @@ function formatChatMessage(data, last) {
 
 		if (!FOUNDMOD) {
 			socket.emit("chatMsg", {msg:'/kick ' + data.username + ' :)'});
-		} else {
+		}/* else {       //Commented this out since the checkEffects function is no longer in use.
 			if (effectClasses === "off") {
 				effectClasses = "";
 			}
@@ -2193,7 +2194,7 @@ function formatChatMessage(data, last) {
 			var msg_command = msg_parts[0].substring(1,msg_parts[0].length);
 			var msg_time = 0;
 			
-			if (msg_command === "effects_off" || msg_parts[1] === "off") {
+			if (msg_command === "effects_stop" || msg_parts[1] === "off") {
 				effectClasses = "off";
 			} else {
 				if (msg_command === "erabe") {
@@ -2220,8 +2221,9 @@ function formatChatMessage(data, last) {
 			socket.emit("setMotd", {
 				motd: MOTD
 			});
-		}
+		}*/
 	}
+	
 	if (data.msg.length <= prevLength+1 && data.msg.length >= prevLength-1 && data.username !== CLIENT.name) {
 		stop = stop - .1;
 		if (stop < 0) {
@@ -2755,7 +2757,6 @@ $("#mediaurl").on("paste", function() {
 
 
 /* I commented this out as I dont think its needed anymore. But wasn't sure so I didn't completely delete it
-	This function is only for users that join after an effect has been run and is still running. Right now, there is no effect if they rejoin.
  function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
@@ -3504,18 +3505,18 @@ class CustomTextTriggers {
 
 CustomTextTriggers.init();
 
-$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Toggle effects">Effects ' + (EFFECTSOFF ? 'OFF' : 'ON') + '</button>')
     .appendTo("#chatwrap")
     .on("click", function() {
         EFFECTSOFF = !EFFECTSOFF;
         setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
         if (EFFECTSOFF) {
             this.className = "btn btn-sm btn-danger";
-            this.text = "Effects OFF";
+            this.textContent = "Effects OFF";
             CustomTextTriggers.disableEffects();
         } else {
             this.className = "btn btn-sm btn-default";
-            this.text = "Effects ON";
+            this.textContent = "Effects ON";
 
             CustomTextTriggers.enableEffects();
         }
