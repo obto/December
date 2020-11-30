@@ -3384,7 +3384,7 @@ Then add it to the `effects` static variable below
 class CustomTextTriggers {
 
     // Only place you need to add a new effect to make it work
-    static effects = [ErabeEffect, SnowEffect, PadoruEffect, PresentsEffect];
+    static effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, PresentsEffect];
 
     static init() {
         if (CustomTextTriggers.has_init) {
