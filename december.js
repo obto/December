@@ -2757,6 +2757,7 @@ $("#mediaurl").on("paste", function() {
 
 
 /* I commented this out as I dont think its needed anymore. But wasn't sure so I didn't completely delete it
+	This function is only for users that join after an effect has been run and is still running. Right now, there is no effect if they rejoin.
  function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
