@@ -2753,22 +2753,9 @@ $("#mediaurl").on("paste", function() {
 	}, 250);
 });
 
-effectsbtn = $('<button id="nicobtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
-	.appendTo("#chatwrap")
-	.on("click", function() {
-		EFFECTSOFF = !EFFECTSOFF;
-		setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
-		checkEffects();
-		if (EFFECTSOFF) {
-			this.className = "btn btn-sm btn-danger";
-			this.text = "Effects OFF";        
-		} else {
-			this.className = "btn btn-sm btn-default";
-			this.text = "Effects ON";
-		}
-	});
 
-function checkEffects() {
+/* I commented this out as I dont think its needed anymore. But wasn't sure so I didn't completely delete it
+ function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
 		for (var i = 0; i < effectClassList.length; i++) {
@@ -2795,459 +2782,745 @@ function checkEffects() {
 		CustomTextTriggers.disablePadoru();
 		CustomTextTriggers.disableErabe();
 	}
+}*/
+
+class PresentsEffect {
+    static command = '/presents';
+    static shiz_img = 'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png';
+    static presents_duration_s = 20;
+    static present_animations = ['type1', 'type2', 'type3', 'type4'];
+    static levels = [
+        { spawn_rate: 1000, spawn_limit: 6 },
+        { spawn_rate: 1000, spawn_limit: 10 },
+    ];
+
+    static versions = {
+        'normal': {
+            padoru: PresentsEffect.shiz_img,
+            img_bank: [
+                'https://cdn.discordapp.com/attachments/162409148909223936/781038166915547136/sample_64688cb11e7f37d58eca70a6709e4ceb.jpg',
+                'https://cdn.discordapp.com/attachments/162409148909223936/780983025059627089/Efr2CGlVAAAk5_X.png',
+                'https://cdn.discordapp.com/attachments/162409148909223936/780961390239678504/85881312_p0_master1200.jpg',
+                'https://cdn.discordapp.com/attachments/483446980605902848/781295276778323988/1363841058659.gif'
+            ]
+        },
+    }
+    ///////////////////////////////////////////
+    // "Public" Static methods
+    ///////////////////////////////////////////
+    static init() {
+        PresentsEffect.state = {
+            is_on: false,
+            enabled: true,
+            timeout: null,
+            level: PresentsEffect.levels[0],
+            version: PresentsEffect.versions['normal'],
+        }
+        PresentsEffect.container = document.createElement('div');
+        document.documentElement.appendChild(PresentsEffect.container);
+    }
+
+    static disable() {
+        PresentsEffect.state.enabled = false;
+    }
+
+    static enable() {
+        PresentsEffect.state.enabled = true;
+    }
+
+    static stop() {
+        PresentsEffect.state.is_on = false;
+    }
+
+    static addElement(element) {
+        PresentsEffect.container.appendChild(element);
+    }
+
+    static handleCommand(message_parts = [], other_args = {}) {
+
+        // No parse, right now just one version
+        // TODO: add different H levels and loli options
+
+        // Disable presents after the timeout. If there is already one, reset the timer
+        if (PresentsEffect.state.timeout) {
+            clearTimeout(PresentsEffect.state.timeout);
+        }
+        PresentsEffect.state.timeout =
+            setTimeout(PresentsEffect.stop, PresentsEffect.presents_duration_s * 1000);
+
+        // Only start the padoru animation if it is not already started
+        if (PresentsEffect.state.is_on) {
+            return;
+        }
+        PresentsEffect.state.is_on = true;
+        PresentsEffect._faceAnimation();
+        PresentsEffect._runPresentsAnimation();
+    }
+    ///////////////////////////////////////////
+    // Timed Static methods
+    ///////////////////////////////////////////
+    static _faceAnimation(){
+        if (!PresentsEffect.state.is_on) {
+            return;
+        }
+        const face_img = PresentsEffect.state.version.padoru;
+
+        const face_effect = document.createElement('img')
+        face_effect.classList.add('c-effect__presents-face');
+        face_effect.src = face_img;
+        PresentsEffect.addElement(face_effect);
+
+        const fn = () =>{
+            face_effect.parentElement.removeChild(face_effect);
+            face_effect.removeEventListener('animationend', fn);
+        }
+        face_effect.addEventListener('animationend', fn);
+    }
+
+    static _runPresentsAnimation() {
+        const create_fn = (is_left) => {
+            if (!PresentsEffect.state.is_on) {
+                return;
+            }
+
+            PresentsEffect._create_present(is_left);
+            setTimeout(() => create_fn(!is_left), PresentsEffect.state.level.spawn_rate);
+        };
+        setTimeout(() => create_fn(true), PresentsEffect.state.level.spawn_rate);
+    }
+    static _create_present(is_left){
+        if (!PresentsEffect.state.is_on || !PresentsEffect.state.enabled) {
+            return;
+        }
+
+        //const present_img = PresentsEffect.shiz_img; // replace with random
+        const present_img = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
+        const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
+
+        let offset = -500;
+        if (is_left) {
+            offset = 10;
+        }
+        else {
+            offset = 55;
+        }
+        let random_location = (Math.random() * 35 + offset).toFixed(4);
+
+        const inner = document.createElement('img')
+        inner.classList.add(`c-effect__presents-present-fall-${animation}`);
+        //inner.classList.add(animation);
+        inner.style.left = `${random_location}%`; 
+        inner.src = present_img;
+        PresentsEffect.addElement(inner);
+
+        const fn = () => {
+            inner.parentElement.removeChild(inner);
+            inner.removeEventListener('animationend', fn);
+        };
+        inner.addEventListener('animationend', fn);
+    }
+}
+class PadoruEffect {
+    ///////////////////////////////////////////
+    // Static variables
+    ///////////////////////////////////////////
+    static command = '/padoru';
+    static animations = ['type1', 'type2', 'type3', 'type4'];
+    static max_padoru_time_limit_s = 1200;
+    static levels = [
+        { spawn_rate: 1000, spawn_limit: 6 },
+        { spawn_rate: 1000, spawn_limit: 10 },
+    ];
+    static images = [
+        // Yue
+        'https://cdn.discordapp.com/emojis/655099097237422130.png',
+        // Saber
+        'https://cdn.discordapp.com/emojis/519149153746550785.png',
+        // Chino
+        'https://cdn.discordapp.com/attachments/375406879553093633/659064801217085498/chino-padoru.png',
+        // Taiga
+        'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
+        // Miku
+        'https://cdn.discordapp.com/attachments/518340427506647042/659073537809711104/miku-padoru.png',
+        // Shizuru
+        'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
+    ];
+
+    ///////////////////////////////////////////
+    // "Public" Static methods
+    ///////////////////////////////////////////
+    static init() {
+        PadoruEffect.state = {
+            is_on: false,
+            enabled: true,
+            level_info: PadoruEffect.levels[0],
+            timeout: null,
+        };
+        PadoruEffect.container = document.createElement('div');
+        document.documentElement.appendChild(PadoruEffect.container);
+    }
+
+    static stop() {
+        PadoruEffect.state.is_on = false;
+    }
+
+    static disable() {
+        PadoruEffect.state.enabled = false;
+    }
+
+    static enable() {
+        PadoruEffect.state.enabled = true;
+    }
+
+
+    static addElement(element) {
+        PadoruEffect.container.appendChild(element);
+    }
+
+    static handleCommand(message_parts = [], other_args = {}) { // for compatibility
+
+        let [level, time_limit_s] = PadoruEffect.parseMessage(message_parts)
+
+        // Update the currently used snowing level
+        let level_index = level - 1;
+        if (level_index < 0 || level_index > PadoruEffect.levels.length) {
+            level_index = 0;
+        }
+        PadoruEffect.state.level_info = PadoruEffect.levels[level_index];
+
+        // Disable padoru after the timeout. If there is already one, reset the timer
+        if (PadoruEffect.state.timeout) {
+            clearTimeout(PadoruEffect.state.timeout);
+        }
+        PadoruEffect.state.timeout =
+            setTimeout(PadoruEffect.stop, time_limit_s * 1000);
+
+        // Only start the padoru animation if it is not already started
+        if (PadoruEffect.state.is_on) {
+            return;
+        }
+        PadoruEffect.state.is_on = true;
+        PadoruEffect._runAnimation();
+    }
+
+    static parseMessage (message_parts){
+        if (message_parts[0] === 'off') {
+            PadoruEffect.stop();
+            return;
+        }
+
+        let level = parseInt(message_parts[0] || '1', 10);
+        if (isNaN(level) || level < 1) {
+            level = 1;
+        }
+
+        let time_limit_s = parseInt(message_parts[1] || '1200', 10);
+        if (isNaN(time_limit_s) || time_limit_s < 1) {
+            time_limit_s = 10;
+        } else if (time_limit_s > PadoruEffect.max_time_limit_s) {
+            time_limit_s = PadoruEffect.max_time_limit_s;
+        }
+        return [level, time_limit_s]
+    }
+
+    ///////////////////////////////////////////
+    // "Timer" Static methods
+    ///////////////////////////////////////////
+    static createPadoru() {
+        if (!PadoruEffect.state.enabled || !PadoruEffect.state.is_on) {
+            return;
+        }
+
+        const padoru_image = CustomTextTriggers.randomElement(PadoruEffect.images);
+        const animation_type = CustomTextTriggers.randomElement(PadoruEffect.animations);
+        const random_percent = (Math.random() * 100).toFixed(4);
+
+        const outer = document.createElement('div');
+        outer.classList.add('c-effect__padoru-outer');
+        outer.classList.add(animation_type);
+        outer.style.left = `${random_percent}%`;
+
+        const shake_container = document.createElement('div');
+        shake_container.classList.add('c-effect__padoru-shake');
+
+        const inner = document.createElement('img');
+        inner.classList.add('c-effect__padoru');
+        inner.src = padoru_image;
+
+        shake_container.appendChild(inner);
+        outer.appendChild(shake_container);
+        PadoruEffect.addElement(outer);
+        const fn = () => {
+            outer.parentElement.removeChild(outer);
+            outer.removeEventListener('animationend', fn);
+        };
+        outer.addEventListener('animationend', fn);
+    }
+
+    static _runAnimation() {
+        const create_fn = () => {
+            if (!PadoruEffect.state.is_on) {
+                return;
+            }
+
+            const max_padoru = PadoruEffect.state.level_info.spawn_limit;
+            const total = Math.floor(1 + Math.random() * (max_padoru - 1));
+            for (let i = 0; i < total; i++) {
+                PadoruEffect.createPadoru();
+            }
+
+            setTimeout(create_fn, PadoruEffect.state.level_info.spawn_rate);
+        };
+        setTimeout(create_fn, PadoruEffect.state.level_info.spawn_rate);
+    }
+
 }
 
+class SnowEffect {
+    ///////////////////////////////////////////
+    // Static variables
+    ///////////////////////////////////////////
+    static command = '/snow';
+    static templates = ['❅', '❆'];
+    static animations = ['type1', 'type2', 'type3', 'type4'];
+    static levels = [
+        { spawn_rate: 250, spawn_limit: 10 },
+        { spawn_rate: 250, spawn_limit: 20 },
+        { spawn_rate: 150, spawn_limit: 20 },
+        { spawn_rate: 75, spawn_limdddddddddit: 20 },
+    ];
+    static max_time_limit_s = 1200;
+
+    ///////////////////////////////////////////
+    // "Public" Static methods
+    ///////////////////////////////////////////
+    static init() {
+        SnowEffect.state = {
+            is_on: false,
+            enabled: true,
+            level_info: SnowEffect.levels[0],
+            timeout: null,
+        }
+        SnowEffect.container = document.createElement('div');
+        document.documentElement.appendChild(SnowEffect.container);
+    }
+    static stop() {
+        SnowEffect.state.is_on = false;
+    }
+    static disable() {
+        SnowEffect.state.enabled = false;
+    }
+    static enable() {
+        SnowEffect.state.enabled = true;
+    }
+    static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
+        let [level, time_limit_s] = SnowEffect.parseMessage(message_parts);
+
+        // Update the currently used snowing level
+        let level_index = level - 1;
+        if (level_index < 0 || level_index > SnowEffect.levels.length) {
+            level_index = 0;
+        }
+        SnowEffect.state.level_info = SnowEffect.levels[level_index];
+
+        // Disable snow after the timeout. If there is already one, reset the timer
+        if (SnowEffect.state.timeout) {
+            clearTimeout(SnowEffect.state.timeout);
+        }
+        SnowEffect.state.timeout =
+            setTimeout(SnowEffect.stop, time_limit_s * 1000);
+
+        // Only start the snow animation if it is not already started
+        if (SnowEffect.state.is_on) {
+            return;
+        }
+        SnowEffect.state.is_on = true;
+        SnowEffect._runAnimation();
+    }
+    static addElement(element) {
+        SnowEffect.container.appendChild(element);
+    }
+
+    static parseMessage(message_parts) {
+        if (message_parts[0] === 'off') {
+            SnowEffect.stop();
+            return;
+        }
+
+        let level = parseInt(message_parts[0] || '1', 10);
+        if (isNaN(level) || level < 1) {
+            level = 1;
+        }
+
+        let time_limit_s = parseInt(message_parts[1] || '1200', 10);
+        if (isNaN(time_limit_s) || time_limit_s < 1) {
+            time_limit_s = 10;
+        } else if (time_limit_s > SnowEffect.max_time_limit_s) {
+            time_limit_s = SnowEffect.max_time_limit_s;
+        }
+
+        return [level, time_limit_s];
+
+    }
+
+    ///////////////////////////////////////////
+    // "Timer" Static methods
+    ///////////////////////////////////////////
+    static createSnowflake() {
+        if (!SnowEffect.state.is_on || !SnowEffect.state.enabled) {
+            return;
+        }
+
+        const ascii = CustomTextTriggers.randomElement(SnowEffect.templates);
+        const animation_type = CustomTextTriggers.randomElement(SnowEffect.animations);
+        const random_percent = (Math.random() * 100).toFixed(4);
+
+        const outer = document.createElement('div');
+        outer.classList.add('c-effect__snowflake-outer');
+        outer.style.left = `${random_percent}%`;
+
+        const inner = document.createElement('div');
+        inner.classList.add('c-effect__snowflake');
+        inner.classList.add(animation_type);
+        inner.textContent = ascii;
+
+        outer.appendChild(inner);
+        SnowEffect.addElement(outer);
+        const fn = () => {
+            outer.parentElement.removeChild(outer);
+            outer.removeEventListener('animationend', fn);
+        };
+        outer.addEventListener('animationend', fn);
+    }
+
+    static _runAnimation() {
+        const create_fn = () => {
+            if (!SnowEffect.state.is_on) {
+                return;
+            }
+
+            const max_snowflakes = SnowEffect.state.level_info.spawn_limit;
+            const total = Math.floor(1 + Math.random() * (max_snowflakes - 1));
+            for (let i = 0; i < total; i++) {
+                SnowEffect.createSnowflake();
+            }
+
+            setTimeout(create_fn, SnowEffect.state.level_info.spawn_rate);
+        };
+        setTimeout(create_fn, SnowEffect.state.level_info.spawn_rate);
+    }
+}
+
+class ErabeEffect {
+
+    ///////////////////////////////////////////
+    // Static variables
+    /////////////////////////////////////////// 
+    static command = '/erabe';
+    static max_time_limit_s = 20;
+    static max_spawn_count = 15;
+    static max_poll_options = 10;
+
+    ///////////////////////////////////////////
+    // "Public" Static methods
+    ///////////////////////////////////////////
+    static init() {
+        ErabeEffect.state = {
+            is_on: false,
+            enabled: true,
+            timeout: null,
+        }
+        ErabeEffect.container = document.createElement('div');
+        document.documentElement.appendChild(ErabeEffect.container);
+    };
+    static addElement(element) {
+        ErabeEffect.container.appendChild(element);
+    }
+    static handleCommand(message_parts = [], other_args = {}){
+        
+        let did_send_the_message = other_args.did_send_the_message;
+
+        let [spawn_count, time_limit_s, total_erabe_poll_options] =
+            ErabeEffect.parseMessage(message_parts);
+
+        if (ErabeEffect.state.is_on) {
+            return;
+        }
+        ErabeEffect.state.is_on = true;
+
+        if (did_send_the_message) {
+            try {
+                const options = [];
+                for (let i = 1; i <= total_erabe_poll_options; i++) {
+                    options.push(i.toString());
+                }
+
+                socket.emit('newPoll', {
+                    title:"ERABE",
+                    opts: options,
+                    obscured:false,
+                });
+            } catch (e) {}
+        }
+
+        for (let i = 0; i < spawn_count; i++) {
+            ErabeEffect.createErabe();
+        }
+
+        // Remove all erabes after the timeout
+        if (ErabeEffect.state.timeout) {
+            clearTimeout(ErabeEffect.state.timeout);
+        }
+        ErabeEffect.state.timeout =
+            setTimeout(ErabeEffect.stop, time_limit_s * 1000);
+    }
+    static stop() {
+        ErabeEffect.state.is_on = false;
+        if (ErabeEffect.state.timeout) {
+            clearTimeout(ErabeEffect.state.timeout);
+        }
+
+        ErabeEffect.state.timeout = null;
+    }
+    static disable() {
+        ErabeEffect.state.enabled = false;
+    }
+    static enable() {
+        ErabeEffect.state.enabled = true;
+    }
+    ///////////////////////////////////////////
+    // "Private" Static methods
+    ///////////////////////////////////////////
+    static parseMessage(message_parts) {
+        if (message_parts[0] === 'off') {
+            ErabeEffect.stop();
+            return;
+        }
+
+        let spawn_count = parseInt(message_parts[0] || '2', 10);
+        if (isNaN(spawn_count) || spawn_count < 1) {
+            spawn_count = 2;
+        } else if (spawn_count > ErabeEffect.max_spawn_count) {
+            spawn_count = ErabeEffect.max_spawn_count;
+        }
+
+        let time_limit_s = parseInt(message_parts[1] || '10', 10);
+        if (isNaN(time_limit_s) || time_limit_s < 1) {
+            time_limit_s = 10;
+        } else if (time_limit_s > ErabeEffect.max_time_limit_s) {
+            time_limit_s = ErabeEffect.max_time_limit_s;
+        }
+
+        let total_erabe_poll_options = parseInt(message_parts[2] || '2', 10);
+        if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
+            total_erabe_poll_options = 2;
+        } else if (total_erabe_poll_options > ErabeEffect.max_poll_options) {
+            total_erabe_poll_options = ErabeEffect.max_poll_options;
+        }
+        return [spawn_count, time_limit_s, total_erabe_poll_options];
+    }
+    static createErabe() {
+        if (!ErabeEffect.state.enabled || !ErabeEffect.state.is_on) {
+            return;
+        }
+
+        // Build the erabe element
+        const element = document.createElement('div');
+        element.classList.add('c-effect_erabe', 'js-effect-erabe');
+        element.textContent = 'erabe';
+
+        // Randomizes the location of the erabe div
+        const randomizePosition = () => {
+            const [x, y] = ErabeEffect.getRandomErabePosition(
+                element.offsetWidth,
+                element.offsetHeight,
+                50);
+
+            element.style.left = `${x}px`;
+            element.style.top = `${y}px`;
+        };
+        randomizePosition();
+
+        const fn = () => {
+            if (!ErabeEffect.state.is_on) {
+                element.parentElement.removeChild(element);
+                element.removeEventListener('animationiteration', fn);
+                return;
+            }
+
+            randomizePosition();
+        };
+        element.addEventListener('animationiteration', fn);
+
+        ErabeEffect.addElement(element);
+    }
+    static getRandomErabePosition(div_width, div_height, buffer) {
+        const width = window.innerWidth - div_width;
+        const height = window.innerHeight - div_height;
+
+        const random_x = Math.floor(Math.random() * width);
+        const random_y = Math.floor(Math.random() * height);
+        return [random_x, random_y];
+    }
+
+}
+/**
+ * To add a new effect create a class like so:
+
+class YourNewEffect {
+    static command = '/your-command';
+    constructor() {}
+  
+    init() {}
+  
+    handleCommand(message_parts = [], other_args = {}) {}
+  
+    enable() {}
+    disable() {}
+    stop() {}
+}
+Then add it to the `effects` static variable below
+*/
 class CustomTextTriggers {
-	static init() {
-		if (CustomTextTriggers.has_init) {
-			return;
-		}
-		CustomTextTriggers.has_init = false;
-		CustomTextTriggers.snowflake_templates = ['❅', '❆'];
-		CustomTextTriggers.snowflake_animations = ['type1', 'type2', 'type3', 'type4'];
-		CustomTextTriggers.snow_levels = [
-			{ spawn_rate: 250, spawn_limit: 10 },
-			{ spawn_rate: 250, spawn_limit: 20 },
-			{ spawn_rate: 150, spawn_limit: 20 },
-			{ spawn_rate: 75, spawn_limit: 20 },
-		];
-		CustomTextTriggers.max_erabe_time_limit_s = 20;
-		CustomTextTriggers.max_erabe_spawn_count = 15;
-		CustomTextTriggers.max_erabe_poll_options = 10;
-
-		CustomTextTriggers.padoru_images = [
-			// Yue
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/yue-padoru.png',
-			// Saber
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/saber-padoru.png',
-			// Chino
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/chino-padoru.png',
-			// Taiga
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/taiga-padoru.png',
-			// Miku
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/miku-padoru.png',
-			// Shizuru
-			'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/shizu_padoru.png',
-		];
-		CustomTextTriggers.padoru_levels = [
-			{ spawn_rate: 1000, spawn_limit: 6 },
-			{ spawn_rate: 1000, spawn_limit: 10 },
-			// { spawn_rate: 150, spawn_limit: 20 },
-			// { spawn_rate: 75, spawn_limit: 20 },
-		];
-		CustomTextTriggers.padoru_animations = ['type1', 'type2', 'type3', 'type4'];
-
-		// Maximum snowing time of 20 minutes
-		CustomTextTriggers.max_snow_time_limit_s = 1200;
-		CustomTextTriggers.max_padoru_time_limit_s = 1200;
-
-		CustomTextTriggers.state = {
-			snow: false,
-			erabe: false,
-			padoru: false,
-
-			snow_level_info: CustomTextTriggers.snow_levels[0],
-			snow_timeout: null,
-
-			padoru_level_info: CustomTextTriggers.padoru_levels[0],
-			padoru_timeout: null,
-
-			erabe_timeout: null,
-		};
-
-		CustomTextTriggers.snow_container = document.createElement('div');
-		CustomTextTriggers.erabe_container = document.createElement('div');
-		CustomTextTriggers.padoru_container = document.createElement('div');
-
-		document.documentElement.appendChild(CustomTextTriggers.snow_container);
-		document.documentElement.appendChild(CustomTextTriggers.erabe_container);
-		document.documentElement.appendChild(CustomTextTriggers.padoru_container);
-	}
-
-	static isMod(username) {
-		try {
-			let is_mod = false;
-			$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
-				if ($(this).text() === username) {
-					is_mod = true;
-					return false;
-				}
-			});
-
-			return is_mod;
-		} catch (e) { return false; }
-	}
-
-	static isFirstMod() {
-		const first_mod_element = $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').first();
-		if (!first_mod_element) {
-			return false;
-		}
-
-		return first_mod_element.text() === CLIENT.name;
-	}
-
-	static addSnowElement(element) {
-		CustomTextTriggers.snow_container.appendChild(element);
-	}
-	static addErabeElement(element) {
-		CustomTextTriggers.erabe_container.appendChild(element);
-	}
-	static addPadoruElement(element) {
-		CustomTextTriggers.padoru_container.appendChild(element);
-	}
-
-	static randomElement(array) {
-		return array[Math.floor(Math.random() * array.length)];
-	}
-
-	static createSnowflake() {
-		if (!CustomTextTriggers.state.snow) {
-			return;
-		}
-
-		const ascii = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_templates);
-		const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.snowflake_animations);
-		const random_percent = (Math.random() * 100).toFixed(4);
-
-		const outer = document.createElement('div');
-		outer.classList.add('c-effect__snowflake-outer');
-		outer.style.left = `${random_percent}%`;
-
-		const inner = document.createElement('div');
-		inner.classList.add('c-effect__snowflake');
-		inner.classList.add(animation_type);
-		inner.textContent = ascii;
-
-		outer.appendChild(inner);
-		CustomTextTriggers.addSnowElement(outer);
-		const fn = () => {
-			outer.parentElement.removeChild(outer);
-			outer.removeEventListener('animationend', fn);
-		};
-		outer.addEventListener('animationend', fn);
-	}
-
-	static createPadoru() {
-		if (!CustomTextTriggers.state.padoru) {
-			return;
-		}
-
-		const padoru_image = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_images);
-		const animation_type = CustomTextTriggers.randomElement(CustomTextTriggers.padoru_animations);
-		const random_percent = (Math.random() * 100).toFixed(4);
-
-		const outer = document.createElement('div');
-		outer.classList.add('c-effect__padoru-outer');
-		outer.classList.add(animation_type);
-		outer.style.left = `${random_percent}%`;
-
-		const shake_container = document.createElement('div');
-		shake_container.classList.add('c-effect__padoru-shake');
-
-		const inner = document.createElement('img');
-		inner.classList.add('c-effect__padoru');
-		inner.src = padoru_image;
-
-		shake_container.appendChild(inner);
-		outer.appendChild(shake_container);
-		CustomTextTriggers.addPadoruElement(outer);
-		const fn = () => {
-			outer.parentElement.removeChild(outer);
-			outer.removeEventListener('animationend', fn);
-		};
-		outer.addEventListener('animationend', fn);
-	}
-
-	static createErabe() {
-		if (!CustomTextTriggers.state.erabe) {
-		  return;
-		}
-
-		// Build the erabe element
-		const element = document.createElement('div');
-		element.classList.add('c-effect_erabe', 'js-effect-erabe');
-		element.textContent = 'erabe';
-
-		// Randomizes the location of the erabe div
-		const randomizePosition = () => {
-			const [x, y] = CustomTextTriggers.getRandomErabePosition(
-				element.offsetWidth,
-				element.offsetHeight,
-				50);
-
-			element.style.left = `${x}px`;
-			element.style.top = `${y}px`;
-		};
-		randomizePosition();
-
-		const fn = () => {
-			if (!CustomTextTriggers.state.erabe) {
-				element.parentElement.removeChild(element);
-				element.removeEventListener('animationiteration', fn);
-				return;
-			}
-
-			randomizePosition();
-		};
-		element.addEventListener('animationiteration', fn);
-
-		CustomTextTriggers.addErabeElement(element);
-	}
-	
-	static getRandomErabePosition(div_width, div_height, buffer) {
-		const width = window.innerWidth - div_width;
-		const height = window.innerHeight - div_height;
-
-		const random_x = Math.floor(Math.random() * width);
-		const random_y = Math.floor(Math.random() * height);
-		return [random_x, random_y];
-	}
-
-	/* Command handlers */
-	static handleChatMessage(msg_data) {
-		const is_shadowed = msg_data.username === CLIENT.name && msg_data.meta.shadow;
-		if (msg_data.username === "[server]" || is_shadowed || EFFECTSOFF) {
-			return;
-		}
-
-		if (!CustomTextTriggers.isMod(msg_data.username)) {
-			return;
-		}
-
-		// If this client was the one who sent the message
-		const did_send_the_message = CLIENT.name === msg_data.username;
-
-		const message_parts = msg_data.msg.trim().replace(/\s\s+/igm, ' ').split(' ');
-		if (message_parts.length <= 0 || !message_parts[0] || message_parts[0][0] !== '/') {
-			return;
-		}
-
-		switch (message_parts[0]) {
-			case '/erabe': {
-				if (message_parts[1] === 'off') {
-					CustomTextTriggers.disableErabe();
-					return;
-				}
-
-				let spawn_count = parseInt(message_parts[1] || '2', 10);
-				if (isNaN(spawn_count) || spawn_count < 1) {
-					spawn_count = 2;
-				} else if (spawn_count > CustomTextTriggers.max_erabe_spawn_count) {
-					spawn_count = CustomTextTriggers.max_erabe_spawn_count;
-				}
-
-				let time_limit_s = parseInt(message_parts[2] || '10', 10);
-				if (isNaN(time_limit_s) || time_limit_s < 1) {
-					time_limit_s = 10;
-				} else if (time_limit_s > CustomTextTriggers.max_erabe_time_limit_s) {
-					time_limit_s = CustomTextTriggers.max_erabe_time_limit_s;
-				}
-
-				let total_erabe_poll_options = parseInt(message_parts[3] || '2', 10);
-				if (isNaN(total_erabe_poll_options) || total_erabe_poll_options < 1) {
-					total_erabe_poll_options = 2;
-				} else if (total_erabe_poll_options > CustomTextTriggers.max_erabe_poll_options) {
-					total_erabe_poll_options = CustomTextTriggers.max_erabe_poll_options;
-				}
-
-				CustomTextTriggers.handleCommandErabe(
-					did_send_the_message,
-					spawn_count,
-					time_limit_s,
-					total_erabe_poll_options);
-				break;
-			}
-			case '/snow': {
-				if (message_parts[1] === 'off') {
-					CustomTextTriggers.disableSnow();
-					return;
-				}
-
-				let level = parseInt(message_parts[1] || '1', 10);
-				if (isNaN(level) || level < 1) {
-					level = 1;
-				}
-
-				let time_limit_s = parseInt(message_parts[2] || '1200', 10);
-				if (isNaN(time_limit_s) || time_limit_s < 1) {
-					time_limit_s = 10;
-				} else if (time_limit_s > CustomTextTriggers.max_snow_time_limit_s) {
-					time_limit_s = CustomTextTriggers.max_snow_time_limit_s;
-				}
-
-				CustomTextTriggers.handleCommandSnow(level, time_limit_s);
-				break;
-			}
-			case '/padoru': {
-				if (message_parts[1] === 'off') {
-					CustomTextTriggers.disablePadoru();
-					return;
-				}
-
-				let level = parseInt(message_parts[1] || '1', 10);
-				if (isNaN(level) || level < 1) {
-					level = 1;
-				}
-
-				let time_limit_s = parseInt(message_parts[2] || '1200', 10);
-				if (isNaN(time_limit_s) || time_limit_s < 1) {
-					time_limit_s = 10;
-				} else if (time_limit_s > CustomTextTriggers.max_padoru_time_limit_s) {
-					time_limit_s = CustomTextTriggers.max_padoru_time_limit_s;
-				}
-
-				CustomTextTriggers.handleCommandPadoru(level, time_limit_s);
-				break;
-			}
-			case '/effects_off': {
-				CustomTextTriggers.disableErabe();
-				CustomTextTriggers.disableSnow();
-				CustomTextTriggers.disablePadoru();
-				break;
-			}
-		}
-	}
-
-	static handleCommandErabe(
-		did_send_the_message,
-		spawn_count,
-		time_limit_s = 10,
-		total_erabe_poll_options = 2) {
-			
-		if (CustomTextTriggers.state.erabe) {
-			return;
-		}
-		CustomTextTriggers.state.erabe = true;
-
-		if (did_send_the_message) {
-			try {
-				const options = [];
-				for (let i = 1; i <= total_erabe_poll_options; i++) {
-					options.push(i.toString());
-				}
-
-				socket.emit('newPoll', {
-					title:"ERABE",
-					opts: options,
-					obscured:false,
-				});
-			} catch (e) {}
-		}
-
-		for (let i = 0; i < spawn_count; i++) {
-			CustomTextTriggers.createErabe();
-		}
-
-		// Remove all erabes after the timeout
-		if (CustomTextTriggers.state.erabe_timeout) {
-			clearTimeout(CustomTextTriggers.state.erabe_timeout);
-		}
-		CustomTextTriggers.state.erabe_timeout =
-			setTimeout(CustomTextTriggers.disableErabe, time_limit_s * 1000);
-	}
-	static disableErabe() {
-		CustomTextTriggers.state.erabe = false;
-		if (CustomTextTriggers.state.erabe_timeout) {
-			clearTimeout(CustomTextTriggers.state.erabe_timeout);
-		}
-
-		CustomTextTriggers.state.erabe_timeout = null;
-	}
-
-	static handleCommandSnow(level = 1, time_limit_s = 1200) {
-		// Update the currently used snowing level
-		let level_index = level - 1;
-		if (level_index < 0 || level_index > CustomTextTriggers.snow_levels.length) {
-			level_index = 0;
-		}
-		CustomTextTriggers.state.snow_level_info = CustomTextTriggers.snow_levels[level_index];
-
-		// Disable snow after the timeout. If there is already one, reset the timer
-		if (CustomTextTriggers.state.snow_timeout) {
-			clearTimeout(CustomTextTriggers.state.snow_timeout);
-		}
-		CustomTextTriggers.state.snow_timeout =
-			setTimeout(CustomTextTriggers.disableSnow, time_limit_s * 1000);
-
-		// Only start the snow animation if it is not already started
-		if (CustomTextTriggers.state.snow) {
-			return;
-		}
-		CustomTextTriggers.state.snow = true;
-		CustomTextTriggers._runSnowAnimation();
-	}
-	
-	static _runSnowAnimation() {
-		const create_fn = () => {
-			if (!CustomTextTriggers.state.snow) {
-				return;
-			}
-
-			const max_snowflakes = CustomTextTriggers.state.snow_level_info.spawn_limit;
-			const total = Math.floor(1 + Math.random() * (max_snowflakes - 1));
-			for (let i = 0; i < total; i++) {
-				CustomTextTriggers.createSnowflake();
-			}
-
-			setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
-		};
-		setTimeout(create_fn, CustomTextTriggers.state.snow_level_info.spawn_rate);
-	}
-	
-	static disableSnow() {
-		CustomTextTriggers.state.snow = false;
-	}
-
-	/* -------------------------------------------------------------------------- */
-	/*                            Padoru effect handler                           */
-	/* -------------------------------------------------------------------------- */
-	static handleCommandPadoru(level = 1, time_limit_s = 1200) {
-		// Update the currently used snowing level
-		let level_index = level - 1;
-		if (level_index < 0 || level_index > CustomTextTriggers.padoru_levels.length) {
-			level_index = 0;
-		}
-		CustomTextTriggers.state.padoru_level_info = CustomTextTriggers.padoru_levels[level_index];
-
-		// Disable padoru after the timeout. If there is already one, reset the timer
-		if (CustomTextTriggers.state.padoru_timeout) {
-			clearTimeout(CustomTextTriggers.state.padoru_timeout);
-		}
-		CustomTextTriggers.state.padoru_timeout =
-			setTimeout(CustomTextTriggers.disablePadoru, time_limit_s * 1000);
-
-		// Only start the padoru animation if it is not already started
-		if (CustomTextTriggers.state.padoru) {
-			return;
-		}
-		CustomTextTriggers.state.padoru = true;
-		CustomTextTriggers._runPadoruAnimation();
-	}
-	
-	static _runPadoruAnimation() {
-		const create_fn = () => {
-			if (!CustomTextTriggers.state.padoru) {
-				return;
-			}
-
-			const max_padoru = CustomTextTriggers.state.padoru_level_info.spawn_limit;
-			const total = Math.floor(1 + Math.random() * (max_padoru - 1));
-			for (let i = 0; i < total; i++) {
-				CustomTextTriggers.createPadoru();
-			}
-
-			setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
-		};
-		setTimeout(create_fn, CustomTextTriggers.state.padoru_level_info.spawn_rate);
-	}
-	
-	static disablePadoru() {
-		CustomTextTriggers.state.padoru = false;
-	}
+
+    // Only place you need to add a new effect to make it work
+    static effects = [ErabeEffect, SnowEffect, PadoruEffect, PresentsEffect];
+
+    static init() {
+        if (CustomTextTriggers.has_init) {
+            return;
+        }
+        CustomTextTriggers.has_init = false;
+
+        // Setup the effect lookup
+        CustomTextTriggers.effect_lookup = new Map();
+        for (let effect_cls of CustomTextTriggers.effects) {
+            effect_cls.init();
+            CustomTextTriggers.effect_lookup.set(effect_cls.command, 
+                {effect: effect_cls, handle: effect_cls.handleCommand});
+        }
+
+        // TODO make this "/effects arg" with some kind of handler?
+        // Add non-effect commands here
+        CustomTextTriggers.effect_lookup.set('/effects_disable', 
+            {effect: null, handle: CustomTextTriggers.disableEffects});
+        CustomTextTriggers.effect_lookup.set('/effects_enable', 
+            {effect: null, handle: CustomTextTriggers.enableEffects});
+        CustomTextTriggers.effect_lookup.set('/effects_stop', 
+            {effect: null, handle: CustomTextTriggers.stopEffects});
+
+        // testing
+        //CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
+
+    }
+
+    static isMod(username) {
+        try {
+            let is_mod = false;
+            $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
+                if ($(this).text() === username) {
+                    is_mod = true;
+                    return false;
+                }
+            });
+
+            return is_mod;
+        } catch (e) { return false; }
+    }
+
+    static isFirstMod() {
+        const first_mod_element = $("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').first();
+        if (!first_mod_element) {
+            return false;
+        }
+
+        return first_mod_element.text() === CLIENT.name;
+    }
+
+    static randomElement(array) {
+        return array[Math.floor(Math.random() * array.length)];
+    }
+
+    /* Command handlers */
+    static handleChatMessage(msg_data) {
+        const is_shadowed = msg_data.username === CLIENT.name && msg_data.meta.shadow;
+        if (msg_data.username === "[server]" || is_shadowed) {
+            return;
+        }
+
+        if (!CustomTextTriggers.isMod(msg_data.username)) {
+            return;
+        }
+
+        // If this client was the one who sent the message
+        const did_send_the_message = CLIENT.name === msg_data.username;
+
+        const message_parts = msg_data.msg.trim().toLowerCase().replace(/\s\s+/igm, ' ').split(' ');
+        if (message_parts.length <= 0 || !message_parts[0]) {
+            return;
+        }
+
+        const [effect_name, ...effect_args] = message_parts;
+        if (effect_name[0] !== '/') {
+            return;
+        }
+
+        // Build dict for any other arguments we should send
+        // This should be a dict to provide these somewhat explicitly, but support addition
+        // of future arguements without us having to modify old effect code
+        let other_args = {
+            'did_send_the_message': did_send_the_message,
+        };
+
+        // Get the command and handle command if valid
+        let command_class = CustomTextTriggers.effect_lookup.get(effect_name);
+        if (command_class !== undefined) {
+            command_class.handle(effect_args, other_args);
+        }
+    }
+
+    static disableEffects() {
+        for (let effect of CustomTextTriggers.effects) {
+            effect.disable()
+        }
+    }
+
+    static enableEffects() {
+        for (let effect of CustomTextTriggers.effects) {
+            effect.enable()
+        }
+    }
+
+    static stopEffects() {
+        for (let effect of CustomTextTriggers.effects) {
+            effect.stop()
+        }
+    }
+
+
 }
+
+
 CustomTextTriggers.init();
-checkEffects();
+
+$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+    .appendTo("#chatwrap")
+    .on("click", function() {
+        EFFECTSOFF = !EFFECTSOFF;
+        setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
+        if (EFFECTSOFF) {
+            this.className = "btn btn-sm btn-danger";
+            this.text = "Effects OFF";
+            CustomTextTriggers.disableEffects();
+        } else {
+            this.className = "btn btn-sm btn-default";
+            this.text = "Effects ON";
+
+            CustomTextTriggers.enableEffects();
+        }
+    });
+
+//checkEffects();
 
 // This is what turns the whole thing on to be run by chat messages like /erabe
 // TODO: Should we hide this behind a button being enabled? Like niconico is?
