@@ -895,9 +895,9 @@ function selectRandomLink(data) {
 								break;
 							}
 						}
-						if (!rdmFound) {
+						/*if (!rdmFound) {
 							$("#mediarefresh").click();	
-						}
+						}*/
 						iLinkRefreshes++;
 					/*} else {
 						clearInterval(rdmLinkInterval);
