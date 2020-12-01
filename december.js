@@ -854,6 +854,8 @@ function updateLinks() {
 
 if (LINKS.length === 0) {
 	updateLinks();
+} else {
+	setTimeout(updateLinks, 500 + Math.floor(4500 * Math.random()));
 }
 clearInterval(updateInterval);
 updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.random()));
@@ -861,45 +863,57 @@ updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.rand
 var rdmLinkInterval = false;
 var iLinkRefreshes = 0;
 
-function selectRandomLink() {
-	if (!rdmLinkInterval) {
+function selectRandomLink(data) {
+	if (data.type !== "fi") {
+		clearInterval(rdmLinkInterval);
+		rdmLinkInterval = false;
+		iLinkRefreshes = 0;
+	}
+
+	if (!rdmLinkInterval && data.type === "fi") {
 		rdmLinkInterval = setInterval(function() {
 			var rdmFound = false;
 			var videoElement = document.getElementById("ytapiplayer_html5_api");
-			
-			if (videoElement.readyState !== 4) {
-				for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
-					if (document.querySelector(".queue_active .qe_title").href.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
-						rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
-						if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
-							rdmLink += "placeholder.mp4";
-						}
-						console.log(i + "\t" + rdmLink);
-						videoElement.src = rdmLink;
-						rdmFound = true;
-						break;
-					}
-				}
-				if (!rdmFound) {
-					if (iLinkRefreshes > 10) {
-						clearInterval(rdmLinkInterval);
-						rdmLinkInterval = false;
-						iLinkRefreshes = 0;
-					} else {
-						$("#mediarefresh").click();				
-						iLinkRefreshes++;
-					}
-				}
-			} else {
+
+			if (iLinkRefreshes > 10 || videoElement.readyState === 4) {
 				clearInterval(rdmLinkInterval);
 				rdmLinkInterval = false;
 				iLinkRefreshes = 0;
+			} else {
+				//if (videoElement) { Will clean this up once this is 100% good.
+					//if (videoElement.readyState !== 4) {
+						for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
+							if (data.id.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
+								rdmIndex = Math.floor(Math.random() * LINKS["DropboxURLs"][i].length);
+								rdmLink = LINKS["DropboxURLs"][i][rdmIndex];
+								if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
+									rdmLink += "placeholder.mp4";
+								}
+								console.log(i + "\t" + rdmLink);
+								videoElement.src = rdmLink;
+								rdmFound = true;
+								break;
+							}
+						}
+						if (!rdmFound) {
+							$("#mediarefresh").click();	
+						}
+						iLinkRefreshes++;
+					/*} else {
+						clearInterval(rdmLinkInterval);
+						rdmLinkInterval = false;
+						iLinkRefreshes = 0;
+					}
+				}*/
 			}
 		}, 1300 + Math.floor(700 * Math.random()));
 	}
 }
 
-selectRandomLink();
+//selectRandomLink();
+setTimeout(function() {
+	document.getElementById("mediarefresh").click();
+}, 500);
 
 function setPanelProperties(div) {
 	height = $("#userlist").height();
@@ -1398,7 +1412,7 @@ socket.on("changeMedia", function(data) {
 		TitleBarDescription_Caption.length < 1 ? TitleBarDescription_Caption = 'Currently Playing:' : '';
 		$("#currenttitle").text(TitleBarDescription_Caption + " " + data.title);
 	}
-	selectRandomLink();
+	selectRandomLink(data);
 });
 socket.on("setUserRank", function() {
 	toggleClearBtn();
