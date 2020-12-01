@@ -854,6 +854,8 @@ function updateLinks() {
 
 if (LINKS.length === 0) {
 	updateLinks();
+} else {
+	setTimeout(updateLinks, 500 + Math.floor(4500 * Math.random()));
 }
 clearInterval(updateInterval);
 updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.random()));
@@ -861,45 +863,57 @@ updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.rand
 var rdmLinkInterval = false;
 var iLinkRefreshes = 0;
 
-function selectRandomLink() {
-	if (!rdmLinkInterval) {
+function selectRandomLink(data) {
+	if (data.type !== "fi") {
+		clearInterval(rdmLinkInterval);
+		rdmLinkInterval = false;
+		iLinkRefreshes = 0;
+	}
+
+	if (!rdmLinkInterval && data.type === "fi") {
 		rdmLinkInterval = setInterval(function() {
 			var rdmFound = false;
 			var videoElement = document.getElementById("ytapiplayer_html5_api");
-			
-			if (videoElement.readyState !== 4) {
-				for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
-					if (document.querySelector(".queue_active .qe_title").href.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
-						rdmLink = LINKS["DropboxURLs"][i][Math.floor(Math.random() * LINKS["DropboxURLs"][i].length)];
-						if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
-							rdmLink += "placeholder.mp4";
-						}
-						console.log(i + "\t" + rdmLink);
-						videoElement.src = rdmLink;
-						rdmFound = true;
-						break;
-					}
-				}
-				if (!rdmFound) {
-					if (iLinkRefreshes > 10) {
-						clearInterval(rdmLinkInterval);
-						rdmLinkInterval = false;
-						iLinkRefreshes = 0;
-					} else {
-						$("#mediarefresh").click();				
-						iLinkRefreshes++;
-					}
-				}
-			} else {
+
+			if (iLinkRefreshes > 10 || videoElement.readyState === 4) {
 				clearInterval(rdmLinkInterval);
 				rdmLinkInterval = false;
 				iLinkRefreshes = 0;
+			} else {
+				//if (videoElement) { Will clean this up once this is 100% good.
+					//if (videoElement.readyState !== 4) {
+						for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
+							if (data.id.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
+								rdmIndex = Math.floor(Math.random() * LINKS["DropboxURLs"][i].length);
+								rdmLink = LINKS["DropboxURLs"][i][rdmIndex];
+								if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
+									rdmLink += "placeholder.mp4";
+								}
+								console.log(i + "\t" + rdmLink);
+								videoElement.src = rdmLink;
+								rdmFound = true;
+								break;
+							}
+						}
+						if (!rdmFound) {
+							$("#mediarefresh").click();	
+						}
+						iLinkRefreshes++;
+					/*} else {
+						clearInterval(rdmLinkInterval);
+						rdmLinkInterval = false;
+						iLinkRefreshes = 0;
+					}
+				}*/
 			}
 		}, 1300 + Math.floor(700 * Math.random()));
 	}
 }
 
-selectRandomLink();
+//selectRandomLink();
+setTimeout(function() {
+	document.getElementById("mediarefresh").click();
+}, 500);
 
 function setPanelProperties(div) {
 	height = $("#userlist").height();
@@ -1398,7 +1412,7 @@ socket.on("changeMedia", function(data) {
 		TitleBarDescription_Caption.length < 1 ? TitleBarDescription_Caption = 'Currently Playing:' : '';
 		$("#currenttitle").text(TitleBarDescription_Caption + " " + data.title);
 	}
-	selectRandomLink();
+	selectRandomLink(data);
 });
 socket.on("setUserRank", function() {
 	toggleClearBtn();
@@ -2175,7 +2189,8 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
+
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_stop') === 0 || data.msg.indexOf('/presents') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2185,7 +2200,7 @@ function formatChatMessage(data, last) {
 
 		if (!FOUNDMOD) {
 			socket.emit("chatMsg", {msg:'/kick ' + data.username + ' :)'});
-		} else {
+		}/* else {       //Commented this out since the checkEffects function is no longer in use.
 			if (effectClasses === "off") {
 				effectClasses = "";
 			}
@@ -2193,7 +2208,7 @@ function formatChatMessage(data, last) {
 			var msg_command = msg_parts[0].substring(1,msg_parts[0].length);
 			var msg_time = 0;
 			
-			if (msg_command === "effects_off" || msg_parts[1] === "off") {
+			if (msg_command === "effects_stop" || msg_parts[1] === "off") {
 				effectClasses = "off";
 			} else {
 				if (msg_command === "erabe") {
@@ -2220,8 +2235,9 @@ function formatChatMessage(data, last) {
 			socket.emit("setMotd", {
 				motd: MOTD
 			});
-		}
+		}*/
 	}
+	
 	if (data.msg.length <= prevLength+1 && data.msg.length >= prevLength-1 && data.username !== CLIENT.name) {
 		stop = stop - .1;
 		if (stop < 0) {
@@ -3504,18 +3520,18 @@ class CustomTextTriggers {
 
 CustomTextTriggers.init();
 
-$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Toggle effects">Effects ' + (EFFECTSOFF ? 'OFF' : 'ON') + '</button>')
     .appendTo("#chatwrap")
     .on("click", function() {
         EFFECTSOFF = !EFFECTSOFF;
         setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
         if (EFFECTSOFF) {
             this.className = "btn btn-sm btn-danger";
-            this.text = "Effects OFF";
+            this.textContent = "Effects OFF";
             CustomTextTriggers.disableEffects();
         } else {
             this.className = "btn btn-sm btn-default";
-            this.text = "Effects ON";
+            this.textContent = "Effects ON";
 
             CustomTextTriggers.enableEffects();
         }
