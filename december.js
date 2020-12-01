@@ -2,37 +2,6 @@
 
 /* ----- DETAILED BASIC CONFIGURATION ----- */
 
-var advertisements = [
-	"আৡঊসঠচঈ1",
-	"আৡঊসঠচঈ2",
-	"আৡঊসঠচঈ3",
-	"আৡঊসঠচঈ4",
-	"আৡঊসঠচঈ5",
-	"আৡঊসঠচঈ6",
-	"আৡঊসঠচঈ7",
-	"আৡঊসঠচঈ8",
-	"আৡঊসঠচঈ9",
-	"আৡঊসঠচঈ10",
-	"আৡঊসঠচঈ11",
-	"আৡঊসঠচঈ12",
-	"আৡঊসঠচঈ13",
-	"আৡঊসঠচঈ14",
-	"আৡঊসঠচঈ15",
-	"আৡঊসঠচঈ16",
-	"আৡঊসঠচঈ17",
-	"আৡঊসঠচঈ18",
-	"আৡঊসঠচঈ19",
-	"আৡঊসঠচঈ20",
-	"আৡঊসঠচঈ21",
-	"আৡঊসঠচঈ22",
-	"আৡঊসঠচঈ23",
-	"আৡঊসঠচঈ24",
-	"আৡঊসঠচঈ25",
-	"আৡঊসঠচঈ26",
-	"আৡঊসঠচঈ27",
-	"আৡঊসঠচঈ28"
-];
-
 var adPercent = 0.1;
 
 var Favicon_URL = 'https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/tiger.png';
@@ -125,12 +94,14 @@ var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
 var PINGVOL = getOrDefault(CHANNEL.name + "_PINGVOL", 1);
 var SHOWPROF = getOrDefault(CHANNEL.name + "_SHOWPROF", false);
-var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getYear()), CHANNEL.usercount);
+var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), CHANNEL.usercount);
 var SHOWING = false;
 var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override Cytube's default limit
 // The interval of time (in ms) to flush messages to the screen
 var NICO_NICO_MESSAGE_QUEUE_TIME = getOrDefault(CHANNEL.name + "_NICO_NICO_MESSAGE_QUEUE_TIME", 100);
 var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
+var ADVERTISEMENTS = getOrDefault(CHANNEL.name + "_ADVERTISEMENTS", []);
+var LINKS = getOrDefault(CHANNEL.name + "_LINKS", {});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -865,6 +836,85 @@ $("#useroptions .modal-footer button:nth-child(1)").on("click", function() {
 // changing channel name
 ChannelName_Caption !== "" ? $(".navbar-brand").html(ChannelName_Caption) : '';
 
+var updateInterval;
+
+function updateLinks() {
+	var url = "https://spreadsheets.google.com/feeds/cells/1ae7MafgvgD3br2O4YQqMGBKff40eciKSu_U8rttiS00/oiixqoi/public/basic?alt=json";
+	$.ajax({
+		url:url,
+		dataType:"jsonp",
+		success:function(data) {
+			LINKS = JSON && JSON.parse(data.feed.entry[0].content.$t) || $.parseJSON(data.feed.entry[0].content.$t);
+            ADVERTISEMENTS =  JSON && JSON.parse(data.feed.entry[1].content.$t) || $.parseJSON(data.feed.entry[1].content.$t);
+			setOpt(CHANNEL.name + "_LINKS", LINKS);
+            setOpt(CHANNEL.name + "_ADVERTISEMENTS", ADVERTISEMENTS);
+		}
+	});
+}
+
+if (LINKS.length === 0) {
+	updateLinks();
+} else {
+	setTimeout(updateLinks, 500 + Math.floor(4500 * Math.random()));
+}
+clearInterval(updateInterval);
+updateInterval = setInterval(updateLinks, 150000 + Math.floor(180000 * Math.random()));
+
+var rdmLinkInterval = false;
+var iLinkRefreshes = 0;
+
+function selectRandomLink(data) {
+	if (data.type !== "fi") {
+		clearInterval(rdmLinkInterval);
+		rdmLinkInterval = false;
+		iLinkRefreshes = 0;
+	}
+
+	if (!rdmLinkInterval && data.type === "fi") {
+		rdmLinkInterval = setInterval(function() {
+			var rdmFound = false;
+			var videoElement = document.getElementById("ytapiplayer_html5_api");
+
+			if (iLinkRefreshes > 10 || videoElement.readyState === 4) {
+				clearInterval(rdmLinkInterval);
+				rdmLinkInterval = false;
+				iLinkRefreshes = 0;
+			} else {
+				//if (videoElement) { Will clean this up once this is 100% good.
+					//if (videoElement.readyState !== 4) {
+						for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
+							if (data.id.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
+								rdmIndex = Math.floor(Math.random() * LINKS["DropboxURLs"][i].length);
+								rdmLink = LINKS["DropboxURLs"][i][rdmIndex];
+								if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
+									rdmLink += "placeholder.mp4";
+								}
+								console.log(i + "\t" + rdmLink);
+								videoElement.src = rdmLink;
+								rdmFound = true;
+								break;
+							}
+						}
+						/*if (!rdmFound) {
+							$("#mediarefresh").click();	
+						}*/
+						iLinkRefreshes++;
+					/*} else {
+						clearInterval(rdmLinkInterval);
+						rdmLinkInterval = false;
+						iLinkRefreshes = 0;
+					}
+				}*/
+			}
+		}, 1300 + Math.floor(700 * Math.random()));
+	}
+}
+
+//selectRandomLink();
+setTimeout(function() {
+	document.getElementById("mediarefresh").click();
+}, 500);
+
 function setPanelProperties(div) {
 	height = $("#userlist").height();
 	width = $("#userlist").width();
@@ -951,6 +1001,8 @@ function makeChatPanel() {
 		$("#messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
 	}
 }
+$("#messagebuffer.linewrap img").css({"max-height": MAXH + "px","max-width": MAXW + "px"});
+
 makeChatPanel();
 chatfunc = $("#chatfunc-dropdown").detach();
 
@@ -1360,6 +1412,7 @@ socket.on("changeMedia", function(data) {
 		TitleBarDescription_Caption.length < 1 ? TitleBarDescription_Caption = 'Currently Playing:' : '';
 		$("#currenttitle").text(TitleBarDescription_Caption + " " + data.title);
 	}
+	selectRandomLink(data);
 });
 socket.on("setUserRank", function() {
 	toggleClearBtn();
@@ -2136,7 +2189,8 @@ function formatChatMessage(data, last) {
 		});
 		(CLIENT.rank > 2 && !RELOADED) ? socket.emit("chatMsg", {msg:'/kick ' + data.username + ' Quit trying to reload and enable javascript.'}) : RELOADED = false;
 	}
-	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_off') === 0)) {
+
+	if (CLIENT.rank > 2 && (data.msg.indexOf('/snow') === 0 || data.msg.indexOf('/padoru') === 0 || data.msg.indexOf('/erabe') === 0 || data.msg.indexOf('/effects_stop') === 0 || data.msg.indexOf('/presents') === 0)) {
 		var FOUNDMOD = false;
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2146,7 +2200,7 @@ function formatChatMessage(data, last) {
 
 		if (!FOUNDMOD) {
 			socket.emit("chatMsg", {msg:'/kick ' + data.username + ' :)'});
-		} else {
+		}/* else {       //Commented this out since the checkEffects function is no longer in use.
 			if (effectClasses === "off") {
 				effectClasses = "";
 			}
@@ -2154,7 +2208,7 @@ function formatChatMessage(data, last) {
 			var msg_command = msg_parts[0].substring(1,msg_parts[0].length);
 			var msg_time = 0;
 			
-			if (msg_command === "effects_off" || msg_parts[1] === "off") {
+			if (msg_command === "effects_stop" || msg_parts[1] === "off") {
 				effectClasses = "off";
 			} else {
 				if (msg_command === "erabe") {
@@ -2181,8 +2235,9 @@ function formatChatMessage(data, last) {
 			socket.emit("setMotd", {
 				motd: MOTD
 			});
-		}
+		}*/
 	}
+	
 	if (data.msg.length <= prevLength+1 && data.msg.length >= prevLength-1 && data.username !== CLIENT.name) {
 		stop = stop - .1;
 		if (stop < 0) {
@@ -2406,8 +2461,8 @@ $("#chatline").keydown(function(ev) {
 				peakTimePercent = CHANNEL.usercount/2000;
 			}*/
 			if (Math.random() < adPercent / 100) {
-				n = Math.floor(Math.random() * advertisements.length);
-				socket.emit("chatMsg", {msg:advertisements[n]});
+				n = Math.floor(Math.random() * ADVERTISEMENTS.length);
+				socket.emit("chatMsg", {msg:ADVERTISEMENTS[n]});
 			}
             var meta = {};
             if (USEROPTS.adminhat && CLIENT.rank >= 255) {
@@ -2491,18 +2546,23 @@ $("#chatline").keydown(function(ev) {
 if (CLIENT.name === "Happy") {
 	var msgLength = 10000;
 	var userLength = 10000;
+	var playlistLength = 5000;
 	var aMessagesDefault = [["Timestamp", "Username", "Message"]];
 	var aMessages = getOrDefault(CHANNEL.name + "_MSGS", aMessagesDefault.slice(0));
 	var aUserCountDefault = [["Timestamp", "Usercount"]];
 	var aUserCount = getOrDefault(CHANNEL.name + "_USERCOUNT", aUserCountDefault.slice(0));
+	var aPlaylistDefault = [["Timestamp", "Title", "Duration", "Seconds", "Type", "Link"]];
+	var aPlaylist = getOrDefault(CHANNEL.name + "_PLAYLIST", aPlaylistDefault.slice(0));
 	var downloadMsg = false;
 	var downloadUsers = false;
+	var downloadPlaylist = false;
 
 	$('<button id="dl-logs" class="btn btn-sm btn-default">DL Logs</button>')
 		.insertAfter($("#emotelistbtn"))
 		.on("click", function () {
 			downloadMsg = true;
 			downloadUsers = true;
+			downloadPlaylist = true;
 			setTimeout(function () {
 				if (downloadMsg) {
 					downloadMsg = false;
@@ -2521,8 +2581,18 @@ if (CLIENT.name === "Happy") {
 					setOpt(CHANNEL.name + "_USERCOUNT", aUserCount);
 				}
 			}, 3000);
+			setTimeout(function () {
+				if (downloadPlaylist) {
+					downloadPlaylist = false;
+					var filename = CHANNEL.name + "-PLAYLIST-" + new Date() + ".csv";
+					exportToCsv(filename, aPlaylist);
+					aPlaylist = aPlaylistDefault.slice(0);
+					setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
+				}
+			}, 3000);
 		});
 
+	removeChatSocket();
 	socket.on("chatMsg", chatSocket);
 
 	function removeChatSocket() {
@@ -2548,6 +2618,7 @@ if (CLIENT.name === "Happy") {
 		}
 	}
 
+	removeUserSocket();
 	socket.on("usercount", userSocket);
 
 	function removeUserSocket() {
@@ -2568,6 +2639,30 @@ if (CLIENT.name === "Happy") {
 			exportToCsv(filename, aUserCount);
 			aUserCount = aUserCountDefault.slice(0);
 			setOpt(CHANNEL.name + "_USERCOUNT", aUserCount);
+		}
+	}
+
+	removeMediaSocket();
+	socket.on("changeMedia", mediaSocket);
+
+	function removeMediaSocket() {
+		socket.on("changeMedia", mediaSocket);
+	}
+
+	function mediaSocket(data) {
+		aPlaylist[aPlaylist.length] = [new Date().getTime(), data.title, "`" + data.duration, data.seconds, data.type, data.id];
+		if (aPlaylist.length > playlistLength || downloadPlaylist) {
+			downloadPlaylist = false;
+			var filename = CHANNEL.name + "-PLAYLIST-" + new Date() + ".csv";
+			exportToCsv(filename, aPlaylist);
+			aPlaylist = aPlaylistDefault.slice(0);
+		}
+		try {
+			setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
+		} catch {
+			exportToCsv(filename, aMessages);
+			aMessages = aMessagesDefault.slice(0);
+			setOpt(CHANNEL.name + "_PLAYLIST", aPlaylist);
 		}
 	}
 
@@ -2676,6 +2771,7 @@ $("#mediaurl").on("paste", function() {
 
 
 /* I commented this out as I dont think its needed anymore. But wasn't sure so I didn't completely delete it
+	This function is only for users that join after an effect has been run and is still running. Right now, there is no effect if they rejoin.
  function checkEffects() {
 	if (!EFFECTSOFF) {
 		var effectClassList = document.getElementById("effects").className.trim().split(" ");
@@ -3008,7 +3104,7 @@ class SnowEffect {
         { spawn_rate: 250, spawn_limit: 10 },
         { spawn_rate: 250, spawn_limit: 20 },
         { spawn_rate: 150, spawn_limit: 20 },
-        { spawn_rate: 75, spawn_limdddddddddit: 20 },
+        { spawn_rate: 75, spawn_limit: 20 },
     ];
     static max_time_limit_s = 1200;
 
@@ -3305,7 +3401,7 @@ Then add it to the `effects` static variable below
 class CustomTextTriggers {
 
     // Only place you need to add a new effect to make it work
-    static effects = [ErabeEffect, SnowEffect, PadoruEffect, PresentsEffect];
+    static effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, /*PresentsEffect*/];
 
     static init() {
         if (CustomTextTriggers.has_init) {
@@ -3331,7 +3427,7 @@ class CustomTextTriggers {
             {effect: null, handle: CustomTextTriggers.stopEffects});
 
         // testing
-        //CustomTextTriggers.effect_lookup.get('/padoru').handle('', []);
+        //CustomTextTriggers.effect_lookup.get('/padoru').handle([], {});
 
     }
 
@@ -3424,18 +3520,18 @@ class CustomTextTriggers {
 
 CustomTextTriggers.init();
 
-$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Turn off effects">Effects OFF</button>')
+$('<button id="effectsbtn" class="btn btn-sm ' + (EFFECTSOFF ? 'btn-danger' : 'btn-default') + '" title="Toggle effects">Effects ' + (EFFECTSOFF ? 'OFF' : 'ON') + '</button>')
     .appendTo("#chatwrap")
     .on("click", function() {
         EFFECTSOFF = !EFFECTSOFF;
         setOpt(CHANNEL.name + "_EFFECTSOFF", EFFECTSOFF);
         if (EFFECTSOFF) {
             this.className = "btn btn-sm btn-danger";
-            this.text = "Effects OFF";
+            this.textContent = "Effects OFF";
             CustomTextTriggers.disableEffects();
         } else {
             this.className = "btn btn-sm btn-default";
-            this.text = "Effects ON";
+            this.textContent = "Effects ON";
 
             CustomTextTriggers.enableEffects();
         }
