@@ -2508,7 +2508,7 @@ $("#chatline").keydown(function(ev) {
     }
     else if(ev.keyCode == 9) { // Tab completion
         try {
-            chatTabComplete();
+            chatTabComplete(ev.target);
         } catch (error) {
             console.error(error);
         }
