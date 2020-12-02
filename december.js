@@ -94,7 +94,7 @@ var PLAYERHTML = '';
 var PINGLINK = getOrDefault(CHANNEL.name + "_PINGLINK", "");
 var PINGVOL = getOrDefault(CHANNEL.name + "_PINGVOL", 1);
 var SHOWPROF = getOrDefault(CHANNEL.name + "_SHOWPROF", false);
-var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), 598); // CHANNEL.usercount - Day 2 max users.. forgot to change the code in the other section..
+var MAXUSERS = getOrDefault(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), CHANNEL.usercount);
 var SHOWING = false;
 var CHATMAXSIZE = getOrDefault(CHANNEL.name + "_CHATMAXSIZE", 150);	// Override Cytube's default limit
 // The interval of time (in ms) to flush messages to the screen
@@ -1500,12 +1500,6 @@ currenttimebtn = $('<button id="findtime" class="btn btn-xs btn-default" title="
 		}
 });
 
-socket.on("usercount", function(data) {
-	if (MAXUSERS < data) {
-		MAXUSERS = data;
-	}
-});
-
 $('<span id="maxusers" title="Maximum Autists">' + MAXUSERS + ' max autists</span>')
 	.appendTo("#chatheader")
 
@@ -1516,13 +1510,14 @@ Callbacks.usercount = function(count) {
             text += "s";
         }
         $("#usercount").text(text);
-    }
+		
+	if (MAXUSERS < count) {
+		MAXUSERS = count;
+		$("#maxusers").text(MAXUSERS + " max autists");
+		setOpt(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), MAXUSERS);
+	}
+};
 Callbacks.usercount(CHANNEL.usercount);
-
-setInterval(function() {
-	$("#maxusers").text(MAXUSERS + " max autists");
-	setOpt(CHANNEL.name + "_MAXUSERS" + (new Date().getFullYear()), MAXUSERS);
-}, 5000);
 
 function getScrollbarWidth() {
 	var outer = document.createElement("div");
