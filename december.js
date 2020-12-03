@@ -1385,7 +1385,8 @@ $(window).resize(function() {
 socket.on("channelOpts", setUserCSS);
 socket.on("channelCSSJS", setUserCSS);
 var q240480 = $('li[title="240"],li[title="480"]');
-socket.on("mediaUpdate", function() {
+socket.on("mediaUpdate", function(data) {
+	CurrentVideoTime = data.currentTime;
 	if (PLAYER.mediaType == "gd") {
 		q240480.hide();
 	} else if (q240480.css("display") == "none") {
@@ -1399,6 +1400,7 @@ socket.on("usercount", function () {
 socket.on("addUser", showProfiles);
 socket.on("setAFK", showProfiles);
 socket.on("changeMedia", function(data) {
+    updateEndTimes(0);
 	videoLength = data.seconds;
 	changeTitle();
 	setModeAfterVideoChange();
@@ -2636,7 +2638,7 @@ if (CLIENT.name === "Happy") {
 	socket.on("changeMedia", mediaSocket);
 
 	function removeMediaSocket() {
-		socket.on("changeMedia", mediaSocket);
+		socket.off("changeMedia", mediaSocket);
 	}
 
 	function mediaSocket(data) {
@@ -2712,24 +2714,129 @@ showbgbtn = $('<p id="showbg" class="navbar-text" title="Show background" style=
 		}
 });
 
-function addUsernameToPlaylist() {
-    var PLTimeList = Array.from(document.getElementsByClassName("qe_time")).forEach(function (PLCurrElement) {
-        if (PLCurrElement.getAttribute("class").indexOf("qe_userAdded") === -1) {
-            var qeuser = document.createElement("span");
-            qeuser.setAttribute("class","qe_user");
-            qeuser.textContent = PLCurrElement.parentElement.getAttribute("title").replace("Added by: ", "") + " | ";
-            qeuser.setAttribute("style","float:right;padding-right:3px;");
-            PLCurrElement.setAttribute("class", PLCurrElement.getAttribute("class") + " qe_userAdded");
+var CurrentVideoTime = 0;
 
-            PLCurrElement.parentElement.insertBefore(qeuser, PLCurrElement.nextSibling);
-        }
-    });
-}
-addUsernameToPlaylist();
-
-socket.on("queue", function (queueArray) {
-	setTimeout(addUsernameToPlaylist, 500);
+socket.on("delete", function() {
+    updateEndTimes(CurrentVideoTime);
 });
+
+
+function updateEndTimesOnLoad() {
+    var PLTimeList = Array.from(document.getElementsByClassName("qe_time")).forEach(function (PLCurrElement) {
+        var qeEndTime = document.createElement("span");
+        qeEndTime.setAttribute("class", "qe_endTime");
+
+        PLCurrElement.parentElement.insertBefore(qeEndTime, PLCurrElement.nextSibling);
+
+        var qeuser = document.createElement("span");
+        qeuser.setAttribute("class", "qe_user");
+        qeuser.textContent = PLCurrElement.parentElement.getAttribute("title").replace("Added by: ", "") + " | ";
+
+        PLCurrElement.parentElement.insertBefore(qeuser, PLCurrElement.nextSibling);
+    });
+	updateEndTimes(CurrentVideoTime);
+}
+
+function makeQueueEntry(item, addbtns) {
+    var video = item.media;
+    var li = $("<li/>");
+    li.addClass("queue_entry");
+    li.addClass("pluid-" + item.uid);
+    li.data("uid", item.uid);
+    li.data("media", video);
+    li.data("temp", item.temp);
+    if(video.thumb) {
+        $("<img/>").attr("src", video.thumb.url)
+            .css("float", "left")
+            .css("clear", "both")
+            .appendTo(li);
+    }
+    var title = $("<a/>").addClass("qe_title").appendTo(li)
+        .text(video.title)
+        .attr("href", formatURL(video))
+        .attr("target", "_blank");
+    var time = $("<span/>").addClass("qe_time").appendTo(li);
+    time.text(video.duration);
+    var userAdded = $("<span/>").addClass("qe_user").appendTo(li);
+    userAdded.text(item.queueby + " | ");
+	var endTime = $("<span/>").addClass("qe_endTime").appendTo(li);
+    var clear = $("<div/>").addClass("qe_clear").appendTo(li);
+    if(item.temp) {
+        li.addClass("queue_temp");
+    }
+
+    if(addbtns)
+        addQueueButtons(li);
+	
+	setTimeout(function() {
+		updateEndTimes(CurrentVideoTime);
+	}, 100);
+    return li;
+}
+
+function updateEndTimes(CurrentVideoTime) {
+    var currentTime = new Date().getTime();
+    var activeItemPosition = Array.from(document.getElementById("queue").children).indexOf(document.getElementsByClassName("queue_active")[0]);
+
+    var PLTimeList = document.getElementsByClassName("qe_time");
+    var PLEndTimeList = document.getElementsByClassName("qe_endTime") || false;
+    var PLSeconds = 0;
+
+	if (PLTimeList.length !== 0) {
+		if (document.getElementsByClassName("qe_endTime").length === 0) {
+			updateEndTimesOnLoad();
+		}
+
+		if (activeItemPosition !== 0) {
+			for (var j = 0; j < activeItemPosition; j++) {
+				PLEndTimeList[j].textContent = "";
+			}
+		}
+
+		var maxItems = 50;
+		var maxPosition = 0;
+		
+		if (PLTimeList.length < activeItemPosition + maxItems) {
+			maxPosition = PLTimeList.length;
+		} else {
+			maxPosition = activeItemPosition + maxItems;			
+			for (var j = maxPosition; j < PLTimeList.length; j++) {
+				PLEndTimeList[j].textContent = "";
+			}
+		}
+
+		for (var i = activeItemPosition; i < maxPosition; i++) {
+			var currSplitTime = PLTimeList[i].textContent.split(":");
+			if (currSplitTime.length === 3) {
+				PLSeconds += parseInt(currSplitTime[0]) * 60 * 60;
+			}
+			PLSeconds += parseInt(currSplitTime[currSplitTime.length-2]) * 60;
+			PLSeconds += parseInt(currSplitTime[currSplitTime.length-1]);
+			PLSeconds += 3; //video player delay
+
+			if (i === activeItemPosition) {
+				PLSeconds = PLSeconds - CurrentVideoTime;
+			}
+
+			var updatedTime = new Date(currentTime + PLSeconds * 1000);
+			var isPM = updatedTime.getHours() >= 12;
+			var isMidday = updatedTime.getHours() == 12;
+
+			var updatedHours = updatedTime.getHours() - (isPM && !isMidday ? 12 : 0);
+
+			var updatedMins = updatedTime.getMinutes().toString();
+			if (updatedMins.length === 1) {
+				updatedMins = "0" + updatedMins;
+			}
+			var updatedSecs = updatedTime.getSeconds().toString();
+			if (updatedSecs.length === 1) {
+				updatedSecs = "0" + updatedSecs;
+			}
+
+			PLEndTimeList[i].textContent = "Ends at " + updatedHours + ":" + updatedMins + ":" + updatedSecs + (isPM ? ' PM' : ' AM') + " | ";
+		}
+	}
+}
 
 $('<div id="adAlert1"></div>').insertBefore($("#main"));
 $('<div id="adAlert2"></div>').insertBefore($("#main"));
