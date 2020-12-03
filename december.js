@@ -102,6 +102,7 @@ var NICO_NICO_MESSAGE_QUEUE_TIME = getOrDefault(CHANNEL.name + "_NICO_NICO_MESSA
 var EFFECTSOFF = getOrDefault(CHANNEL.name + "_EFFECTSOFF", false);
 var ADVERTISEMENTS = getOrDefault(CHANNEL.name + "_ADVERTISEMENTS", []);
 var LINKS = getOrDefault(CHANNEL.name + "_LINKS", {});
+var AUTOREFRESH = getOrDefault(CHANNEL.name + "_AUTOREFRESH", false);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -865,31 +866,52 @@ var iLinkRefreshes = 0;
 var activeLink = "";
 var videoElement = false;
 
+function clearRdmLinkStuff() {
+	clearInterval(rdmLinkInterval);
+	rdmLinkInterval = false;
+	iLinkRefreshes = 0;
+	randomizing = false;
+}
+
+autorefreshbtn = $('<button id="autorefreshbtn" class="btn btn-sm ' + (!AUTOREFRESH ? 'btn-danger' : 'btn-default') + '" title="Toggle to auto refresh the player. Please note this is still experimental.">Auto Refresh ' + (!AUTOREFRESH ? 'OFF' : 'ON') + '</button>')
+	.appendTo("#playercontrols")
+	.on("click", function() {
+		AUTOREFRESH = !AUTOREFRESH;
+		setOpt(CHANNEL.name + "_AUTOREFRESH", AUTOREFRESH);
+		if (AUTOREFRESH) {
+			this.className = "btn btn-sm btn-default";
+			this.textContent = "Auto Refresh ON";
+		} else {
+			this.className = "btn btn-sm btn-danger";
+			this.textContent = "Auto Refresh OFF";
+			clearRdmLinkStuff();
+		}
+	});
+
 function selectRandomLink(data) {
 	videoElement = document.getElementById("ytapiplayer_html5_api") || false;
 	activeLink = data.id;
 	
 	if (data.type !== "fi" || !videoElement || iLinkRefreshes > 15) {
-		clearInterval(rdmLinkInterval);
-		rdmLinkInterval = false;
-		iLinkRefreshes = 0;
+		clearRdmLinkStuff();
 	}
 
 	if (data.type === "fi") {
 		randomizeLink(activeLink, videoElement);
 
-		rdmLinkInterval = setInterval(function() {
-			console.log("this is an interval");
-			videoElement = document.getElementById("ytapiplayer_html5_api") || false;
+		if (AUTOREFRESH && !rdmLinkInterval) {
+			rdmLinkInterval = setInterval(function() {
+				console.log("this is an interval");
+				videoElement = document.getElementById("ytapiplayer_html5_api") || false;
+				vidError = videoElement.error || false;
 
-			if (iLinkRefreshes > 15 || videoElement.readyState === 4) {
-				clearInterval(rdmLinkInterval);
-				rdmLinkInterval = false;
-				iLinkRefreshes = 0;
-			} else {
-				randomizeLink(activeLink, videoElement);
-			}
-		}, 1550 + Math.floor(700 * Math.random()));
+				if (vidError) {
+					randomizeLink(activeLink, videoElement);
+				} else { //if (iLinkRefreshes > 15 || videoElement.readyState !== 0)
+					clearRdmLinkStuff();
+				}
+			}, 2050 + Math.floor(700 * Math.random()));
+		}
 	}
 
 	function randomizeLink(PLLink, vidElemPassed) {
@@ -897,11 +919,17 @@ function selectRandomLink(data) {
 			if (PLLink.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
 				rdmIndex = Math.floor(Math.random() * LINKS["DropboxURLs"][i].length);
 				rdmLink = LINKS["DropboxURLs"][i][rdmIndex];
-				if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
-					rdmLink += "placeholder.mp4";
+			 	if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
+					rdmLink = PLLink;
 				}
 				console.log(i + "\t" + rdmLink);
-				setTimeout(function() {vidElemPassed.src = rdmLink;}, 250);
+				setTimeout(function() {
+					vidElemPassed.addEventListener("loadedmetadata", clearRdmLinkStuff); // fastest
+					vidElemPassed.addEventListener("loadeddata", clearRdmLinkStuff); // paranoia
+
+					vidElemPassed.src = rdmLink;
+					vidElemPassed.load();
+				}, 500);
 				break;
 			}
 		}
