@@ -11,7 +11,7 @@ body {background-image:url(https://files.catbox.moe/bt3zbg.jpg);
 }
 
 /*Changes the color of the text*/
-body, header, p, #mainpage, .userlist_owner,.userlist_op,.userlist_guest, a, .navbar-brand, .navbar-text, .navbar-link {color:#A1C5FF !important;}
+body, header, p, #mainpage, .userlist_owner,.userlist_op,.userlist_guest, a, .navbar-brand, .navbar-text, .navbar-link{color:#A1C5FF !important;}
 body, header, p {color:#ffa500;}
 
 /*Alternate message backgrounds*/
@@ -44,9 +44,9 @@ SPAN#usercount.pointer {
     transition: transform 50.25s;
 }
 
-/*https://dl.dropbox.com/s/enbb6b5ezdfkx0q/ami%20face.png*/
+/*https://dl.dropbox.com/s/enbb6b5ezdfkx0q/ami%20face.png
 #messagebuffer{background-image:url("https://upload.wikimedia.org/wikipedia/commons/6/6d/Shinz%C5%8D_Abe_Official.jpg");background-size:cover;}
-#messagebuffer div{opacity:0.9;}
+#messagebuffer div{opacity:0.9;}*/
 
 /*marquee, #messagebuffer {
 	font-family: "Comic Sans MS";
@@ -136,3 +136,5 @@ SPAN#usercount.pointer {
 }*/
 
 /*#adChat {background-image:url("https://res.cloudinary.com/sfp/image/upload/q_80/cste/fedb41df-0986-484f-aa77-7e2c7dea3a8c.jpeg"); width:531px; height: 499px;}*/
+
+/*.username::before{background:url('https://files.catbox.moe/aaal7u.png')!important;}*/

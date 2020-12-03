@@ -84,6 +84,13 @@ Fuck Firefox */
 }
 
 
+/* ----- Playlist User & End Time ----- */
+
+.qe_user, .qe_endTime {
+	float:right;
+	padding-right:3px;
+}
+
 /* ----- Nico chat ----- */
 #vidchat {
     position:absolute;
