@@ -1389,6 +1389,9 @@ socket.on("channelOpts", setUserCSS);
 socket.on("channelCSSJS", setUserCSS);
 var q240480 = $('li[title="240"],li[title="480"]');
 socket.on("mediaUpdate", function(data) {
+	if (Math.abs(data.currentTime - CurrentVideoTime) > 5.1) {
+		updateEndTimes(Math.floor(data.currentTime));
+	}
 	CurrentVideoTime = data.currentTime;
 	if (PLAYER.mediaType == "gd") {
 		q240480.hide();
@@ -1403,7 +1406,7 @@ socket.on("usercount", function () {
 socket.on("addUser", showProfiles);
 socket.on("setAFK", showProfiles);
 socket.on("changeMedia", function(data) {
-    updateEndTimes(0);
+    updateEndTimes(Math.floor(data.currentTime));
 	videoLength = data.seconds;
 	changeTitle();
 	setModeAfterVideoChange();
@@ -2178,7 +2181,9 @@ function formatChatMessage(data, last) {
 	if (data.msg.indexOf('/reload') === 0 && data.msg.indexOf('<') < 10) {
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
-				location.reload();
+				setTimeout(function() {
+					location.reload();
+				}, Math.floor(CHANNEL.usercount * 33 * Math.random()));
 				RELOADED = true;
 			}
 		});
@@ -2742,7 +2747,6 @@ function updateEndTimesOnLoad() {
 
         PLCurrElement.parentElement.insertBefore(qeuser, PLCurrElement.nextSibling);
     });
-	updateEndTimes(CurrentVideoTime);
 }
 
 function makeQueueEntry(item, addbtns) {
@@ -2831,6 +2835,9 @@ function updateEndTimes(CurrentVideoTime) {
 			var isMidday = updatedTime.getHours() == 12;
 
 			var updatedHours = updatedTime.getHours() - (isPM && !isMidday ? 12 : 0);
+			if (updatedHours === 0) {
+				updatedHours = 12;
+			}
 
 			var updatedMins = updatedTime.getMinutes().toString();
 			if (updatedMins.length === 1) {
