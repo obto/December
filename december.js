@@ -865,12 +865,13 @@ var rdmLinkInterval = false;
 var iLinkRefreshes = 0;
 var activeLink = "";
 var videoElement = false;
+var rdmLinkFound = false;
 
 function clearRdmLinkStuff() {
 	clearInterval(rdmLinkInterval);
 	rdmLinkInterval = false;
 	iLinkRefreshes = 0;
-	randomizing = false;
+	rdmLinkFound = false;
 }
 
 autorefreshbtn = $('<button id="autorefreshbtn" class="btn btn-sm ' + (!AUTOREFRESH ? 'btn-danger' : 'btn-default') + '" title="Toggle to auto refresh the player. Please note this is still experimental.">Auto Refresh ' + (!AUTOREFRESH ? 'OFF' : 'ON') + '</button>')
@@ -892,9 +893,7 @@ function selectRandomLink(data) {
 	videoElement = document.getElementById("ytapiplayer_html5_api") || false;
 	activeLink = data.id;
 	
-	if (data.type !== "fi" || !videoElement || iLinkRefreshes > 15) {
-		clearRdmLinkStuff();
-	}
+	clearRdmLinkStuff();
 
 	if (data.type === "fi") {
 		randomizeLink(activeLink, videoElement);
@@ -906,7 +905,12 @@ function selectRandomLink(data) {
 				vidError = videoElement.error || false;
 
 				if (vidError) {
-					randomizeLink(activeLink, videoElement);
+					if (rdmLinkFound) {
+						randomizeLink(activeLink, videoElement);
+					} else {
+						//document.getElementById("mediarefresh").click();
+						clearRdmLinkStuff();
+					}
 				} else { //if (iLinkRefreshes > 15 || videoElement.readyState !== 0)
 					clearRdmLinkStuff();
 				}
@@ -917,6 +921,7 @@ function selectRandomLink(data) {
 	function randomizeLink(PLLink, vidElemPassed) {
 		for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
 			if (PLLink.indexOf(LINKS["DropboxURLs"][i][0]) > -1) {
+				rdmLinkFound = true;
 				rdmIndex = Math.floor(Math.random() * LINKS["DropboxURLs"][i].length);
 				rdmLink = LINKS["DropboxURLs"][i][rdmIndex];
 			 	if (rdmLink.indexOf("dropbox.com") > -1 && rdmLink[rdmLink.length-1] === "/") {
