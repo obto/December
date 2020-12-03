@@ -2801,11 +2801,90 @@ $("#mediaurl").on("paste", function() {
 	}
 }*/
 
+loli_ecchi_imgs = ['https://cdn.discordapp.com/attachments/461364788560265216/747867038759911464/illust_83400981_20200825_115636.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/749528784285204490/1598762170390.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783532979506118686/EgtFUecUMAASmp7.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/750571629020446801/shoujo_ramune_popsicle.gif',
+'https://cdn.discordapp.com/attachments/782748631429939212/783532664161828894/sample-a6abb9c8f4a837681923eb0e6ef656f9.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/782749417065152592/DpsNKnWXoAA3Jxd.jpg_orig.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/779462109724409926/85798754_p0.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783534560373768242/hinatsuru_ai_sora_ginko_and_yashajin_ai_ryuuou_no_oshigoto_drawn_by_gyozanuko__9af647c9a42674c0898bc.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/779155458967207976/Selection_027.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/778848529585930270/eila_ilmatar_juutilainen_world_witches_series_and_1_more_drawn_by_konnyaku_kk_monmon__d49a68555bd7d2.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/778633606913720360/kyouka_princess_connect_and_1_more_drawn_by_lydia601304__175b2b72883b968b8afc13366c9fc1db.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783534739658637342/Ems4nlbVoAMM-YU.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/775945146231160832/suzuran_arknights_drawn_by_dm_dai_miao__2a0fbad0815bb421b0fe0f381deef905.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/779161868673089586/unknown.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/779719707007516692/tailred_ore_twintail_ni_narimasu_drawn_by_henet_hene__8bc640707b48230e2ecde8e2449238e4.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/772344912284352552/1604211281246.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783535633913348096/EoEluBRVoAE4eCP.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/754700958264459264/pIq6wVLbv0gtw4bVIHlz3WZt.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/781881244676784140/illust_73393645_20201127_085449.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/754701008621535322/Y1eLdnk0M2t5HvAiYRpMKQZf.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/754701046252830761/mbT3m3g3BzuiJtonHKowjnOV.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/754701057271136276/Ok8g85hE81heLQdyZstIhc4J.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/762126371581198346/izumi_sagiri_eromanga_sensei_drawn_by_misashi_raichi821__be1d81f154e10137efcdfa8708e9b54d.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/763238810208698368/illust_83400981_20200825_115636.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/763238810590249010/1679213-78b4adbe75-00000004.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/763238811349155850/1679213-78b4adbe75-00000011.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783539005718396938/EkX9hsRVcB8fwWi.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783539655429718046/EmOXJyCVMAAp8XZ.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783538954691412018/EkXq0WcVkAYkJMK.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/765714284369543168/EkLbOKKUYAE-1P7.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/763238811760984094/502pTnA.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/763238811059617832/1679213-78b4adbe75-00000008.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783537911546118155/C_8Xqu3VwAA5cbP.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783537170676973578/Eh5VDUCUMAAivGp.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/754700901666783322/eYQVo2lQ1bhDl4bq7vzaLXn0.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783536883333857350/Ehs_jdmU0AAtNsM.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783536611140567080/EmOXJyCVMAAp8XZ.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/778403948826460160/05a70f8541ece5c2f360c8300e617e1e.gif',
+'https://cdn.discordapp.com/attachments/461364788560265216/781881245021896714/illust_77635682_20201127_085551.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/782098429043146752/ca8a651e7b17794127df8a83089d574d.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/774744941665452062/kanna_kamui_kobayashi_san_chi_no_maidragon_drawn_by_yinpa_wanone500511__5ffc0ad171e818cfc2f79cef47d5.jpg',
+'https://cdn.discordapp.com/attachments/735163948781011136/775392651582242816/illust_77493981_20201109_111212.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/774753067198840832/1604660069419.jpg'];
+
+
+normal_ecchi_imgs = ['https://cdn.discordapp.com/attachments/782748631429939212/783533130593861683/Eg4CA_QVoAEXox4.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783533367885824032/Egv_9umVkAAHW9P.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783533430511108116/EgwAeESU8AE8ER5.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783172415253381160/sistine_fiber_and_rumia_tingel_rokudenashi_majutsu_koushi_to_akashic_record_drawn_by_mishima_kurone_.png',
+'https://cdn.discordapp.com/attachments/261926483440697344/783361815803068486/ElJlSkoXgAATyUo.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783093398911057950/shirakami_fubuki_hololive_drawn_by_fumihiko_pixiv2658856__ce9097d74615ea7ba3ae01a2311c24e9.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783534020218454037/En1CKAKUUAAFhjd.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/781713631959842816/85810053_p0_master1200.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/781403375841181716/Ent08GTUwAgywUK.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/779815711815761940/Em_oGQOVEAEHqms.jpeg',
+'https://cdn.discordapp.com/attachments/595338247740325889/779808618664296478/85485297_p0.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/779808604085551164/85402475_p0.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/779744379803795466/minato_yukina_bang_dream_drawn_by_lambda_kusowarota__19f946d65faf790ec089aaf0d91d5ad4.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/775415317580873818/shiori_princess_connect_and_1_more_drawn_by_kemeko_s065026__dc26ff3e2ec906979e4e454d5573dd00.jpg',
+'https://cdn.discordapp.com/attachments/595338247740325889/774872886212952104/84438094_p0_master1200.jpg',
+'https://cdn.discordapp.com/attachments/735163948781011136/783394162098962523/fate_testarossa_and_takamachi_nanoha_lyrical_nanoha_and_2_more_drawn_by_kuroi_mimei__ba543986a2fb7ca.jpg',
+'https://cdn.discordapp.com/attachments/735163948781011136/779628645945180160/16059483412107831327737417915261.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/783180087238459432/mashu_c_drawn_by_kuro_mushi__5922acee18846eba192c1f26cf7814cd.png',
+'https://cdn.discordapp.com/attachments/595338247740325889/780081920918814720/EnWtWJ1WMAQSIhu.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/775155178654793758/1604834736777.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/774771681242644480/798.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/772121531702444042/kokkoro_princess_connect_and_1_more_drawn_by_neps_l__7bfb536f2adfb19183c9f218e1cfb7cc.jpg',
+'https://cdn.discordapp.com/attachments/735163948781011136/772121157703958548/karyl_princess_connect_and_1_more_drawn_by_neps_l__34e2dab3fd2b37b565bb5148aab419d5.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783534270743707709/EnftOw0VkAMDK8R.png',
+'https://cdn.discordapp.com/attachments/735163948781011136/770765386320314428/illust_85275211_20201027_174550.jpg',
+'https://cdn.discordapp.com/attachments/782748631429939212/783537848342413312/Ejac2N6VgAAlVK0.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783537778120982529/sample-9aa9660b35fb88761fbc7508473c90b0.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/762174988358778900/1601786327587.gif',
+'https://cdn.discordapp.com/attachments/461364788560265216/764610789021188106/1602366850152.jpg',
+'https://cdn.discordapp.com/attachments/461364788560265216/766526014355669062/karyl_princess_connect_and_1_more_drawn_by_eretto__2f547bc3e4aa5b4ab6f26ebe6b3c16dd.png',
+'https://cdn.discordapp.com/attachments/461364788560265216/754907355430518874/1600053885481.png',
+'https://cdn.discordapp.com/attachments/782748631429939212/783537227824627742/Eh8dzBGUwAEujCx.png'];
+
 class PresentsEffect {
     static command = '/presents';
     static shiz_img = 'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png';
+    static present_img = 'https://cdn.discordapp.com/attachments/782748631429939212/783923289705414666/present-150291_1280-293x300.png';
     static presents_duration_s = 20;
-    static present_animations = ['type1', 'type2', 'type3', 'type4'];
+    static present_animations = ['type1', 'type2', 'type3', 'type4', 'type5', 'type6']
     static levels = [
         { spawn_rate: 1000, spawn_limit: 6 },
         { spawn_rate: 1000, spawn_limit: 10 },
@@ -2814,12 +2893,7 @@ class PresentsEffect {
     static versions = {
         'normal': {
             padoru: PresentsEffect.shiz_img,
-            img_bank: [
-                'https://cdn.discordapp.com/attachments/162409148909223936/781038166915547136/sample_64688cb11e7f37d58eca70a6709e4ceb.jpg',
-                'https://cdn.discordapp.com/attachments/162409148909223936/780983025059627089/Efr2CGlVAAAk5_X.png',
-                'https://cdn.discordapp.com/attachments/162409148909223936/780961390239678504/85881312_p0_master1200.jpg',
-                'https://cdn.discordapp.com/attachments/483446980605902848/781295276778323988/1363841058659.gif'
-            ]
+            img_bank: [].concat(normal_ecchi_imgs, loli_ecchi_imgs)
         },
     }
     ///////////////////////////////////////////
@@ -2882,11 +2956,62 @@ class PresentsEffect {
         }
         const face_img = PresentsEffect.state.version.padoru;
 
-        const face_effect = document.createElement('img')
-        face_effect.classList.add('c-effect__presents-face');
+        const face_effect = document.createElement('img');
+        face_effect.classList.add('c-effect__presents-face-inner');
         face_effect.src = face_img;
-        PresentsEffect.addElement(face_effect);
 
+        const outer = document.createElement('div');
+        outer.classList.add('c-effect__presents-face-outer');
+        
+        const fling1 = document.createElement('img')
+        fling1.classList.add('c-effect__presents-face-fling');
+        fling1.classList.add('c-effect__presents-face-fling-type1');
+        fling1.src = PresentsEffect.present_img;
+        
+        const fling2 = document.createElement('img')
+        fling2.classList.add('c-effect__presents-face-fling');
+        fling2.classList.add('c-effect__presents-face-fling-type2');
+        fling2.src = PresentsEffect.present_img;
+        
+        const fling3 = document.createElement('img')
+        fling3.classList.add('c-effect__presents-face-fling');
+        fling3.classList.add('c-effect__presents-face-fling-type3');
+        fling3.src = PresentsEffect.present_img;
+        outer.appendChild(face_effect);
+        outer.appendChild(fling1);
+        outer.appendChild(fling2);
+        outer.appendChild(fling3);
+        /*
+        const outer1 = document.createElement('div');
+        outer1.classList.add('c-effect__presents-face-outer');
+        fling1.src = PresentsEffect.present_img;
+        //outer1.appendChild(fling1);
+        //PadoruEffect.addElement(outer1);
+        
+        const outer2 = document.createElement('div');
+        outer2.classList.add('c-effect__presents-face-outer');
+        const fling2 = document.createElement('img')
+        fling2.classList.add('c-effect__presents-face-fling');
+        fling2.classList.add('c-effect__presents-face-fling-type2');
+        fling2.src = PresentsEffect.present_img;
+        //outer2.appendChild(fling2);
+        //PadoruEffect.addElement(outer2);
+        
+        const outer3 = document.createElement('div');
+        outer3.classList.add('c-effect__presents-face-outer');
+        const fling3 = document.createElement('img')
+        fling3.classList.add('c-effect__presents-face-fling');
+        fling3.classList.add('c-effect__presents-face-fling-type3');
+        fling3.src = PresentsEffect.present_img;
+        //outer3.appendChild(fling3);
+        //PadoruEffect.addElement(outer3);
+       
+        outer.appendChild(fling1);
+        outer.appendChild(fling2);
+        outer.appendChild(fling3);
+*/
+        
+        PadoruEffect.addElement(outer);
         const fn = () =>{
             face_effect.parentElement.removeChild(face_effect);
             face_effect.removeEventListener('animationend', fn);
@@ -2924,8 +3049,8 @@ class PresentsEffect {
         let random_location = (Math.random() * 35 + offset).toFixed(4);
 
         const inner = document.createElement('img')
+        inner.classList.add(`c-effect__presents-present-fall`);
         inner.classList.add(`c-effect__presents-present-fall-${animation}`);
-        //inner.classList.add(animation);
         inner.style.left = `${random_location}%`; 
         inner.src = present_img;
         PresentsEffect.addElement(inner);
@@ -3513,8 +3638,6 @@ class CustomTextTriggers {
             effect.stop()
         }
     }
-
-
 }
 
 
