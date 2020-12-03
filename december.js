@@ -2723,6 +2723,11 @@ socket.on("delete", function() {
     updateEndTimes(CurrentVideoTime);
 });
 
+socket.on("moveVideo", function() {
+	setTimeout(function() {
+		updateEndTimes(CurrentVideoTime)
+	}, 500);
+});
 
 function updateEndTimesOnLoad() {
     var PLTimeList = Array.from(document.getElementsByClassName("qe_time")).forEach(function (PLCurrElement) {
