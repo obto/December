@@ -685,7 +685,7 @@ span.glyphicon.glyphicon-time {
     transform-origin: center;
     user-select: none;
     pointer-events: none;
-    opacity: 0.80;
+    opacity: 0.90;
 }
 .c-effect__presents-present-fall-type1 {
     height: 15%;

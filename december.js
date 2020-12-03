@@ -2995,7 +2995,7 @@ class PresentsEffect {
     static command = '/presents';
     static shiz_img = 'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png';
     static present_img = 'https://cdn.discordapp.com/attachments/782748631429939212/783923289705414666/present-150291_1280-293x300.png';
-    static presents_duration_s = 20;
+    static presents_duration_s = 30;
     static present_animations = ['type1', 'type2', 'type3', 'type4', 'type5', 'type6']
     static levels = [
         { spawn_rate: 1000, spawn_limit: 6 },
