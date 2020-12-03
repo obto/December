@@ -254,6 +254,12 @@ footer {padding-bottom:5px}
 .chat-msg-_North .username::before {
 background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/kagami.ico');
 }
+.chat-msg-ShizuruAnon .username::before {
+background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/shiz_icon.png');
+}
+.chat-msg-tsukarin .username::before {
+background:url('https://cdn.jsdelivr.net/gh/HappyHub1/December/Images/wafu_icon.png');
+}
 .username::before{
 	content:"AA";
 	background-size:20px 20px !important;
