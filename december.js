@@ -869,25 +869,28 @@ function selectRandomLink(data) {
 	videoElement = document.getElementById("ytapiplayer_html5_api") || false;
 	activeLink = data.id;
 	
-	if (data.type !== "fi" || !videoElement || iLinkRefreshes > 10) {
+	if (data.type !== "fi" || !videoElement || iLinkRefreshes > 15) {
 		clearInterval(rdmLinkInterval);
 		rdmLinkInterval = false;
 		iLinkRefreshes = 0;
 	}
 
-	randomizeLink(activeLink, videoElement);
+	if (data.type === "fi") {
+		randomizeLink(activeLink, videoElement);
 
-	rdmLinkInterval = setInterval(function() {
-		videoElement = document.getElementById("ytapiplayer_html5_api") || false;
+		rdmLinkInterval = setInterval(function() {
+			console.log("this is an interval");
+			videoElement = document.getElementById("ytapiplayer_html5_api") || false;
 
-		if (iLinkRefreshes > 10 || videoElement.readyState === 4) {
-			clearInterval(rdmLinkInterval);
-			rdmLinkInterval = false;
-			iLinkRefreshes = 0;
-		} else {
-			randomizeLink(activeLink, videoElement);
-		}
-	}, 1300 + Math.floor(700 * Math.random()));
+			if (iLinkRefreshes > 15 || videoElement.readyState === 4) {
+				clearInterval(rdmLinkInterval);
+				rdmLinkInterval = false;
+				iLinkRefreshes = 0;
+			} else {
+				randomizeLink(activeLink, videoElement);
+			}
+		}, 1550 + Math.floor(700 * Math.random()));
+	}
 
 	function randomizeLink(PLLink, vidElemPassed) {
 		for (var i = 0; i < LINKS["DropboxURLs"].length; i++) {
