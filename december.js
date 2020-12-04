@@ -2996,22 +2996,22 @@ class PresentsEffect {
     // "Public" Static methods
     ///////////////////////////////////////////
     static init() {
-	    PresentsEffect.command = '/presents';
-	    PresentsEffect.shiz_img = 'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png';
-	    PresentsEffect.present_img = 'https://cdn.discordapp.com/attachments/782748631429939212/783923289705414666/present-150291_1280-293x300.png';
-	    PresentsEffect.presents_duration_s = 30;
-	    PresentsEffect.present_animations = ['type1', 'type2', 'type3', 'type4', 'type5', 'type6']
-	    PresentsEffect.levels = [
-		{ spawn_rate: 1000, spawn_limit: 6 },
-		{ spawn_rate: 1000, spawn_limit: 10 },
-	    ];
+        PresentsEffect.command = '/presents';
+        PresentsEffect.shiz_img = 'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png';
+        PresentsEffect.present_img = 'https://cdn.discordapp.com/attachments/782748631429939212/783923289705414666/present-150291_1280-293x300.png';
+        PresentsEffect.presents_duration_s = 30;
+        PresentsEffect.present_animations = ['type1', 'type2', 'type3', 'type4', 'type5', 'type6']
+        PresentsEffect.levels = [
+            { spawn_rate: 1000, spawn_limit: 6 },
+            { spawn_rate: 1000, spawn_limit: 10 },
+        ];
 
-	    PresentsEffect.versions = {
-		'normal': {
-		    padoru: PresentsEffect.shiz_img,
-		    img_bank: [].concat(normal_ecchi_imgs, loli_ecchi_imgs)
-		},
-	    }
+        PresentsEffect.versions = {
+            'normal': {
+                padoru: PresentsEffect.shiz_img,
+                img_bank: [].concat(normal_ecchi_imgs, loli_ecchi_imgs)
+            },
+        }
         PresentsEffect.state = {
             is_on: false,
             enabled: true,
@@ -3074,17 +3074,17 @@ class PresentsEffect {
 
         const outer = document.createElement('div');
         outer.classList.add('c-effect__presents-face-outer');
-        
+
         const fling1 = document.createElement('img')
         fling1.classList.add('c-effect__presents-face-fling');
         fling1.classList.add('c-effect__presents-face-fling-type1');
         fling1.src = PresentsEffect.present_img;
-        
+
         const fling2 = document.createElement('img')
         fling2.classList.add('c-effect__presents-face-fling');
         fling2.classList.add('c-effect__presents-face-fling-type2');
         fling2.src = PresentsEffect.present_img;
-        
+
         const fling3 = document.createElement('img')
         fling3.classList.add('c-effect__presents-face-fling');
         fling3.classList.add('c-effect__presents-face-fling-type3');
@@ -3097,127 +3097,127 @@ class PresentsEffect {
         const outer1 = document.createElement('div');
         outer1.classList.add('c-effect__presents-face-outer');
         fling1.src = PresentsEffect.present_img;
-        //outer1.appendChild(fling1);
-        //PadoruEffect.addElement(outer1);
-        
+                                    //outer1.appendChild(fling1);
+                                    //PadoruEffect.addElement(outer1);
+
         const outer2 = document.createElement('div');
         outer2.classList.add('c-effect__presents-face-outer');
         const fling2 = document.createElement('img')
         fling2.classList.add('c-effect__presents-face-fling');
         fling2.classList.add('c-effect__presents-face-fling-type2');
         fling2.src = PresentsEffect.present_img;
-        //outer2.appendChild(fling2);
-        //PadoruEffect.addElement(outer2);
-        
+//outer2.appendChild(fling2);
+//PadoruEffect.addElement(outer2);
+
         const outer3 = document.createElement('div');
         outer3.classList.add('c-effect__presents-face-outer');
         const fling3 = document.createElement('img')
         fling3.classList.add('c-effect__presents-face-fling');
         fling3.classList.add('c-effect__presents-face-fling-type3');
         fling3.src = PresentsEffect.present_img;
-        //outer3.appendChild(fling3);
-        //PadoruEffect.addElement(outer3);
-       
+//outer3.appendChild(fling3);
+//PadoruEffect.addElement(outer3);
+
         outer.appendChild(fling1);
         outer.appendChild(fling2);
         outer.appendChild(fling3);
-*/
-        
-        PadoruEffect.addElement(outer);
-        const fn = () =>{
-            face_effect.parentElement.removeChild(face_effect);
-            face_effect.parentElement.removeChild(fling1);
-            face_effect.parentElement.removeChild(fling2);
-            face_effect.parentElement.removeChild(fling3);
-            face_effect.removeEventListener('animationend', fn);
-        }
-        face_effect.addEventListener('animationend', fn);
-    }
+        */
 
-    static _runPresentsAnimation() {
-        const create_fn = (is_left) => {
-            if (!PresentsEffect.state.is_on) {
-                return;
-            }
+PadoruEffect.addElement(outer);
+const fn = () =>{
+    face_effect.parentElement.removeChild(face_effect);
+    face_effect.parentElement.removeChild(fling1);
+    face_effect.parentElement.removeChild(fling2);
+    face_effect.parentElement.removeChild(fling3);
+    face_effect.removeEventListener('animationend', fn);
+}
+face_effect.addEventListener('animationend', fn);
+}
 
-            PresentsEffect._create_present(is_left);
-            setTimeout(() => create_fn(!is_left), PresentsEffect.state.level.spawn_rate);
-        };
-        setTimeout(() => create_fn(true), PresentsEffect.state.level.spawn_rate);
-    }
-    static _create_present(is_left){
-        if (!PresentsEffect.state.is_on || !PresentsEffect.state.enabled) {
+static _runPresentsAnimation() {
+    const create_fn = (is_left) => {
+        if (!PresentsEffect.state.is_on) {
             return;
         }
 
-        //const present_img = PresentsEffect.shiz_img; // replace with random
-        const present_img = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
-        const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
-
-        let offset = -500;
-        if (is_left) {
-            offset = 10;
-        }
-        else {
-            offset = 55;
-        }
-        let random_location = (Math.random() * 35 + offset).toFixed(4);
-
-        const inner = document.createElement('img')
-        inner.classList.add(`c-effect__presents-present-fall`);
-        inner.classList.add(`c-effect__presents-present-fall-${animation}`);
-        inner.style.left = `${random_location}%`; 
-        inner.src = present_img;
-        PresentsEffect.addElement(inner);
-
-        const fn = () => {
-            inner.parentElement.removeChild(inner);
-            inner.removeEventListener('animationend', fn);
-        };
-        inner.addEventListener('animationend', fn);
+        PresentsEffect._create_present(is_left);
+        setTimeout(() => create_fn(!is_left), PresentsEffect.state.level.spawn_rate);
+    };
+    setTimeout(() => create_fn(true), PresentsEffect.state.level.spawn_rate);
+}
+static _create_present(is_left){
+    if (!PresentsEffect.state.is_on || !PresentsEffect.state.enabled) {
+        return;
     }
+
+    //const present_img = PresentsEffect.shiz_img; // replace with random
+    const present_img = CustomTextTriggers.randomElement(PresentsEffect.state.version.img_bank);
+    const animation = CustomTextTriggers.randomElement(PresentsEffect.present_animations);
+
+    let offset = -500;
+    if (is_left) {
+        offset = 10;
+    }
+    else {
+        offset = 55;
+    }
+    let random_location = (Math.random() * 35 + offset).toFixed(4);
+
+    const inner = document.createElement('img')
+    inner.classList.add(`c-effect__presents-present-fall`);
+    inner.classList.add(`c-effect__presents-present-fall-${animation}`);
+    inner.style.left = `${random_location}%`; 
+    inner.src = present_img;
+    PresentsEffect.addElement(inner);
+
+    const fn = () => {
+        inner.parentElement.removeChild(inner);
+        inner.removeEventListener('animationend', fn);
+    };
+    inner.addEventListener('animationend', fn);
+}
 }
 class PadoruEffect {
     ///////////////////////////////////////////
     // Static variables
     ///////////////////////////////////////////
-    
+
 
     ///////////////////////////////////////////
-    // "Public" Static methods
-    ///////////////////////////////////////////
-    static init() {
-        PadoruEffect.command = '/padoru';
-    PadoruEffect.animations = ['type1', 'type2', 'type3', 'type4'];
-    PadoruEffect.max_padoru_time_limit_s = 1200;
-    PadoruEffect.levels = [
-        { spawn_rate: 1000, spawn_limit: 6 },
-        { spawn_rate: 1000, spawn_limit: 10 },
-    ];
-    PadoruEffect.images = [
-        // Yue
-        'https://cdn.discordapp.com/emojis/655099097237422130.png',
-        // Saber
-        'https://cdn.discordapp.com/emojis/519149153746550785.png',
-        // Chino
-        'https://cdn.discordapp.com/attachments/375406879553093633/659064801217085498/chino-padoru.png',
-        // Taiga
-        'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
-        // Miku
-        'https://cdn.discordapp.com/attachments/518340427506647042/659073537809711104/miku-padoru.png',
-        // Shizuru
-        'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
-    ];
-	    
-	    PadoruEffect.state = {
-            is_on: false,
-            enabled: true,
-            level_info: PadoruEffect.levels[0],
-            timeout: null,
-        };
-        PadoruEffect.container = document.createElement('div');
-        document.documentElement.appendChild(PadoruEffect.container);
-    }
+        // "Public" Static methods
+        ///////////////////////////////////////////
+        static init() {
+            PadoruEffect.command = '/padoru';
+            PadoruEffect.animations = ['type1', 'type2', 'type3', 'type4'];
+            PadoruEffect.max_padoru_time_limit_s = 1200;
+            PadoruEffect.levels = [
+                { spawn_rate: 1000, spawn_limit: 6 },
+                { spawn_rate: 1000, spawn_limit: 10 },
+            ];
+            PadoruEffect.images = [
+                // Yue
+                'https://cdn.discordapp.com/emojis/655099097237422130.png',
+                // Saber
+                'https://cdn.discordapp.com/emojis/519149153746550785.png',
+                // Chino
+                'https://cdn.discordapp.com/attachments/375406879553093633/659064801217085498/chino-padoru.png',
+                // Taiga
+                'https://cdn.discordapp.com/attachments/466273613092225046/659068018696912906/taiga-padoru.png',
+                // Miku
+                'https://cdn.discordapp.com/attachments/518340427506647042/659073537809711104/miku-padoru.png',
+                // Shizuru
+                'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
+            ];
+
+            PadoruEffect.state = {
+                is_on: false,
+                enabled: true,
+                level_info: PadoruEffect.levels[0],
+                timeout: null,
+            };
+            PadoruEffect.container = document.createElement('div');
+            document.documentElement.appendChild(PadoruEffect.container);
+        }
 
     static stop() {
         PadoruEffect.state.is_on = false;
@@ -3339,31 +3339,31 @@ class SnowEffect {
     ///////////////////////////////////////////
     // Static variables
     ///////////////////////////////////////////
-    
+
 
     ///////////////////////////////////////////
-    // "Public" Static methods
-    ///////////////////////////////////////////
-    static init() {
-        SnowEffect.command = '/snow';
-    SnowEffect.templates = ['❅', '❆'];
-    SnowEffect.animations = ['type1', 'type2', 'type3', 'type4'];
-    SnowEffect.levels = [
-        { spawn_rate: 250, spawn_limit: 10 },
-        { spawn_rate: 250, spawn_limit: 20 },
-        { spawn_rate: 150, spawn_limit: 20 },
-        { spawn_rate: 75, spawn_limit: 20 },
-    ];
-    SnowEffect.max_time_limit_s = 1200;
-	    SnowEffect.state = {
-            is_on: false,
-            enabled: true,
-            level_info: SnowEffect.levels[0],
-            timeout: null,
+        // "Public" Static methods
+        ///////////////////////////////////////////
+        static init() {
+            SnowEffect.command = '/snow';
+            SnowEffect.templates = ['❅', '❆'];
+            SnowEffect.animations = ['type1', 'type2', 'type3', 'type4'];
+            SnowEffect.levels = [
+                { spawn_rate: 250, spawn_limit: 10 },
+                { spawn_rate: 250, spawn_limit: 20 },
+                { spawn_rate: 150, spawn_limit: 20 },
+                { spawn_rate: 75, spawn_limit: 20 },
+            ];
+            SnowEffect.max_time_limit_s = 1200;
+            SnowEffect.state = {
+                is_on: false,
+                enabled: true,
+                level_info: SnowEffect.levels[0],
+                timeout: null,
+            }
+            SnowEffect.container = document.createElement('div');
+            document.documentElement.appendChild(SnowEffect.container);
         }
-        SnowEffect.container = document.createElement('div');
-        document.documentElement.appendChild(SnowEffect.container);
-    }
     static stop() {
         SnowEffect.state.is_on = false;
     }
@@ -3478,27 +3478,27 @@ class ErabeEffect {
     /////////////////////////////////////////// 
 
     ///////////////////////////////////////////
-    // "Public" Static methods
-    ///////////////////////////////////////////
-    static init() {
-	    
-    ErabeEffect.command = '/erabe';
-    ErabeEffect.max_time_limit_s = 20;
-    ErabeEffect.max_spawn_count = 15;
-    ErabeEffect.max_poll_options = 10;
-        ErabeEffect.state = {
-            is_on: false,
-            enabled: true,
-            timeout: null,
-        }
-        ErabeEffect.container = document.createElement('div');
-        document.documentElement.appendChild(ErabeEffect.container);
-    };
+        // "Public" Static methods
+        ///////////////////////////////////////////
+        static init() {
+
+            ErabeEffect.command = '/erabe';
+            ErabeEffect.max_time_limit_s = 20;
+            ErabeEffect.max_spawn_count = 15;
+            ErabeEffect.max_poll_options = 10;
+            ErabeEffect.state = {
+                is_on: false,
+                enabled: true,
+                timeout: null,
+            }
+            ErabeEffect.container = document.createElement('div');
+            document.documentElement.appendChild(ErabeEffect.container);
+        };
     static addElement(element) {
         ErabeEffect.container.appendChild(element);
     }
     static handleCommand(message_parts = [], other_args = {}){
-        
+
         let did_send_the_message = other_args.did_send_the_message;
 
         let [spawn_count, time_limit_s, total_erabe_poll_options] =
@@ -3631,11 +3631,11 @@ class ErabeEffect {
 class YourNewEffect {
     static command = '/your-command';
     constructor() {}
-  
+
     init() {}
-  
+
     handleCommand(message_parts = [], other_args = {}) {}
-  
+
     enable() {}
     disable() {}
     stop() {}
@@ -3644,11 +3644,11 @@ Then add it to the `effects` static variable below
 */
 class CustomTextTriggers {
 
-    
+
 
     static init() {
-	    // Only place you need to add a new effect to make it work
-    CustomTextTriggers.effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, PresentsEffect];
+        // Only place you need to add a new effect to make it work
+        CustomTextTriggers.effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, PresentsEffect];
         if (CustomTextTriggers.has_init) {
             return;
         }
