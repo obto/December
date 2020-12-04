@@ -3181,14 +3181,20 @@ class PadoruEffect {
     ///////////////////////////////////////////
     // Static variables
     ///////////////////////////////////////////
-    static command = '/padoru';
-    static animations = ['type1', 'type2', 'type3', 'type4'];
-    static max_padoru_time_limit_s = 1200;
-    static levels = [
+    
+
+    ///////////////////////////////////////////
+    // "Public" Static methods
+    ///////////////////////////////////////////
+    static init() {
+        PadoruEffect.command = '/padoru';
+    PadoruEffect.animations = ['type1', 'type2', 'type3', 'type4'];
+    PadoruEffect.max_padoru_time_limit_s = 1200;
+    PadoruEffect.levels = [
         { spawn_rate: 1000, spawn_limit: 6 },
         { spawn_rate: 1000, spawn_limit: 10 },
     ];
-    static images = [
+    PadoruEffect.images = [
         // Yue
         'https://cdn.discordapp.com/emojis/655099097237422130.png',
         // Saber
@@ -3202,12 +3208,8 @@ class PadoruEffect {
         // Shizuru
         'https://cdn.discordapp.com/attachments/375406879553093633/659201454497595402/shiz_padoru2.png',
     ];
-
-    ///////////////////////////////////////////
-    // "Public" Static methods
-    ///////////////////////////////////////////
-    static init() {
-        PadoruEffect.state = {
+	    
+	    PadoruEffect.state = {
             is_on: false,
             enabled: true,
             level_info: PadoruEffect.levels[0],
@@ -3337,22 +3339,23 @@ class SnowEffect {
     ///////////////////////////////////////////
     // Static variables
     ///////////////////////////////////////////
-    static command = '/snow';
-    static templates = ['❅', '❆'];
-    static animations = ['type1', 'type2', 'type3', 'type4'];
-    static levels = [
-        { spawn_rate: 250, spawn_limit: 10 },
-        { spawn_rate: 250, spawn_limit: 20 },
-        { spawn_rate: 150, spawn_limit: 20 },
-        { spawn_rate: 75, spawn_limit: 20 },
-    ];
-    static max_time_limit_s = 1200;
+    
 
     ///////////////////////////////////////////
     // "Public" Static methods
     ///////////////////////////////////////////
     static init() {
-        SnowEffect.state = {
+        SnowEffect.command = '/snow';
+    SnowEffect.templates = ['❅', '❆'];
+    SnowEffect.animations = ['type1', 'type2', 'type3', 'type4'];
+    SnowEffect.levels = [
+        { spawn_rate: 250, spawn_limit: 10 },
+        { spawn_rate: 250, spawn_limit: 20 },
+        { spawn_rate: 150, spawn_limit: 20 },
+        { spawn_rate: 75, spawn_limit: 20 },
+    ];
+    SnowEffect.max_time_limit_s = 1200;
+	    SnowEffect.state = {
             is_on: false,
             enabled: true,
             level_info: SnowEffect.levels[0],
@@ -3473,15 +3476,16 @@ class ErabeEffect {
     ///////////////////////////////////////////
     // Static variables
     /////////////////////////////////////////// 
-    static command = '/erabe';
-    static max_time_limit_s = 20;
-    static max_spawn_count = 15;
-    static max_poll_options = 10;
 
     ///////////////////////////////////////////
     // "Public" Static methods
     ///////////////////////////////////////////
     static init() {
+	    
+    ErabeEffect.command = '/erabe';
+    ErabeEffect.max_time_limit_s = 20;
+    ErabeEffect.max_spawn_count = 15;
+    ErabeEffect.max_poll_options = 10;
         ErabeEffect.state = {
             is_on: false,
             enabled: true,
@@ -3640,10 +3644,11 @@ Then add it to the `effects` static variable below
 */
 class CustomTextTriggers {
 
-    // Only place you need to add a new effect to make it work
-    static effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, PresentsEffect];
+    
 
     static init() {
+	    // Only place you need to add a new effect to make it work
+    CustomTextTriggers.effects = [ErabeEffect, /*SnowEffect, */PadoruEffect, PresentsEffect];
         if (CustomTextTriggers.has_init) {
             return;
         }
