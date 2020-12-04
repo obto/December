@@ -465,10 +465,10 @@ span.glyphicon.glyphicon-time {
 }
 
 .c-effect__presents-face-inner {
-    z-index:10000;
+    z-index:20000;
     user-select: none;
     pointer-events: none;
-    opacity: 0.9;
+    opacity: 0.95;
     height: 175px;
     width: 175px;
     animation-timing-function: linear;
