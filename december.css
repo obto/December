@@ -450,7 +450,7 @@ span.glyphicon.glyphicon-time {
     bottom: -180px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-move;
-    animation-duration: 34s;
+    animation-duration: 33.5s;
 }
 
 @keyframes effect__presents-face-move {
@@ -473,7 +473,7 @@ span.glyphicon.glyphicon-time {
     width: 175px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-spin;
-    animation-duration: 34s;
+    animation-duration: 33.5s;
 }
 
 .c-effect__presents-face-fling {
@@ -485,7 +485,7 @@ span.glyphicon.glyphicon-time {
     width: 50px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-fling1;
-    animation-duration: 34s;
+    animation-duration: 33.5s;
 }
 
 .c-effect__presents-face-fling-type1 {
@@ -537,9 +537,6 @@ span.glyphicon.glyphicon-time {
     75.5% {transform: translate(-87.5px) translateY(0);} 
     79% {transform: translateX(-87.5px) translateY(-2200px);} 
     
-    86.499% {transform: translateX(-87.5px) translateY(-2200px);}
-    86.5% {transform: translate(-87.5px) translateY(0);} 
-    90% {transform: translateX(-87.5px) translateY(-2200px);} 
     100% {transform: translateX(-87.5px) translateY(-2200px);} 
 }
 @keyframes effect__presents-face-fling2{
@@ -580,9 +577,6 @@ span.glyphicon.glyphicon-time {
     75.5% {transform: translate(-112.5px) translateY(0);} 
     79% {transform: translateX(-600px) translateY(-2200px);} 
     
-    86.499% {transform: translateX(-112.5px) translateY(-2200px);}
-    86.5% {transform: translate(-112.5px) translateY(0);} 
-    90% {transform: translateX(-600px) translateY(-2200px);} 
     100% {transform: translateX(-600px) translateY(-2200px);} 
 }
 @keyframes effect__presents-face-fling3{
@@ -623,9 +617,6 @@ span.glyphicon.glyphicon-time {
     75.5% {transform: translate(-162.5px) translateY(0);} 
     79% {transform: translateX(600px) translateY(-2200px);} 
     
-    86.499% {transform: translateX(-162.5px) translateY(-2200px);}
-    86.5% {transform: translate(-162.5px) translateY(0);} 
-    90% {transform: translateX(600px) translateY(-2200px);} 
     100% {transform: translateX(600px) translateY(-2200px);} 
 }
 
@@ -692,7 +683,7 @@ span.glyphicon.glyphicon-time {
     opacity: 0.95;
 }
 .c-effect__presents-present-fall-type1 {
-    height: 15%;
+    height: 23%;
     animation-name: effect__presents-fall1;
 }
 .c-effect__presents-present-fall-type2 {
