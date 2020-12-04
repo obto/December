@@ -450,7 +450,7 @@ span.glyphicon.glyphicon-time {
     bottom: -180px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-move;
-    animation-duration: 35s;
+    animation-duration: 34s;
 }
 
 @keyframes effect__presents-face-move {
@@ -473,7 +473,7 @@ span.glyphicon.glyphicon-time {
     width: 175px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-spin;
-    animation-duration: 35s;
+    animation-duration: 34s;
 }
 
 .c-effect__presents-face-fling {
@@ -485,7 +485,7 @@ span.glyphicon.glyphicon-time {
     width: 50px;
     animation-timing-function: linear;
     animation-name: effect__presents-face-fling1;
-    animation-duration: 35s;
+    animation-duration: 34s;
 }
 
 .c-effect__presents-face-fling-type1 {
