@@ -680,7 +680,7 @@ span.glyphicon.glyphicon-time {
     height: 15%;
     z-index: 10000;
     animation-name: effect__presents-fall1;
-    animation-duration: 7s;
+    animation-duration: 5s;
     animation-timing-function: linear;
     transform-origin: center;
     user-select: none;
