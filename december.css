@@ -458,8 +458,10 @@ span.glyphicon.glyphicon-time {
     1% { transform: translateX(-250px) translateY(-175px);}
     43% {transform: translateX(500px) translateY(-175px);}
     86% {transform: translateX(-250px) translateY(-175px);}
-    87% {transform: translateX(-350px) translateY(0);}
-    100% {transform: translateX(-350px) translateY(0);}
+    
+    91% {transform: translateX(350px) translateY(-175px);}
+    95% {transform: translateX(-250px) translateY(-175px);}
+    100% {transform: translateX(350px) translateY(0);}
 }
 
 .c-effect__presents-face-inner {
@@ -668,10 +670,12 @@ span.glyphicon.glyphicon-time {
     76% {transform: translateY(0) rotateY(180deg);}
     
     86% {transform: translateY(0) rotateY(180deg);}
-    86.5% {transform: translateY(-10px) rotateY(0deg);}
-    87% {transform: translateY(0) rotateY(180deg);}
+    86.5% {transform: translateY(-10px) rotateY(-180deg);}
+    87% {transform: translateY(0) rotateY(0deg);}
     
-    100% {transform: translateY(0) rotateY(180deg);}
+    91% {transform: translateY(0) rotateY(540deg);}
+    95% {transform: translateY(0) rotateY(0deg);}
+    100% {transform: translateY(0) rotateY(540deg);}
 }
 
 
@@ -680,7 +684,7 @@ span.glyphicon.glyphicon-time {
     height: 15%;
     z-index: 10000;
     animation-name: effect__presents-fall1;
-    animation-duration: 5s;
+    animation-duration: 4s;
     animation-timing-function: linear;
     transform-origin: center;
     user-select: none;

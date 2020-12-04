@@ -3126,6 +3126,9 @@ class PresentsEffect {
         PadoruEffect.addElement(outer);
         const fn = () =>{
             face_effect.parentElement.removeChild(face_effect);
+            face_effect.parentElement.removeChild(fling1);
+            face_effect.parentElement.removeChild(fling2);
+            face_effect.parentElement.removeChild(fling3);
             face_effect.removeEventListener('animationend', fn);
         }
         face_effect.addEventListener('animationend', fn);
