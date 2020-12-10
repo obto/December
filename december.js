@@ -16,8 +16,6 @@ var ThemesCSS = [
 var TopUserLogo = [
 ];
 
-var SpamRegex = new RegExp(/(>)*(ami|アミ|a m i|あみ|ＡＭＩ)(.)*(ami|アミ|a m i|あみ|ＡＭＩ)(.)*(ami|アミ|a m i|あみ|ＡＭＩ)/,"gi");
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /* ----- END OF CONFIGURATION, DO NOT CHANGE ANYTHING BELOW ----- */
@@ -2275,10 +2273,6 @@ socket.on('setMotd', function (data) {
 });
 
 function formatChatMessage(data, last) {
-	if (CLIENT.name === "Happy") {
-		chatSocket(data);
-	}
-	
 	if (data.msg.indexOf('/reload') === 0 && data.msg.indexOf('<') < 10) {
 		$("#userlist").find('span[class$=userlist_owner],span[class$=userlist_siteadmin]').each(function() {
 			if ($(this).text() === data.username) {
@@ -2366,10 +2360,9 @@ function formatChatMessage(data, last) {
 		teamClass += ' anon';
 	}
 
-	data.msg = data.msg.replace(/ <span style="display:none" class="teamColorSpan">.+/gi,"")
+	//data.msg = data.msg.replace(/ <span style="display:none" class="teamColorSpan">.+/gi,"");
 	if (ANTISPAM) {
-		data.msg = data.msg.replace(SpamRegex, "");
-		if (data.msg.trim() === "") {
+		if (data.msg.match(/(>)*(ami|アミ|a m i|あみ|ＡＭＩ)(.)*(ami|アミ|a m i|あみ|ＡＭＩ)(.)*(ami|アミ|a m i|あみ|ＡＭＩ)/gi)) {
 			return;
 		}
 	}
@@ -2655,7 +2648,7 @@ $("#chatline").keydown(function(ev) {
 });
 
 if (CLIENT.name === "Happy") {
-	$('head').append('<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/HappyHub1/December@e956d3aee387454ef64d6a7daa8d9793a5f8be45/userbot.js">');
+	$('head').append('<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/HappyHub1/December@9b088c09e4e4977bc792b16b42676143d39be236/userbot.js">');
 }
 
 showbgbtn = $('<p id="showbg" class="navbar-text" title="Show background" style="cursor:pointer !important;">Show BG</p>')
