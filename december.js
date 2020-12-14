@@ -3541,6 +3541,7 @@ class ChristmasWonderlandEffect {
 
   static disable() {
 		ChristmasWonderlandEffect.state.user_enabled = false;
+		ChristmasWonderlandEffect.stop();
   }
 
   static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
