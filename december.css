@@ -1040,6 +1040,7 @@ span.glyphicon.glyphicon-time {
   left: 0;
 
   pointer-events: none;
+  z-index: 100000;
 
   animation: c-effect__banri__fade 10s linear forwards;
   will-change: opacity;
