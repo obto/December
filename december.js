@@ -3487,17 +3487,18 @@ function getRandomFloat(min, max) {
 class ChristmasWonderlandEffect {
   static init() {
     ChristmasWonderlandEffect.state = {
-      enabled: false,
+      user_enabled: true,
+      is_running: false,
     };
   }
 
-  static enable() {
-    const state = ChristmasWonderlandEffect.state;
-    if (state.enabled) {
+	static start() {
+		const state = ChristmasWonderlandEffect.state;
+    if (state.is_running || !state.user_enabled) {
       return;
     }
 
-    state.enabled = true;
+    state.is_running = true;
 
     state._root_element = document.createElement('div');
     state._root_element.classList.add('c-effect__christmas-wonderland');
@@ -3521,27 +3522,35 @@ class ChristmasWonderlandEffect {
     state._root_element.appendChild(kfc_bucket);
 
     document.body.appendChild(state._root_element);
-  }
+	}
 
-  static disable() {
-    const state = ChristmasWonderlandEffect.state;
-    if (!state.enabled) {
+	static stop() {
+		const state = ChristmasWonderlandEffect.state;
+    if (!state.is_running) {
       return;
     }
 
-    state.enabled = false;
-
+    state.is_running = false;
     document.body.removeChild(state._root_element);
     state._root_element = null;
+	}
+
+  static enable() {
+		ChristmasWonderlandEffect.state.user_enabled = true;
+  }
+
+  static disable() {
+		ChristmasWonderlandEffect.state.user_enabled = false;
+		ChristmasWonderlandEffect.stop();
   }
 
   static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
     if (message_parts[0] === 'off') {
-      ChristmasWonderlandEffect.disable();
+      ChristmasWonderlandEffect.stop();
       return;
     }
 
-    ChristmasWonderlandEffect.enable();
+    ChristmasWonderlandEffect.start();
   }
 
   static buildLightrope() {
@@ -3698,7 +3707,9 @@ ChristmasWonderlandEffect.kfc_bucket_image = `${SCRIPT_FOLDER_URL}/Images/kfc.pn
 class SnowEffect {
   static init() {
     SnowEffect.state = {
-      enabled: false,
+      user_enabled: true,
+			is_running: false,
+
       snow_level: SnowEffect.snow_levels.medium,
       _canvas: null,
       _context: null,
@@ -3710,20 +3721,22 @@ class SnowEffect {
     };
   }
 
-  static enable(snow_level = 'medium') {
-    const state = SnowEffect.state;
+	static start(snow_level = 'medium') {
+		const state = SnowEffect.state;
+		if (!state.user_enabled) {
+			return;
+		}
 
     snow_level = snow_level.toLowerCase();
     if (SnowEffect.snow_levels[snow_level]) {
       state.snow_level = SnowEffect.snow_levels[snow_level];
     }
 
-    if (state.enabled) {
+    if (state.is_running) {
       return;
     }
 
-    state.enabled = true;
-
+    state.is_running = true;
     state._canvas = document.createElement('canvas');
     state._canvas.classList.add('c-effect__snow-canvas');
     document.body.appendChild(state._canvas);
@@ -3736,15 +3749,15 @@ class SnowEffect {
     // If the window resizes, just start all over again for simplicity
     SnowEffect._resizeHandler = () => SnowEffect.initAndReset();
     window.addEventListener('resize', SnowEffect._resizeHandler);
-  }
+	}
 
-  static disable() {
-    const state = SnowEffect.state;
-    if (!state.enabled) {
+	static stop() {
+		const state = SnowEffect.state;
+    if (!state.is_running) {
       return;
     }
 
-    state.enabled = false;
+    state.is_running = false;
     window.removeEventListener('resize', SnowEffect._resizeHandler);
 
     if (state._requested_animation_frame) {
@@ -3755,11 +3768,20 @@ class SnowEffect {
     state._context = null;
     state._canvas.parentElement.removeChild(state._canvas);
     state._canvas = null;
+	}
+
+  static enable() {
+		SnowEffect.state.user_enabled = true;
+  }
+
+  static disable() {
+    SnowEffect.state.user_enabled = false;
+		SnowEffect.stop();
   }
 
   static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
-    if (message_parts[0] === 'off') {
-      SnowEffect.disable();
+		if (message_parts[0] === 'off') {
+      SnowEffect.stop();
       return;
     }
 
@@ -3768,7 +3790,7 @@ class SnowEffect {
       level = 'medium';
     }
 
-    SnowEffect.enable(level);
+    SnowEffect.start(level);
   }
 
   static initAndReset() {
@@ -3883,7 +3905,10 @@ SnowEffect.snow_levels = {
 class GhostBanriEffect {
   static init() {
     GhostBanriEffect.state = {
-      enabled: false,
+			// If the user has enabled the function to be run
+      user_enabled: true,
+			// If the effect is on and runnin
+			is_running: false,
       // Length of time to keep active in minutes
       length_minutes: GhostBanriEffect.DEFAULT_LENGTH_MIN,
       // The target number of people to be affected by each activation
@@ -3893,8 +3918,13 @@ class GhostBanriEffect {
     GhostBanriEffect.deactivate_timeout = null;
   }
 
-  static enable(length_minutes = 0, infection_rate = 0) {
-    const state = GhostBanriEffect.state;
+	static start(length_minutes = 0, infection_rate = 0) {
+		const state = GhostBanriEffect.state;
+
+		if (!state.user_enabled) {
+			return;
+		}
+
     if (length_minutes > 0) {
       state.length_minutes = length_minutes;
       GhostBanriEffect.resetDeactivationTimer();
@@ -3903,22 +3933,22 @@ class GhostBanriEffect {
       state.infection_rate = infection_rate;
     }
 
-    if (state.enabled) {
+    if (state.is_running) {
       return;
     }
 
-    state.enabled = true;
+    state.is_running = true;
     GhostBanriEffect.maybeShowBanri();
     GhostBanriEffect.resetDeactivationTimer();
-  }
+	}
 
-  static disable() {
-    const state = GhostBanriEffect.state;
-    if (!state.enabled) {
+	static stop() {
+		const state = GhostBanriEffect.state;
+    if (!state.is_running) {
       return;
     }
 
-    state.enabled = false;
+    state.is_running = false;
     if (GhostBanriEffect.banri_timeout) {
       clearTimeout(GhostBanriEffect.banri_timeout);
       GhostBanriEffect.banri_timeout = null;
@@ -3926,11 +3956,20 @@ class GhostBanriEffect {
 
     state.length_minutes =GhostBanriEffect.DEFAULT_LENGTH_MIN;
     state.infection_rate = GhostBanriEffect.DEFAULT_INFECTION_RATE;
+	}
+
+  static enable() {
+		GhostBanriEffect.state.user_enabled = true;
+  }
+
+  static disable() {
+		GhostBanriEffect.state.user_enabled = false;
+		GhostBanriEffect.stop();
   }
 
   static handleCommand(message_parts = [], other_args = {}) { // other args is for compatability
     if (message_parts[0] === 'off') {
-      GhostBanriEffect.disable();
+      GhostBanriEffect.stop();
       return;
     }
 
@@ -3946,7 +3985,7 @@ class GhostBanriEffect {
 			infection_rate = infection_rate / 100;
 		}
 
-    GhostBanriEffect.enable(length_minutes, infection_rate);
+    GhostBanriEffect.start(length_minutes, infection_rate);
   }
 
   static maybeShowBanri() {
@@ -3956,7 +3995,7 @@ class GhostBanriEffect {
       GhostBanriEffect.banri_timeout = null;
     }
 
-    if (!state.enabled) {
+    if (!state.user_enabled) {
       return;
     }
 

@@ -789,6 +789,8 @@ span.glyphicon.glyphicon-time {
   --middle-tree-x: 130px;
   --right-tree-x: 24px;
   --kfc-x: 190px;
+
+  pointer-events: none;
 }
 
 /* -------------------------------- Lightrope ------------------------------- */
@@ -1036,6 +1038,9 @@ span.glyphicon.glyphicon-time {
   position: fixed;
   top: 0;
   left: 0;
+
+  pointer-events: none;
+  z-index: 100000;
 
   animation: c-effect__banri__fade 10s linear forwards;
   will-change: opacity;
