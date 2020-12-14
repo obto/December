@@ -3919,11 +3919,12 @@ class GhostBanriEffect {
   }
 
 	static start(length_minutes = 0, infection_rate = 0) {
+		const state = GhostBanriEffect.state;
+
 		if (!state.user_enabled) {
 			return;
 		}
 
-		const state = GhostBanriEffect.state;
     if (length_minutes > 0) {
       state.length_minutes = length_minutes;
       GhostBanriEffect.resetDeactivationTimer();
