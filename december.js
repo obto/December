@@ -3487,7 +3487,7 @@ function getRandomFloat(min, max) {
 class ChristmasWonderlandEffect {
   static init() {
     ChristmasWonderlandEffect.state = {
-      user_enabled: false,
+      user_enabled: true,
       is_running: false,
     };
   }
@@ -3706,7 +3706,7 @@ ChristmasWonderlandEffect.kfc_bucket_image = `${SCRIPT_FOLDER_URL}/Images/kfc.pn
 class SnowEffect {
   static init() {
     SnowEffect.state = {
-      user_enabled: false,
+      user_enabled: true,
 			is_running: false,
 
       snow_level: SnowEffect.snow_levels.medium,
@@ -3906,7 +3906,7 @@ class GhostBanriEffect {
   static init() {
     GhostBanriEffect.state = {
 			// If the user has enabled the function to be run
-      user_enabled: false,
+      user_enabled: true,
 			// If the effect is on and runnin
 			is_running: false,
       // Length of time to keep active in minutes
