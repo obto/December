@@ -3735,8 +3735,7 @@ class SnowEffect {
       return;
     }
 
-    state.user_enabled = true;
-
+    state.is_running = true;
     state._canvas = document.createElement('canvas');
     state._canvas.classList.add('c-effect__snow-canvas');
     document.body.appendChild(state._canvas);
