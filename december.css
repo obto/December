@@ -1037,6 +1037,8 @@ span.glyphicon.glyphicon-time {
   top: 0;
   left: 0;
 
+  pointer-events: none;
+
   animation: c-effect__banri__fade 10s linear forwards;
   will-change: opacity;
 }
