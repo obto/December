@@ -3698,7 +3698,7 @@ class ChristmasWonderlandEffect {
       container.classList.add('c-candy-cane--right');
     }
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 150; i++) {
       const ring = document.createElement('div');
       ring.classList.add('c-candy-cane-ring');
       if (i % 2) {
@@ -3918,6 +3918,10 @@ class SnowEffect {
 
   static handleFrame() {
     const state = SnowEffect.state;
+		if (!state._context) {
+			return;
+		}
+
     state._context.clearRect(0, 0, state._width, state._height);
 
     // Add new snowflakes
@@ -4002,10 +4006,19 @@ SnowEffect.min_y_speed = 1;
 SnowEffect.max_y_speed = 4;
 SnowEffect.snow_levels = {
   // The rate at which snow falls. High numbers means less snow
-  low: {min: 1000, max: 10000},
-  medium: {min: 500, max: 5000},
-  high: {min: 250, max: 2500},
-  blizzard: {min: 75, max: 900},
+
+	// Low levels. Multiple aliases
+  low: {min: 12500, max: 20000},
+  dust: {min: 12500, max: 20000},
+  light: {min: 12500, max: 20000},
+
+	// Medium or normal aliases
+  medium: {min: 3000, max: 7500},
+  normal: {min: 3000, max: 7500},
+
+  high: {min: 1000, max: 3500},
+  blizzard: {min: 500, max: 5000},
+  prime95: {min: 75, max: 900},
 };
 
 
