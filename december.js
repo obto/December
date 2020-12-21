@@ -3915,6 +3915,8 @@ class SnowEffect {
     document.body.appendChild(state._canvas);
 
 		state._gl = state._canvas.getContext('webgl');
+		state._gl.glEnable(GL.GL_BLEND);
+		state._gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		SnowEffect.buildSnowAndUseProgram();
 
     // 0 timeout to allow the CSSOM to update the size of the canvas appropriately
@@ -4174,7 +4176,7 @@ SnowEffect.fragment_shader_src = `
 	precision mediump float;
 
 	void main() {
-		gl_FragColor = vec4(1, 1, 1, 0.6);
+		gl_FragColor = vec4(1, 1, 1, 0.8);
 	}
 `;
 SnowEffect.TRIANGLES_PER_PX_WIDTH = 10 / 10;
