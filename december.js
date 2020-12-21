@@ -4111,8 +4111,6 @@ class SnowEffect {
     };
 	}
 
-	static
-
   static isSnowflakeOffscreen(snowflake) {
     const state = SnowEffect.state;
     const top_y = snowflake.y + (snowflake.size / 2);
