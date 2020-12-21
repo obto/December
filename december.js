@@ -4174,7 +4174,7 @@ SnowEffect.fragment_shader_src = `
 	precision mediump float;
 
 	void main() {
-		gl_FragColor = vec4(1, 1, 1, 0.8);
+		gl_FragColor = vec4(1, 1, 1, 0.6);
 	}
 `;
 SnowEffect.TRIANGLES_PER_PX_WIDTH = 10 / 10;
