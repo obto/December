@@ -4085,7 +4085,7 @@ class SnowEffect {
 
 		{
 			const offset = 0;
-			state._gl.drawArrays(state._gl.TRIANGLES, offset, TRIANGLES_PER_CIRCLE * TOTAL_DRAWN * 3);
+			state._gl.drawArrays(state._gl.TRIANGLES, offset, snow_vertices.length);
 		}
 	}
 
