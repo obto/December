@@ -3915,8 +3915,8 @@ class SnowEffect {
     document.body.appendChild(state._canvas);
 
 		state._gl = state._canvas.getContext('webgl');
-		state._gl.glEnable(GL.GL_BLEND);
-		state._gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		state._gl.glEnable(state._gl.GL_BLEND);
+		state._gl.glBlendFunc(state._gl.GL_SRC_ALPHA, state._gl.GL_ONE_MINUS_SRC_ALPHA);
 		SnowEffect.buildSnowAndUseProgram();
 
     // 0 timeout to allow the CSSOM to update the size of the canvas appropriately
