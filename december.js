@@ -3933,7 +3933,7 @@ class SnowEffect {
 				state._gl,
 				SnowEffect.vertex_shader_src,
 				SnowEffect.fragment_shader_src);
-		state._gl.useProgram(program);
+		state._gl.useProgram(state._program);
 
 		state._a_position = state._gl.getAttribLocation(program, 'a_position');
 		state._u_resolution = state._gl.getUniformLocation(program, 'u_resolution');
