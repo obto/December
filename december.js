@@ -3954,7 +3954,7 @@ class SnowEffect {
       cancelAnimationFrame(state._requested_animation_frame);
     }
 
-    state._context = null;
+    state._gl = null;
     state._canvas.parentElement.removeChild(state._canvas);
     state._canvas = null;
 	}
@@ -3999,11 +3999,10 @@ class SnowEffect {
 
   static handleFrame() {
     const state = SnowEffect.state;
-		if (!state._context) {
+		if (!state._gl) {
 			return;
 		}
 
-		state._context.clearRect(0, 0, state._width, state._height);
 		state._gl.clearColor(0, 0, 0, 0);
   	state._gl.clear(state._gl.COLOR_BUFFER_BIT);
 
