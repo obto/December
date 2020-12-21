@@ -4044,7 +4044,7 @@ class SnowEffect {
 
 	static buildCircleVertices(cx, cy, radius) {
 		const vertices = [];
-		const total_triangles = Math.max(Math.floor(SnowEffect.TRIANGLES_PER_PX_WIDTH * radius), 3);
+		const total_triangles = Math.max(Math.floor(SnowEffect.TRIANGLES_PER_PX_WIDTH * radius), 4);
 
     const pi_frac = (2 * Math.PI) / total_triangles;
     for (let i = 0; i < total_triangles; i++) {
@@ -4172,7 +4172,7 @@ SnowEffect.fragment_shader_src = `
 		gl_FragColor = vec4(1, 1, 1, 1);
 	}
 `;
-SnowEffect.TRIANGLES_PER_PX_WIDTH = 5 / 10;
+SnowEffect.TRIANGLES_PER_PX_WIDTH = 7 / 10;
 
 
 /**
