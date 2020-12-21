@@ -4044,7 +4044,7 @@ class SnowEffect {
 
 	static buildCircleVertices(cx, cy, radius) {
 		const vertices = [];
-		const total_triangles = Math.floor(SnowEffect.TRIANGLES_PER_PX_WIDTH * radius);
+		const total_triangles = Math.max(Math.floor(SnowEffect.TRIANGLES_PER_PX_WIDTH * radius), 3);
 
     const pi_frac = (2 * Math.PI) / total_triangles;
     for (let i = 0; i < total_triangles; i++) {
