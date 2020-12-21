@@ -3935,8 +3935,8 @@ class SnowEffect {
 				SnowEffect.fragment_shader_src);
 		state._gl.useProgram(state._program);
 
-		state._a_position = state._gl.getAttribLocation(program, 'a_position');
-		state._u_resolution = state._gl.getUniformLocation(program, 'u_resolution');
+		state._a_position = state._gl.getAttribLocation(state._program, 'a_position');
+		state._u_resolution = state._gl.getUniformLocation(state._program, 'u_resolution');
 		state._vertex_buffer = state._gl.createBuffer();
 	}
 
