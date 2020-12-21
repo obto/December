@@ -4172,7 +4172,7 @@ SnowEffect.fragment_shader_src = `
 		gl_FragColor = vec4(1, 1, 1, 1);
 	}
 `;
-SnowEffect.TRIANGLES_PER_PX_WIDTH = 7 / 10;
+SnowEffect.TRIANGLES_PER_PX_WIDTH = 10 / 10;
 
 
 /**
