@@ -2340,7 +2340,7 @@ function formatChatMessage(data, last) {
 
 	data.msg = stripImages(data.msg);
     data.msg = execEmotes(data.msg);
-	
+
 	if (CLIENT.name === CURRENTBOT) {
 		data.msg2 = data.msg;
 	}
@@ -2355,7 +2355,7 @@ function formatChatMessage(data, last) {
 			if (data.msg[0] === "<") {
 				greaterThanSign = data.msg.indexOf(">");
 			}
-			
+
 			var noHTMLMsg = data.msg.replace(/<.+?>/gi," ");
 			var splitMsg = noHTMLMsg.split(" ");
 			for (var iChar = 0; iChar < splitMsg.length; iChar++) {
@@ -3836,6 +3836,38 @@ ChristmasWonderlandEffect.tree_type_2 = {
 ChristmasWonderlandEffect.kfc_bucket_image = `${SCRIPT_FOLDER_URL}/Images/kfc.png`;
 
 
+function buildGlProgram(gl, vertex_shader_src, fragment_shader_src) {
+	const v_shader = addGlShader(gl, vertex_shader_src, gl.VERTEX_SHADER);
+	const f_shader = addGlShader(gl, fragment_shader_src, gl.FRAGMENT_SHADER);
+	if (!v_shader || !f_shader) {
+		return null;
+	}
+
+	const program = gl.createProgram();
+	gl.attachShader(program, v_shader);
+	gl.attachShader(program, f_shader);
+
+	gl.linkProgram(program);
+	return program;
+}
+
+function addGlShader(gl, shader_source, type) {
+	const shader = gl.createShader(type);
+	gl.shaderSource(shader, shader_source);
+	gl.compileShader(shader);
+
+	// Check the compile status
+	const did_compile = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+	if (!did_compile) {
+		const lastError = gl.getShaderInfoLog(shader);
+		console.error(`Error compiling shader: ${lastError}`);
+		gl.deleteShader(shader);
+		return null;
+	}
+
+	return shader;
+}
+
 /**
  * Usage: /snow <rate: ('low' | 'medium' | 'high' | 'blizzard') = 'medium'>
  * Turn off: /snow off
@@ -3847,8 +3879,13 @@ class SnowEffect {
 			is_running: false,
 
       snow_level: SnowEffect.snow_levels.medium,
-      _canvas: null,
-      _context: null,
+			_canvas: null,
+			_gl: null,
+			_program: null,
+
+			// gl vars
+			_a_position: null,
+			_u_resolution: null,
 
       _width: window.innerWidth,
       _height: window.innerHeight,
@@ -3877,7 +3914,8 @@ class SnowEffect {
     state._canvas.classList.add('c-effect__snow-canvas');
     document.body.appendChild(state._canvas);
 
-    state._context = state._canvas.getContext('2d');
+		state._gl = state._canvas.getContext('webgl');
+		SnowEffect.buildSnowAndUseProgram();
 
     // 0 timeout to allow the CSSOM to update the size of the canvas appropriately
     setTimeout(() => SnowEffect.initAndReset(), 0);
@@ -3885,6 +3923,21 @@ class SnowEffect {
     // If the window resizes, just start all over again for simplicity
     SnowEffect._resizeHandler = () => SnowEffect.initAndReset();
     window.addEventListener('resize', SnowEffect._resizeHandler);
+	}
+
+	static buildSnowAndUseProgram() {
+		const state = SnowEffect.state;
+
+		// setup GLSL program
+    state._program = buildGlProgram(
+				state._gl,
+				SnowEffect.vertex_shader_src,
+				SnowEffect.fragment_shader_src);
+		state._gl.useProgram(program);
+
+		state._a_position = state._gl.getAttribLocation(program, 'a_position');
+		state._u_resolution = state._gl.getUniformLocation(program, 'u_resolution');
+		state._vertex_buffer = state._gl.createBuffer();
 	}
 
 	static stop() {
@@ -3927,13 +3980,16 @@ class SnowEffect {
     }
 
     SnowEffect.start(level);
-  }
+	}
 
   static initAndReset() {
     const state = SnowEffect.state;
 
     state._width = state._canvas.width = window.innerWidth;
-    state._height = state._canvas.height = window.innerHeight;
+		state._height = state._canvas.height = window.innerHeight;
+		state._gl.viewport(0, 0, state._width, state._height);
+		state._gl.uniform2f(state._u_resolution, state._width, state._height);
+
     state._snowflakes = [];
 
     if (!state._requested_animation_frame) {
@@ -3947,7 +4003,9 @@ class SnowEffect {
 			return;
 		}
 
-    state._context.clearRect(0, 0, state._width, state._height);
+		state._context.clearRect(0, 0, state._width, state._height);
+		state._gl.clearColor(0, 0, 0, 0);
+  	state._gl.clear(state._gl.COLOR_BUFFER_BIT);
 
     // Add new snowflakes
     const min_new = state._width / state.snow_level.max;
@@ -3955,18 +4013,17 @@ class SnowEffect {
     const number_of_new_flakes = getRandomInt(min_new, max_new);
     for (let i = 0; i < number_of_new_flakes; i++) {
       state._snowflakes.push(SnowEffect.createSnowflake());
-    }
+		}
 
-    // Move all the flakes
+		// Move all the flakes and get their vertices
+		const all_vertices = [];
     for (const snowflake of state._snowflakes) {
       snowflake.x += snowflake.velocity.x;
       snowflake.y += snowflake.velocity.y;
 
-      state._context.fillStyle = '#fff';
-      state._context.beginPath();
-      state._context.arc(snowflake.x, snowflake.y, snowflake.size, 0, 2 * Math.PI, false);
-      state._context.fill();
-    }
+			all_vertices.push(...SnowEffect.buildCircleVertices(snowflake.x, snowflake.y, snowflake.size));
+		}
+		SnowEffect.drawSnowTriangles(all_vertices);
 
     // Remove particles below the screen
     state._snowflakes = state._snowflakes.filter((snowflake) => {
@@ -3984,7 +4041,54 @@ class SnowEffect {
     });
 
     state._requested_animation_frame = requestAnimationFrame(() => SnowEffect.handleFrame());
-  }
+	}
+
+	static buildCircleVertices(cx, cy, radius) {
+    const vertices = [];
+    const pi_frac = (2 * Math.PI) / SnowEffect.TRIANGLES_PER_CIRCLE;
+    for (let i = 0; i < SnowEffect.TRIANGLES_PER_CIRCLE; i++) {
+      vertices.push(cx, cy);
+      vertices.push(
+        Math.cos(i * pi_frac) * radius + cx,
+        Math.sin(i * pi_frac) * radius + cy);
+      vertices.push(
+        Math.cos((i + 1) * pi_frac) * radius + cx,
+        Math.sin((i + 1) * pi_frac) * radius + cy);
+    }
+
+    return vertices;
+	}
+
+	static drawSnowTriangles(snow_vertices) {
+		const state = SnowEffect.state;
+
+		// Put the snow vertices in the vertex buffer
+		state._gl.bindBuffer(state._gl.ARRAY_BUFFER, state._vertex_buffer);
+		state._gl.bufferData(state._gl.ARRAY_BUFFER, new Float32Array(snow_vertices), state._gl.STATIC_DRAW);
+
+		// Load the vertices into a_position
+		{
+			const size = 2;
+			const type = state._gl.FLOAT;
+			const normalize = false;
+			const stride = 0;
+			const offset = 0;
+			state._gl.bindBuffer(state._gl.ARRAY_BUFFER, state._vertex_buffer);
+			state._gl.vertexAttribPointer(
+					state._a_position,
+					size,
+					type,
+					normalize,
+					stride,
+					offset);
+			state._gl.enableVertexAttribArray(state._a_position);
+		}
+
+		{
+			const offset = 0;
+			state._gl.drawArrays(state._gl.TRIANGLES, offset, TRIANGLES_PER_CIRCLE * TOTAL_DRAWN * 3);
+		}
+	}
 
   static createSnowflake() {
     const state = SnowEffect.state;
@@ -4005,7 +4109,9 @@ class SnowEffect {
         y: getRandomFloat(SnowEffect.min_y_speed, SnowEffect.max_y_speed),
       }
     };
-  }
+	}
+
+	static
 
   static isSnowflakeOffscreen(snowflake) {
     const state = SnowEffect.state;
@@ -4045,6 +4151,29 @@ SnowEffect.snow_levels = {
   blizzard: {min: 500, max: 5000},
   prime95: {min: 75, max: 900},
 };
+SnowEffect.vertex_shader_src = `
+	attribute vec2 a_position;
+	uniform vec2 u_resolution;
+
+	void main() {
+		// convert the position from pixels to 0.0 to 1.0
+		// convert from 0->1 to 0->2
+		vec2 zero_to_two = (a_position / u_resolution) * 2.0;
+
+		// convert from 0->2 to -1->+1 (clip space)
+		vec2 clip_space = zero_to_two - 1.0;
+
+		gl_Position = vec4(clip_space.x, -clip_space.y, 0, 1);
+	}
+`;
+SnowEffect.fragment_shader_src = `
+	precision mediump float;
+
+	void main() {
+		gl_FragColor = vec4(1, 1, 1, 1);
+	}
+`;
+SnowEffect.TRIANGLES_PER_CIRCLE = 50;
 
 
 /**
