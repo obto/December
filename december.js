@@ -4156,7 +4156,7 @@ SnowEffect.snow_levels = {
   high: {min: 1000, max: 3500},
   blizzard: {min: 500, max: 5000},
   prime95: {min: 75, max: 900},
-  space_heater: {min: 35, max: 450},
+  space_heater: {min: 30, max: 400},
 };
 SnowEffect.vertex_shader_src = `
 	attribute vec2 a_position;
